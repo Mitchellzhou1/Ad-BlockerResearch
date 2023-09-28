@@ -36,7 +36,7 @@ def get_difference(adblocker, regular):
         print("Wierd!!!! Not suppose to happen!!!!")
     else:
         i = j = 0
-        while i < len(regular):
+        while j < len(adblocker):
             # we are looking at the same part of the website
             ref = id_checker(str(adblocker[i]), str(regular[j]))
             if ref[0]:
@@ -49,6 +49,12 @@ def get_difference(adblocker, regular):
             else:
                 data['dropped'].append(ref[2])
                 i += 1
+
+        while i < len(adblocker):
+            data['dropped'].append(str(adblocker[i]))
+
+
+
     return data
 
 
