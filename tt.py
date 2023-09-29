@@ -7,8 +7,6 @@ def grab_sections(html):
     return elements
 
 
-
-
 def id_checker(adblocker, regular):
     section1 = adblocker[5:adblocker.find(">")].split()
     section2 = regular[5:regular.find(">")].split()
@@ -48,15 +46,13 @@ def get_difference(adblocker, regular):
                 j += 1
             else:
                 data['dropped'].append(ref[2])
-                i += 1
+                j += 1
 
         while i < len(adblocker):
             data['dropped'].append(str(adblocker[i]))
-
-
+            i += 1
 
     return data
-
 
 
 f1 = open("adblocker.txt", "r")
@@ -67,4 +63,18 @@ f2 = grab_sections(''.join(f2.readlines()))
 
 ans = get_difference(f1, f2)
 
-print(len(ans['dropped']))
+print(len(f1))
+print(len(f2))
+
+output = f"""
+
+same = {len(ans['same'])}
+dropped = {len(ans['dropped'])}
+changed = {len(ans['changed'])}
+=============================================
+
+    
+
+
+"""
+print(output)
