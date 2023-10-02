@@ -32,11 +32,16 @@ def export_data(data, original, adBlocker):
     sheet[f'C{2}'] = f"dropped: {len(data['dropped'])}"
     sheet[f'C{3}'] = f"changed: {len(data['changed'])}"
 
-    columns = [('A', 'same'), ('C','dropped'), ('E', 'changed')]
+    columns = [('A', 'changed'), ('C', 'dropped'), ('E', 'same')]
+
+    start = 7
+    sheet[f'A{start - 2}'] = f"{columns[0][1]}"
+    sheet[f'C{start - 2}'] = f"{columns[1][1]}"
+    sheet[f'E{start - 2}'] = f"{columns[2][1]}"
     for column, attribute in columns:
-        for i in range(5, len(data[attribute]) + 5):
+        for i in range(start, len(data[attribute]) + start):
             cell = column+str(i)
-            sheet[cell] = ' '.join(data[attribute][i-5])
+            sheet[cell] = ' '.join(data[attribute][i - start])
 
     workbook.save('output_file.xlsx')
     workbook.close()
@@ -62,7 +67,7 @@ def get_difference(adblocker, regular):
                 if adblocker[i] == regular[j]:
                     data['same'].append(ref[1])
                 else:
-                    data['changed'].append(ref[1])
+                    data['changed'].append(ref[2])
                 i += 1
                 j += 1
             else:
