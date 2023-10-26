@@ -4,10 +4,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from time import *
+from tranco import Tranco
 import pyautogui
 
 driver = webdriver.Chrome()
 driver.set_window_size(1335,822)
+
+
 
 sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.amazon.com/',
@@ -96,21 +99,21 @@ def find_dropdown():
 
 def testing(lst, url):
     print(f"Found {len(lst)} elements for {url}")
-    for i in lst:
-        print(i.get_attribute('outerHTML')
-)
+    # for i in lst:
+    #     print(i.get_attribute('outerHTML')
+
 
 
 def main():
-    for url in curr_test:
+    for url in sites:
         worked = 0
         load_site(url)
         for icon in find_dropdown():
-            testing(find_dropdown(), icon)
+            # testing(find_dropdown(), icon)
             try:
                 icon.click()
                 print("clicked on the drop down for", url)
-                sleep(5)
+                sleep(2)
                 pyautogui.press('esc')
                 worked += 1
                 sleep(1)

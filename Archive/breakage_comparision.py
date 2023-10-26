@@ -11,7 +11,6 @@ import openpyxl
 
 source = ["https://www.forbes.com/"]
 adBlockerIDs = {"adblockPlus": 'cfhdojbkjhnklbpkdaibdccddilifddb'}
-workbook = openpyxl.load_workbook('initial_statistics.xlsx')
 
 
 def initialize(adblocker, seconds=14):
