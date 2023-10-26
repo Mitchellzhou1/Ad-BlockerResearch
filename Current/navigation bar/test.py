@@ -39,7 +39,7 @@ sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://github.com/'
          ]
 
-curr_test = ['https://www.amazon.com/']
+curr_test = ['https://www.cnn.com/']
 
 tag = ['button',
        'div',
@@ -61,12 +61,14 @@ attributes = [
               'settings and quick links',
               'dropdown',
               'dialog',
-              'js-menu-toggle']
+              'js-menu-toggle',
+              'searchDropdownDescription']
 
 xpaths = [ '@aria-expanded',
            '@aria-label',
            '@class',
-           '@aria-haspopup'
+           '@aria-haspopup',
+           '@aria-describedby'
 ]
 
 
@@ -88,7 +90,7 @@ def find_dropdown():
                 try:
                     found_element += driver.find_elements(By.XPATH, xpath)
                 except Exception:
-                    ...
+                    pass
     return found_element
     #     resize_window()
     # driver.set_window_size(1024, 768)
@@ -96,9 +98,7 @@ def find_dropdown():
 
 def testing(lst, url):
     print(f"Found {len(lst)} elements for {url}")
-    for i in lst:
-        print(i.get_attribute('outerHTML')
-)
+
 
 
 def main():
@@ -106,16 +106,15 @@ def main():
         worked = 0
         load_site(url)
         for icon in find_dropdown():
-            testing(find_dropdown(), icon)
             try:
                 icon.click()
                 print("clicked on the drop down for", url)
-                sleep(5)
+                sleep(2)
                 pyautogui.press('esc')
                 worked += 1
                 sleep(1)
-            except Exception:
-                ...
+            except Exception as e:
+                print("An error occurred:", e)
 
         if not worked:
             print()
