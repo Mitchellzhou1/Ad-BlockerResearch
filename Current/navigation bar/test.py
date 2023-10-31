@@ -4,13 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from time import *
-from tranco import Tranco
 import pyautogui
 
 driver = webdriver.Chrome()
-driver.set_window_size(1335,822)
-
-
+driver.set_window_size(1555,900)
 
 sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.amazon.com/',
@@ -42,7 +39,7 @@ sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://github.com/'
          ]
 
-curr_test = ['https://www.amazon.com/']
+curr_test = ['https://www.cnn.com/']
 
 tag = ['button',
        'div',
@@ -64,12 +61,14 @@ attributes = [
               'settings and quick links',
               'dropdown',
               'dialog',
-              'js-menu-toggle']
+              'js-menu-toggle',
+              'searchDropdownDescription']
 
 xpaths = [ '@aria-expanded',
            '@aria-label',
            '@class',
-           '@aria-haspopup'
+           '@aria-haspopup',
+           '@aria-describedby'
 ]
 
 
@@ -83,24 +82,22 @@ def find_dropdown():
     def resize_window():
         driver.set_window_size(800, 800)
 
-    found_element = []
+    found_element = set()
     for i in range(1):
         for attribute in attributes:
             for path in xpaths:
                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
                 try:
-                    found_element += driver.find_elements(By.XPATH, xpath)
+                    found_element.update(driver.find_elements(By.XPATH, xpath))  # Use update() for sets
                 except Exception:
-                    ...
-    return found_element
+                    pass
+    return list(found_element)
     #     resize_window()
     # driver.set_window_size(1024, 768)
 
 
 def testing(lst, url):
     print(f"Found {len(lst)} elements for {url}")
-    # for i in lst:
-    #     print(i.get_attribute('outerHTML')
 
 
 
@@ -109,7 +106,6 @@ def main():
         worked = 0
         load_site(url)
         for icon in find_dropdown():
-            # testing(find_dropdown(), icon)
             try:
                 icon.click()
                 print("clicked on the drop down for", url)
@@ -117,8 +113,8 @@ def main():
                 pyautogui.press('esc')
                 worked += 1
                 sleep(1)
-            except Exception:
-                ...
+            except Exception as e:
+                print("An error occurred:", e)
 
         if not worked:
             print()
