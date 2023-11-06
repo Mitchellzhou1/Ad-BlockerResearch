@@ -77,11 +77,8 @@ def load_site(url):
     wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
 
-
-
 def find_dropdown():
-    found_elements = set()
-    found_elements_dict = {}
+    found_elements = []
 
     for i in range(1):
         for attribute in attributes:
@@ -90,31 +87,42 @@ def find_dropdown():
                 try:
                     elements = driver.find_elements(By.XPATH, xpath)
                     for element in elements:
-                        # Add elements to a dictionary with their index in the DOM tree
-                        found_elements_dict[element] = element.location_once_scrolled_into_view
-
-                    found_elements.update(elements)
+                        if element not in found_elements:
+                            found_elements.append(element)
                 except Exception as e:
                     print(e)
 
-    # Sort elements based on their index in the DOM tree
-    sorted_elements = sorted(found_elements, key=lambda element: driver.execute_script("return arguments[0].compareDocumentPosition(arguments[1]);", element, list(found_elements_dict.keys())[0]))
+    if len(found_elements) > 1:
+        found_elements.sort(key=lambda e: driver.execute_script(
+            "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
+        ))
 
-    return list(sorted_elements)
+    print(len(found_elements))
+    return found_elements
 
+
+def printer(list):
+    print("\n")
+    for i in list:
+        print(i.get_attribute('outerHTML').splitlines()[0])
 
 def falsePositive(html):
-    traps = ['display: none'
-    ]
+    traps = ['display: none', "vjs-hidden"]
     for i in traps:
         if i in html:
             return True
     return False
 
+def redirect():
+    #check tabs
+    #check title
+
+
 
 def main():
     errors = []
-    for url in sites:
+    for url in curr_test:
+        invisible = []
         print("\n\n", url)
         worked = 0
         load_site(url)
@@ -122,20 +130,17 @@ def main():
             outer_html = icon.get_attribute('outerHTML')
             first_line = outer_html.splitlines()[0]
             try:
+                #put wait until clickable
                 icon.click()
-                # print("clicked on the drop down for", url)
+                print("clicking on:", first_line)
                 sleep(2)
                 pyautogui.press('esc')
-                worked += 1
-                sleep(1)
             except Exception as e:
-                if falsePositive(first_line):
+                if not icon.is_displayed(): #falsePositive(first_line):
                     errors.append([url, first_line, str(e)[:35]])
-                    print(first_line, "\n", str(e)[:35].strip())
-
-        if not worked:
-            print()
-    sleep(5)
+                    print("\nFailed:", first_line)
+                    print("is visible?", icon.is_displayed(), "\n", str(e)[:35].strip())
+    print("DONE")
 
 main()
 
