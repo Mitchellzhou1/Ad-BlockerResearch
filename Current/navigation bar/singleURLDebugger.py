@@ -112,6 +112,7 @@ def find_dropdown(driver):
         found_elements.sort(key=lambda e: driver.execute_script(
             "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
         ))
+
     return found_elements
 
 
@@ -143,37 +144,66 @@ def check_redirect(driver, url):
         driver.switch_to.window(all_windows[0])
 
 
+def printer(lst, msg):
+    print("\n\n", msg)
+    for i in lst:
+        print(i)
+
+def collect_data(file, data):
+    ...
+
 def main():
     driver = webdriver.Chrome()
     driver.set_window_size(1555, 900)
     errors = []
-    curr_test = ['https://en.wikipedia.org/wiki/Main_Page']
-    for url in curr_test:
+    could_not_scan = []
+    sites = ['https://weather.com/']
+    for url in sites:
         print("\n", url)
         load_site(driver, url)
-        initial_state = find_dropdown(driver)
-        for icon in range(len(initial_state)):
-            temp_state = find_dropdown(driver)
-            outer_html = temp_state[icon].get_attribute('outerHTML')
+        icon = 0
+        elem_lst = find_dropdown(driver)
+        while icon != len(elem_lst):
+            curr = find_dropdown(driver)
+            outer_html = curr[icon].get_attribute('outerHTML')
             first_line = outer_html.splitlines()[0]
             try:
-                if not cursorChange(temp_state[icon], driver):
+                if not cursorChange(curr[icon], driver):
+                    icon += 1
                     continue
-                temp_state[icon].click()
+                curr[icon].click()
                 print("clicking on:", first_line)
 
                 check_redirect(driver, url)
                 sleep(2)
-
+                driver.refresh()
             except Exception as e:
-                errors.append(f"DOUBLE CHECK: {first_line}")
-            driver.refresh()
+                errors.append(f"{url} \t\t {first_line}")
+            icon += 1
 
-    print("\n\nERRORS!!!! ")
 
-    for i in errors:
-        print(i)
 
+
+        # initial_state = find_dropdown(driver)
+        # for icon in range(len(initial_state)):
+        #     temp_state = find_dropdown(driver)
+        #     outer_html = temp_state[icon].get_attribute('outerHTML')
+        #     first_line = outer_html.splitlines()[0]
+        #     try:
+        #         if not cursorChange(temp_state[icon], driver):
+        #             continue
+        #         temp_state[icon].click()
+        #         print("clicking on:", first_line)
+        #
+        #         check_redirect(driver, url)
+        #         sleep(2)
+        #
+        #     except Exception as e:
+        #         errors.append(f"{url} \t\t {first_line}")
+        #     driver.refresh()
+
+    printer(errors, "Errors")
+    printer(could_not_scan, "Failed to collect on Site")
     print("DONE")
 
 

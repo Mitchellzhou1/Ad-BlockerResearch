@@ -7,32 +7,101 @@ from selenium.webdriver.common.action_chains import ActionChains
 from time import *
 import pyautogui
 
-
-def cursorChange(element, driver):
-    actions = ActionChains(driver)
-    actions.move_to_element(element).perform()
-    cursor_property = element.value_of_css_property('cursor')
-    if cursor_property == 'pointer':
-        return True
-    else:
-        return False
-
-# Assuming you have your WebDriver set up (e.g., ChromeDriver)
 driver = webdriver.Chrome()
 
-# Replace 'https://example.com' with the URL of the webpage containing the checkbox
-driver.get("https://en.wikipedia.org/wiki/Main_Page")
+sites = ['https://en.wikipedia.org/wiki/Main_Page',
+         'https://www.amazon.com/',
+         'https://www.microsoft.com/en-us/',
+         'https://www.office.com/',
+         'https://openai.com/',
+         'https://www.bing.com/',
+         'https://duckduckgo.com/',
+         'https://weather.com/',
+         'https://cnn.com',
+         'https://www.nytimes.com/',
+         'https://www.twitch.tv/',
+         'https://www.imdb.com/',
+         'https://mail.ru/',
+         'https://naver.com',
+         'https://zoom.us/',
+         'https://www.globo.com/',
+         'https://www.ebay.com/',
+         'https://www.foxnews.com/',
+         'https://www.instructure.com/',
+         'https://www.walmart.com/',
+         'https://www.indeed.com/',
+         'https://www.paypal.com/us/home',
+         'https://www.accuweather.com/',
+         'https://www.pinterest.com/',
+         'https://www.bbc.com/',
+         'https://www.homedepot.com/',
+         'https://www.breitbart.com/',
+         'https://github.com/'
+         ]
 
-xpath = '//*[@id="vector-main-menu-dropdown-checkbox"]'
+tag = ['button',
+       'div',
+       'input',
+       'svg',
+       'a'
+       ]
 
-# Find all elements matching the XPath
-elements = driver.find_element(By.XPATH, xpath)
-print(f"visible: {elements.is_displayed()}")
-print(f"cursor change: {cursorChange(elements, driver)}")
+attributes = [
+              'false',
+              'true',
+              'main menu',
+              'open menu',
+              'all microsoft menu',
+              'menu',
+              'navigation',
+              'primary navigation',
+              'hamburger',
+              'settings and quick links',
+              'dropdown',
+              'dialog',
+              'js-menu-toggle',
+              'searchDropdownDescription']
 
-# Check if the checkbox is selected, and if not, click it to select
+xpaths = [ '@aria-expanded',
+           '@aria-label',
+           '@class',
+           '@aria-haspopup',
+           '@aria-describedby'
+]
 
-elements.click()
+def find_dropdown(driver):
+    found_elements = []
 
-while 1:
-    1
+    for i in range(1):
+        for attribute in attributes:
+            for path in xpaths:
+                xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
+                try:
+                    elements = driver.find_elements(By.XPATH, xpath)
+                    for element in elements:
+                        if element not in found_elements:
+                            found_elements.append(element)
+                except Exception as e:
+                    print(e)
+
+    if len(found_elements) > 1:
+        found_elements.sort(key=lambda e: driver.execute_script(
+            "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
+        ))
+
+    return found_elements
+
+
+driver = webdriver.Chrome()
+driver.get("https://weather.com/")
+
+curr = find_dropdown(driver)
+i = 0
+while i < len(curr):
+    button_id = find_dropdown(driver)[i]
+    button_id.click()  # Click on the button
+    driver.refresh()  # Refresh the page
+    i+=1
+
+# Close the browser window
+driver.quit()
