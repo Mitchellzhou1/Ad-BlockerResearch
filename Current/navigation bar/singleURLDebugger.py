@@ -2,12 +2,30 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from time import *
+
 import pyautogui
 
-driver = webdriver.Chrome()
-driver.set_window_size(1555,900)
+# Prepare Chrome
+options = Options()
+#options.headless = False
+# options.add_argument("--headless=new")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-animations")
+options.add_argument("--disable-web-animations")
+# options.add_argument("--incognito")
+# options.add_argument("--single-process")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-web-security")
+options.add_argument("--disable-features=IsolateOrigins,site-per-process")
+options.add_argument("--disable-features=AudioServiceOutOfProcess")
+# options.add_argument("auto-open-devtools-for-tabs")
+options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+#options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
 sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.amazon.com/',
@@ -38,8 +56,6 @@ sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.breitbart.com/',
          'https://github.com/'
          ]
-
-curr_test = ['https://www.amazon.com/']
 
 tag = ['button',
        'div',
@@ -72,12 +88,12 @@ xpaths = [ '@aria-expanded',
 ]
 
 
-def load_site(url):
+def load_site(driver, url):
     driver.get(url)
     wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
 
-def find_dropdown():
+def find_dropdown(driver):
     found_elements = []
 
     for i in range(1):
@@ -96,47 +112,70 @@ def find_dropdown():
         found_elements.sort(key=lambda e: driver.execute_script(
             "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
         ))
-
-    print(len(found_elements))
     return found_elements
 
 
-def printer(list):
-    print("\n")
-    for i in list:
-        print(i.get_attribute('outerHTML').splitlines()[0])
-
-def falsePositive(html):
-    traps = ['display: none', "vjs-hidden"]
-    for i in traps:
-        if i in html:
+def cursorChange(element, driver):
+    actions = ActionChains(driver)
+    try:
+        actions.move_to_element(element).perform()
+        cursor_property = element.value_of_css_property('cursor')
+        if cursor_property == 'pointer':
             return True
-    return False
+        else:
+            return False
+    except Exception:
+        if element.is_displayed():
+            return True
+        else:
+            return False
+
+
+def check_redirect(driver, url):
+    if driver.current_url != url:
+        load_site(driver, url)
+
+    all_windows = driver.window_handles
+    if len(all_windows) > 1:
+        for window in all_windows[1:]:
+            driver.switch_to.window(window)
+            driver.close()
+        driver.switch_to.window(all_windows[0])
 
 
 def main():
+    driver = webdriver.Chrome()
+    driver.set_window_size(1555, 900)
     errors = []
+    curr_test = ['https://en.wikipedia.org/wiki/Main_Page']
     for url in curr_test:
-        invisible = []
-        print("\n\n", url)
-        worked = 0
-        load_site(url)
-        for icon in find_dropdown():
-            outer_html = icon.get_attribute('outerHTML')
+        print("\n", url)
+        load_site(driver, url)
+        initial_state = find_dropdown(driver)
+        for icon in range(len(initial_state)):
+            temp_state = find_dropdown(driver)
+            outer_html = temp_state[icon].get_attribute('outerHTML')
             first_line = outer_html.splitlines()[0]
             try:
-                icon.click()
+                if not cursorChange(temp_state[icon], driver):
+                    continue
+                temp_state[icon].click()
                 print("clicking on:", first_line)
+
+                check_redirect(driver, url)
                 sleep(2)
-                pyautogui.press('esc')
-                pyautogui.press('esc')
-                pyautogui.press('esc')
+
             except Exception as e:
-                if not icon.is_displayed(): #falsePositive(first_line):
-                    errors.append([url, first_line, str(e)[:35]])
-                    print("Failed:", first_line)
-                    print("is visible?", icon.is_displayed(), "\n", str(e)[:35].strip())
+                errors.append(f"DOUBLE CHECK: {first_line}")
+            driver.refresh()
+
+    print("\n\nERRORS!!!! ")
+
+    for i in errors:
+        print(i)
+
     print("DONE")
+
 
 main()
 

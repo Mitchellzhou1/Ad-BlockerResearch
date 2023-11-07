@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from time import *
 import pyautogui
 
@@ -38,8 +39,6 @@ sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.breitbart.com/',
          'https://github.com/'
          ]
-
-curr_test = ['https://www.microsoft.com/en-us/']
 
 tag = ['button',
        'div',
@@ -116,30 +115,51 @@ def falsePositive(html):
 def redirect():
     #check tabs
     #check title
+    ...
 
+
+
+def cursorChange(element, driver):
+    actions = ActionChains(driver)
+    try:
+        actions.move_to_element(element).perform()
+        cursor_property = element.value_of_css_property('cursor')
+        if cursor_property == 'pointer':
+            return True
+        else:
+            return False
+    except Exception:
+        if element.is_displayed():
+            return True
+        else:
+            return False
 
 
 def main():
     errors = []
+    curr_test = ['https://en.wikipedia.org/wiki/Main_Page']
     for url in curr_test:
-        invisible = []
-        print("\n\n", url)
-        worked = 0
+        print("\n", url)
         load_site(url)
         for icon in find_dropdown():
             outer_html = icon.get_attribute('outerHTML')
             first_line = outer_html.splitlines()[0]
             try:
-                #put wait until clickable
                 icon.click()
                 print("clicking on:", first_line)
-                sleep(2)
+                # sleep(2)
                 pyautogui.press('esc')
             except Exception as e:
-                if not icon.is_displayed(): #falsePositive(first_line):
-                    errors.append([url, first_line, str(e)[:35]])
-                    print("\nFailed:", first_line)
-                    print("is visible?", icon.is_displayed(), "\n", str(e)[:35].strip())
+                if not cursorChange(icon, driver):
+                    continue
+                else:
+                    errors.append(f"DOUBLE CHECK: {first_line}")
+
+    print("\n\nERRORS!!!! ")
+
+    for i in errors:
+        print(i)
+
     print("DONE")
 
 main()
