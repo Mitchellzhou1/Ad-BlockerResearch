@@ -6,9 +6,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
+from urllib.parse import urlparse
 from time import *
 
 import pyautogui
+import signal
+
 
 # Prepare Chrome
 options = Options()
@@ -33,18 +37,18 @@ sites = [
          # 'https://www.amazon.com/',
          # 'https://www.microsoft.com/en-us/',
          # 'https://www.office.com/',
+         # 'https://weather.com/',
          # 'https://openai.com/',
          # 'https://www.bing.com/',
          # 'https://duckduckgo.com/',
-         'https://weather.com/',
-         'https://cnn.com',
-         'https://www.nytimes.com/',
-         'https://www.twitch.tv/',
-         'https://www.imdb.com/',
-         'https://mail.ru/',
-         'https://naver.com',
-         'https://zoom.us/',
-         'https://www.globo.com/',
+         # 'https://cnn.com',
+         # 'https://www.nytimes.com/',
+         # 'https://www.twitch.tv/',
+         # 'https://www.imdb.com/',
+         # 'https://mail.ru/',
+         # 'https://naver.com',
+         # 'https://zoom.us/',
+         # 'https://www.globo.com/',
          'https://www.ebay.com/',
          'https://www.foxnews.com/',
          'https://www.instructure.com/',
@@ -82,7 +86,9 @@ attributes = [
               'js-menu-toggle',
               'searchDropdownDescription',
               'ctabutton',
-              'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q'
+              'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
+              'Toggle language selector',
+              'Open Navigation Drawer'
 ]
 
 xpaths = [
@@ -91,19 +97,30 @@ xpaths = [
    '@class',
    '@aria-haspopup',
    '@aria-describedby',
-   '@data-testid'
+   '@data-testid',
 ]
 
+driver = webdriver.Chrome()
+driver.set_window_size(1555, 900)
 
-def load_site(driver, url):
+
+class TimeoutError(Exception):
+    pass
+
+def signal_handler(signum, frame):
+    raise TimeoutError("Function execution time exceeded the limit")
+def load_site(url):
     driver.get(url)
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
+    wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
+    try:
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
+    except TimeoutException:
+        raise TimeoutError("Took too long to load...")
 
-def find_dropdown(driver):
-    found_elements = []
 
-    for i in range(1):
+def find_dropdown():
+    def collect():
+        found_elements = []
         for attribute in attributes:
             for path in xpaths:
                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
@@ -115,15 +132,21 @@ def find_dropdown(driver):
                 except Exception as e:
                     print(e)
 
-    if len(found_elements) > 1:
-        found_elements.sort(key=lambda e: driver.execute_script(
-            "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
-        ))
+        if len(found_elements) > 1:
+            found_elements.sort(key=lambda e: driver.execute_script(
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
+            ))
 
-    return found_elements
+        return found_elements
+
+    try:
+        return collect()
+    except Exception:
+        sleep(10)
+        return collect()
 
 
-def cursorChange(element, driver):
+def cursorChange(element):
     actions = ActionChains(driver)
     try:
         actions.move_to_element(element).perform()
@@ -146,9 +169,21 @@ def print_found_elems(lst):
         print(first_line)
         # print(i)
 
-def check_redirect(driver, url):
-    if driver.current_url != url:
-        load_site(driver, url)
+
+def check_redirect(url):
+    def are_urls_equal(url1, url2):
+        parsed_url1 = urlparse(url1)
+        parsed_url2 = urlparse(url2)
+        normalized_url1 = f"{parsed_url1.scheme}://{parsed_url1.netloc}"
+        normalized_url2 = f"{parsed_url2.scheme}://{parsed_url2.netloc}"
+        path1 = parsed_url1.path.rstrip('/')
+        path2 = parsed_url2.path.rstrip('/')
+
+        return normalized_url1 == normalized_url2 and path1 == path2
+
+    if not are_urls_equal(driver.current_url, url):
+        load_site(url)
+
 
     all_windows = driver.window_handles
     if len(all_windows) > 1:
@@ -164,7 +199,7 @@ def printer(lst, msg):
         print(i)
 
 
-def intercept_handler(driver, curr, icon):
+def intercept_handler(curr, icon):
     def click_corners():
         window_width = driver.execute_script("return window.innerWidth;")
         window_height = driver.execute_script("return window.innerHeight;")
@@ -190,7 +225,7 @@ def intercept_handler(driver, curr, icon):
     except Exception:
         driver.refresh()
         sleep(5)
-        return find_dropdown(driver)
+        return find_dropdown()
     return curr, icon - 1
 
 
@@ -198,8 +233,12 @@ def collect_data(file, data):
     ...
 
 
-def test_drop_down(driver, curr, errors, url, icon = 0):
+def test_drop_down(curr, errors, url, icon = 0):
     # attempts to click the button and refreshes afterward
+    global driver
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(100)
+
     while icon != len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
@@ -209,27 +248,29 @@ def test_drop_down(driver, curr, errors, url, icon = 0):
             continue
 
         try:
-            if not cursorChange(curr[icon], driver):
+            if not cursorChange(curr[icon]):
                 icon += 1
                 continue
             curr[icon].click()
             print("clicking on:", first_line)
 
-            check_redirect(driver, url)
-            sleep(2)
+            check_redirect(url)
+            sleep(3)
             driver.refresh()
-            curr = find_dropdown(driver)
+            curr = find_dropdown()
         except ElementClickInterceptedException:
-            test_drop_down_no_refresh(driver, curr, errors, url)
-            break
+            driver.close()
+            driver = webdriver.Chrome()
+            driver.set_window_size(1555, 900)
+            load_site(url)
+            test_drop_down_no_refresh(find_dropdown(), errors, url)
 
         except Exception as e:
-            print(e)
             errors.append(f"{url} \t\t {first_line}")
         icon += 1
 
 
-def test_drop_down_no_refresh(driver, curr, errors, url, icon = 0):
+def test_drop_down_no_refresh(curr, errors, url, icon=0):
     while icon != len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
@@ -240,39 +281,36 @@ def test_drop_down_no_refresh(driver, curr, errors, url, icon = 0):
 
 
         try:
-            if not cursorChange(curr[icon], driver):
+            if not cursorChange(curr[icon]):
                 icon += 1
                 continue
             curr[icon].click()
             print("clicking on:", first_line)
-            sleep(2)
-            check_redirect(driver, url)
+            sleep(3)
+            check_redirect(url)
         except ElementClickInterceptedException:
-            curr, icon = intercept_handler(driver, curr, icon)
+            curr, icon = intercept_handler(curr, icon)
         except Exception as e:
             errors.append(url)
         icon += 1
 
 def main():
-    driver = webdriver.Chrome()
-    driver.set_window_size(1555, 900)
     errors = []
     could_not_scan = []
+
     for url in sites:
         print("\n", url)
-        load_site(driver, url)
         # print_found_elems(find_dropdown(driver))
         try:
-            test_drop_down(driver, find_dropdown(driver), errors, url)
+            load_site(url)
+            test_drop_down(find_dropdown(), errors, url)
+
+        except TimeoutError:
+            print("too long to load page")
+            could_not_scan.append(url)
         except Exception as e:
-            test_drop_down_no_refresh(driver, find_dropdown(driver), errors, url)
-
-    #
-    #
-    # printer(errors, "Errors")
-    # printer(could_not_scan, "Failed to collect on Site")
-    # print("DONE")
-
+            print("something went wrong")
+            could_not_scan.append(url)
 
 main()
 
@@ -280,29 +318,3 @@ main()
 while 1:
     1
 
-
-
-# def works():
-#     for url in sites:
-#         worked = False
-#         driver.switch_to.window(driver.window_handles[-1])  # Switch to the new tab
-#         driver.get(url)
-#         wait = WebDriverWait(driver, 10)
-#         wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-#         for attribute in attributes:
-#             for path in xpaths:
-#                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
-#                 try:
-#                     found_element = driver.find_element(By.XPATH, xpath)
-#                     found_element.click()
-#                     print("clicked on the drop down for", url)
-#                     worked = True
-#                     break
-#                 except Exception:
-#                     ...
-#             if worked:
-#                 break
-#         resize_window()
-#         if not worked:
-#             print(url, "DID NOT WORK!!!")
-#         sleep(6)
