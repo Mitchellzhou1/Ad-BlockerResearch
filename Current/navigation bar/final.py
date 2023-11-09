@@ -138,7 +138,7 @@ def cursorChange(element, driver):
 def main():
     errors = []
     curr_test = ['https://en.wikipedia.org/wiki/Main_Page']
-    for url in curr_test:
+    for url in sites:
         print("\n", url)
         load_site(url)
         for icon in find_dropdown():

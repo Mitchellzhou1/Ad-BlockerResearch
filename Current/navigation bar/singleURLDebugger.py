@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,7 +12,7 @@ import pyautogui
 
 # Prepare Chrome
 options = Options()
-#options.headless = False
+# options.headless = False
 # options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-animations")
@@ -24,8 +25,9 @@ options.add_argument("--disable-web-security")
 options.add_argument("--disable-features=IsolateOrigins,site-per-process")
 options.add_argument("--disable-features=AudioServiceOutOfProcess")
 # options.add_argument("auto-open-devtools-for-tabs")
-options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
-#options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
+options.add_argument(
+    "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+# options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
 sites = ['https://en.wikipedia.org/wiki/Main_Page',
          'https://www.amazon.com/',
@@ -65,26 +67,30 @@ tag = ['button',
        ]
 
 attributes = [
-              'false',
-              'true',
-              'main menu',
-              'open menu',
-              'all microsoft menu',
-              'menu',
-              'navigation',
-              'primary navigation',
-              'hamburger',
-              'settings and quick links',
-              'dropdown',
-              'dialog',
-              'js-menu-toggle',
-              'searchDropdownDescription']
+    'false',
+    'true',
+    'main menu',
+    'open menu',
+    'all microsoft menu',
+    'menu',
+    'navigation',
+    'primary navigation',
+    'hamburger',
+    'settings and quick links',
+    'dropdown',
+    'dialog',
+    'js-menu-toggle',
+    'searchDropdownDescription',
+    'ctabutton'
+]
 
-xpaths = [ '@aria-expanded',
-           '@aria-label',
-           '@class',
-           '@aria-haspopup',
-           '@aria-describedby'
+xpaths = [
+    '@aria-expanded',
+    '@aria-label',
+    '@class',
+    '@aria-haspopup',
+    '@aria-describedby',
+    '@data-testid'
 ]
 
 
@@ -93,10 +99,10 @@ def load_site(driver, url):
     wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
 
-def find_dropdown(driver):
-    found_elements = []
 
-    for i in range(1):
+def find_dropdown(driver):
+    def find():
+        found_elements = []
         for attribute in attributes:
             for path in xpaths:
                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
@@ -108,12 +114,21 @@ def find_dropdown(driver):
                 except Exception as e:
                     print(e)
 
-    if len(found_elements) > 1:
-        found_elements.sort(key=lambda e: driver.execute_script(
-            "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
-        ))
+            # if len(found_elements) > 1:
+            found_elements.sort(key=lambda e: driver.execute_script(
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
+                e
+            ))
 
-    return found_elements
+        return found_elements
+
+    # some websites take forever to load the contents correctly --> weather.com  >:(
+    try:
+        sleep(4)
+        return find()
+    except Exception:
+        sleep(15)
+        return find()
 
 
 def cursorChange(element, driver):
@@ -149,58 +164,87 @@ def printer(lst, msg):
     for i in lst:
         print(i)
 
+
+def print_found_elems(lst):
+    for i in lst:
+        outer_html = i.get_attribute('outerHTML')
+        first_line = outer_html.splitlines()[0]
+        print(first_line)
+        # print(i)
+
+
 def collect_data(file, data):
     ...
+
+
+def intercept_handler(driver, curr, icon):
+    def click_corners():
+        window_width = driver.execute_script("return window.innerWidth;")
+        window_height = driver.execute_script("return window.innerHeight;")
+
+        x_coordinate_left = 0
+        y_coordinate = window_height
+
+        x_coordinate_right = window_width
+
+        action = ActionChains(driver)
+        action.move_to_element_with_offset(driver.find_element_by_tag_name('body'), x_coordinate_left,
+                                           y_coordinate).click().perform()
+
+        action.move_to_element_with_offset(driver.find_element_by_tag_name('body'), x_coordinate_right,
+                                           y_coordinate).click().perform()
+
+    try:
+        curr[icon - 1].click()
+        pyautogui.press('esc')
+    except ElementClickInterceptedException:
+        click_corners()
+
+    except Exception:
+        driver.refresh()
+        sleep(5)
+        return find_dropdown(driver)
+    return curr, icon - 1
+
 
 def main():
     driver = webdriver.Chrome()
     driver.set_window_size(1555, 900)
     errors = []
     could_not_scan = []
-    sites = ['https://weather.com/']
+    site_results = []
+    sites = ['https://www.microsoft.com/en-us/']
     for url in sites:
         print("\n", url)
         load_site(driver, url)
         icon = 0
-        elem_lst = find_dropdown(driver)
-        while icon != len(elem_lst):
-            curr = find_dropdown(driver)
-            outer_html = curr[icon].get_attribute('outerHTML')
-            first_line = outer_html.splitlines()[0]
+        curr = find_dropdown(driver)
+        print_found_elems(curr)
+        while icon != len(curr):
+            # sometimes the elements disappear
+            try:
+                outer_html = curr[icon].get_attribute('outerHTML')
+                first_line = outer_html.splitlines()[0]
+            except Exception as e:
+                site_results.append([url, e])
+                icon += 1
+                continue
+
             try:
                 if not cursorChange(curr[icon], driver):
                     icon += 1
                     continue
-                curr[icon].click()
                 print("clicking on:", first_line)
-
-                check_redirect(driver, url)
+                curr[icon].click()
                 sleep(2)
-                driver.refresh()
+                check_redirect(driver, url)
+            except ElementClickInterceptedException:
+                curr, icon = intercept_handler(driver, curr, icon)
             except Exception as e:
-                errors.append(f"{url} \t\t {first_line}")
+                errors.append(f"{e} \t\t {url} \t\t {first_line}")
             icon += 1
-
-
-
-
-        # initial_state = find_dropdown(driver)
-        # for icon in range(len(initial_state)):
-        #     temp_state = find_dropdown(driver)
-        #     outer_html = temp_state[icon].get_attribute('outerHTML')
-        #     first_line = outer_html.splitlines()[0]
-        #     try:
-        #         if not cursorChange(temp_state[icon], driver):
-        #             continue
-        #         temp_state[icon].click()
-        #         print("clicking on:", first_line)
-        #
-        #         check_redirect(driver, url)
-        #         sleep(2)
-        #
-        #     except Exception as e:
-        #         errors.append(f"{url} \t\t {first_line}")
-        #     driver.refresh()
+            # driver.refresh()
+        site_results.append([url, 'success'])
 
     printer(errors, "Errors")
     printer(could_not_scan, "Failed to collect on Site")
@@ -209,33 +253,5 @@ def main():
 
 main()
 
-
 while 1:
     1
-
-
-
-# def works():
-#     for url in sites:
-#         worked = False
-#         driver.switch_to.window(driver.window_handles[-1])  # Switch to the new tab
-#         driver.get(url)
-#         wait = WebDriverWait(driver, 10)
-#         wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-#         for attribute in attributes:
-#             for path in xpaths:
-#                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
-#                 try:
-#                     found_element = driver.find_element(By.XPATH, xpath)
-#                     found_element.click()
-#                     print("clicked on the drop down for", url)
-#                     worked = True
-#                     break
-#                 except Exception:
-#                     ...
-#             if worked:
-#                 break
-#         resize_window()
-#         if not worked:
-#             print(url, "DID NOT WORK!!!")
-#         sleep(6)
