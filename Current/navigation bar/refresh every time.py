@@ -12,6 +12,7 @@ from time import *
 
 import pyautogui
 import signal
+from tranco import Tranco
 
 
 # Prepare Chrome
@@ -33,22 +34,22 @@ options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537
 #options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
 sites = [
-         # 'https://en.wikipedia.org/wiki/Main_Page',
-         # 'https://www.amazon.com/',
-         # 'https://www.microsoft.com/en-us/',
-         # 'https://www.office.com/',
-         # 'https://weather.com/',
-         # 'https://openai.com/',
-         # 'https://www.bing.com/',
-         # 'https://duckduckgo.com/',
-         # 'https://cnn.com',
-         # 'https://www.nytimes.com/',
-         # 'https://www.twitch.tv/',
-         # 'https://www.imdb.com/',
-         # 'https://mail.ru/',
-         # 'https://naver.com',
-         # 'https://zoom.us/',
-         # 'https://www.globo.com/',
+         'https://en.wikipedia.org/wiki/Main_Page',
+         'https://www.amazon.com/',
+         'https://www.microsoft.com/en-us/',
+         'https://www.office.com/',
+         'https://weather.com/',
+         'https://openai.com/',
+         'https://www.bing.com/',
+         'https://duckduckgo.com/',
+         'https://cnn.com',
+         'https://www.nytimes.com/',
+         'https://www.twitch.tv/',
+         'https://www.imdb.com/',
+         'https://mail.ru/',
+         'https://naver.com',
+         'https://zoom.us/',
+         'https://www.globo.com/',
          'https://www.ebay.com/',
          'https://www.foxnews.com/',
          'https://www.instructure.com/',
@@ -110,7 +111,8 @@ class TimeoutError(Exception):
 def signal_handler(signum, frame):
     raise TimeoutError("Function execution time exceeded the limit")
 def load_site(url):
-    driver.get(url)
+    new_url = f'https://{url}'
+    driver.get(new_url)
     wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
     try:
         wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
@@ -181,8 +183,9 @@ def check_redirect(url):
 
         return normalized_url1 == normalized_url2 and path1 == path2
 
-    if not are_urls_equal(driver.current_url, url):
-        load_site(url)
+    # sleep(2)
+    # if not are_urls_equal(driver.current_url, url):
+    #     load_site(url)
 
 
     all_windows = driver.window_handles
@@ -199,7 +202,7 @@ def printer(lst, msg):
         print(i)
 
 
-def intercept_handler(curr, icon):
+def intercept_handler(button, icon):
     def click_corners():
         window_width = driver.execute_script("return window.innerWidth;")
         window_height = driver.execute_script("return window.innerHeight;")
@@ -210,14 +213,14 @@ def intercept_handler(curr, icon):
         x_coordinate_right = window_width
 
         action = ActionChains(driver)
-        action.move_to_element_with_offset(driver.find_element_by_tag_name('body'), x_coordinate_left,
+        action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), x_coordinate_left,
                                            y_coordinate).click().perform()
 
-        action.move_to_element_with_offset(driver.find_element_by_tag_name('body'), x_coordinate_right,
+        action.move_to_element_with_offset(driver.find_element('tag_name', 'body'), x_coordinate_right,
                                            y_coordinate).click().perform()
 
     try:
-        curr[icon - 1].click()
+        button.click()
         pyautogui.press('esc')
     except ElementClickInterceptedException:
         click_corners()
@@ -225,8 +228,8 @@ def intercept_handler(curr, icon):
     except Exception:
         driver.refresh()
         sleep(5)
-        return find_dropdown()
-    return curr, icon - 1
+        return find_dropdown(), icon
+    return find_dropdown(), icon - 1
 
 
 def collect_data(file, data):
@@ -256,15 +259,14 @@ def test_drop_down(curr, errors, url, icon = 0):
 
             check_redirect(url)
             sleep(3)
-            driver.refresh()
+            load_site(url)
             curr = find_dropdown()
         except ElementClickInterceptedException:
             driver.close()
             driver = webdriver.Chrome()
             driver.set_window_size(1555, 900)
             load_site(url)
-            test_drop_down_no_refresh(find_dropdown(), errors, url)
-
+            return test_drop_down_no_refresh(find_dropdown(), errors, url)
         except Exception as e:
             errors.append(f"{url} \t\t {first_line}")
         icon += 1
@@ -289,7 +291,8 @@ def test_drop_down_no_refresh(curr, errors, url, icon=0):
             sleep(3)
             check_redirect(url)
         except ElementClickInterceptedException:
-            curr, icon = intercept_handler(curr, icon)
+            curr, icon = intercept_handler(curr[icon - 1], icon)
+            print("Intercept Error")
         except Exception as e:
             errors.append(url)
         icon += 1
@@ -297,7 +300,12 @@ def test_drop_down_no_refresh(curr, errors, url, icon=0):
 def main():
     errors = []
     could_not_scan = []
+    timeout = []
 
+    t = Tranco(cache=True, cache_dir='.tranco')
+    latest_list = t.list()
+    sites = latest_list.top(10000)
+    sites = ["apple.com/"]
     for url in sites:
         print("\n", url)
         # print_found_elems(find_dropdown(driver))
@@ -307,11 +315,16 @@ def main():
 
         except TimeoutError:
             print("too long to load page")
-            could_not_scan.append(url)
+            timeout.append(url)
+        except ElementClickInterceptedException:
+            print("Intercept Error")
+
         except Exception as e:
-            print("something went wrong")
+            print(e)
+            print("Failed to scan page")
             could_not_scan.append(url)
 
+    print("DONE!")
 main()
 
 

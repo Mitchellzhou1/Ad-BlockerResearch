@@ -1,38 +1,40 @@
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
-driver = webdriver.Chrome()
-driver.get("https://duckduckgo.com/")  # Replace with your URL
 
-attribute = 'legacy-homepage_legacyButton__oUMB9'  # Class attribute value you want to find
+def perform_click_actions(url):
 
-# Creating the XPath based on the class attribute directly
-test = f'//*[contains(translate(@class, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "{attribute.lower()}")]'
+    # Create a new instance of the webdriver
+    driver = webdriver.Chrome()  # Use Chrome, or choose another browser
 
-element = driver.find_elements(By.XPATH, test)
+    # Navigate to the specified URL
+    driver.get(url)
 
-if element:
-    outer_html = element[0].get_attribute('outerHTML')
-    first_line = outer_html.splitlines()[0]
-    print(first_line)
-else:
-    print("NONe")
+    window_width = driver.execute_script("return window.innerWidth;")
+    window_height = driver.execute_script("return window.innerHeight;")
+
+    x_coordinate_left = 0
+    y_coordinate = window_height
+
+    x_coordinate_right = window_width
+
+    action = ActionChains(driver)
+
+    user_input = input("Do you want to perform the click actions? (yes/no): ").strip().lower()
+
+    if user_input == "yes":
+        action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), x_coordinate_left,
+                                           y_coordinate).click().perform()
 
 
-xpath = f'//*[contains(concat(" ", normalize-space(@class), " "), " {attribute} ")]'
-# driver = webdriver.Chrome()
-# driver.get("https://duckduckgo.com/")  # Replace with your URL
-#
-# attribute = 'legacy-homepage_legacyButton__oUMB9'  # Class attribute value you want to find
-#
-# # Creating the XPath based on the class attribute in a case-insensitive manner
-# path = "@class"
-# xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
-#
-# elements = driver.find_elements(By.XPATH, xpath)
-#
-# outer_html = elements[0].get_attribute('outerHTML')
-# first_line = outer_html.splitlines()[0]
-# print(first_line)
-#
-# is not finding the button
+
+    while 1:
+        1
+
+
+# Example usage
+url_to_load = 'https://www.amazon.com/'
+perform_click_actions(url_to_load)
+
+
