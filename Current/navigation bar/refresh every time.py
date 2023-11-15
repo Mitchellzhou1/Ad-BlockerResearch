@@ -320,7 +320,7 @@ def main():
     t = Tranco(cache=True, cache_dir='.tranco')
     latest_list = t.list()
     sites = latest_list.top(10000)
-    # sites = ['adobe.com']
+    # sites = ['yandex.ru']
     for url in sites:
         # print_found_elems(find_dropdown(driver))
         try:
@@ -349,17 +349,9 @@ while 1:
     1
 
 
- linkedin.com
-doubleclick.net
-icloud.com
-fastly.net
-yahoo.com
-ui.com
-spotify.com
- bit.ly   Message: no such execution context
-qq.com
-msn.com
-yandex.net
-whatsapp.net
-yandex.ru --robot detection
-blogspot.com
+
+# fastly.net: this website is broken
+# yahoo.com: going on it on crawler is different then on browser
+#  bit.ly   Message: no such execution context
+# msn.com
+# yandex.net
