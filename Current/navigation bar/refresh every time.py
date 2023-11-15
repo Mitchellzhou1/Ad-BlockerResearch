@@ -9,15 +9,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
 from urllib.parse import urlparse
 from time import *
+import requests
 
 import pyautogui
 import signal
 from tranco import Tranco
 
-
 # Prepare Chrome
 options = Options()
-#options.headless = False
+# options.headless = False
 # options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-animations")
@@ -30,39 +30,40 @@ options.add_argument("--disable-web-security")
 options.add_argument("--disable-features=IsolateOrigins,site-per-process")
 options.add_argument("--disable-features=AudioServiceOutOfProcess")
 # options.add_argument("auto-open-devtools-for-tabs")
-options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
-#options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
+options.add_argument(
+    "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+# options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
 sites = [
-         'https://en.wikipedia.org/wiki/Main_Page',
-         'https://www.amazon.com/',
-         'https://www.microsoft.com/en-us/',
-         'https://www.office.com/',
-         'https://weather.com/',
-         'https://openai.com/',
-         'https://www.bing.com/',
-         'https://duckduckgo.com/',
-         'https://cnn.com',
-         'https://www.nytimes.com/',
-         'https://www.twitch.tv/',
-         'https://www.imdb.com/',
-         'https://mail.ru/',
-         'https://naver.com',
-         'https://zoom.us/',
-         'https://www.globo.com/',
-         'https://www.ebay.com/',
-         'https://www.foxnews.com/',
-         'https://www.instructure.com/',
-         'https://www.walmart.com/',
-         'https://www.indeed.com/',
-         'https://www.paypal.com/us/home',
-         'https://www.accuweather.com/',
-         'https://www.pinterest.com/',
-         'https://www.bbc.com/',
-         'https://www.homedepot.com/',
-         'https://www.breitbart.com/',
-         'https://github.com/'
-         ]
+    'https://en.wikipedia.org/wiki/Main_Page',
+    'https://www.amazon.com/',
+    'https://www.microsoft.com/en-us/',
+    'https://www.office.com/',
+    'https://weather.com/',
+    'https://openai.com/',
+    'https://www.bing.com/',
+    'https://duckduckgo.com/',
+    'https://cnn.com',
+    'https://www.nytimes.com/',
+    'https://www.twitch.tv/',
+    'https://www.imdb.com/',
+    'https://mail.ru/',
+    'https://naver.com',
+    'https://zoom.us/',
+    'https://www.globo.com/',
+    'https://www.ebay.com/',
+    'https://www.foxnews.com/',
+    'https://www.instructure.com/',
+    'https://www.walmart.com/',
+    'https://www.indeed.com/',
+    'https://www.paypal.com/us/home',
+    'https://www.accuweather.com/',
+    'https://www.pinterest.com/',
+    'https://www.bbc.com/',
+    'https://www.homedepot.com/',
+    'https://www.breitbart.com/',
+    'https://github.com/'
+]
 
 tag = ['button',
        'div',
@@ -72,33 +73,33 @@ tag = ['button',
        ]
 
 attributes = [
-              'false',
-              'true',
-              'main menu',
-              'open menu',
-              'all microsoft menu',
-              'menu',
-              'navigation',
-              'primary navigation',
-              'hamburger',
-              'settings and quick links',
-              'dropdown',
-              'dialog',
-              'js-menu-toggle',
-              'searchDropdownDescription',
-              'ctabutton',
-              'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
-              'Toggle language selector',
-              'Open Navigation Drawer'
+    'false',
+    'true',
+    'main menu',
+    'open menu',
+    'all microsoft menu',
+    'menu',
+    'navigation',
+    'primary navigation',
+    'hamburger',
+    'settings and quick links',
+    'dropdown',
+    'dialog',
+    'js-menu-toggle',
+    'searchDropdownDescription',
+    'ctabutton',
+    'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
+    'Toggle language selector',
+    'Open Navigation Drawer'
 ]
 
 xpaths = [
-   '@aria-expanded',
-   '@aria-label',
-   '@class',
-   '@aria-haspopup',
-   '@aria-describedby',
-   '@data-testid',
+    '@aria-expanded',
+    '@aria-label',
+    '@class',
+    '@aria-haspopup',
+    '@aria-describedby',
+    '@data-testid',
 ]
 
 driver = webdriver.Chrome()
@@ -108,16 +109,26 @@ driver.set_window_size(1555, 900)
 class TimeoutError(Exception):
     pass
 
+
 def signal_handler(signum, frame):
     raise TimeoutError("Function execution time exceeded the limit")
-def load_site(url):
+
+
+def load_site(url, skipped=[]):
     new_url = f'https://{url}'
-    driver.get(new_url)
-    wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
     try:
-        wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-    except TimeoutException:
-        raise TimeoutError("Took too long to load...")
+        response = requests.get(new_url)
+        if response.status_code == 200:
+            driver.get(new_url)
+            wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
+            try:
+                wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
+                return True
+            except TimeoutException:
+                raise TimeoutError("Took too long to load...")
+    except Exception:
+        skipped.append(url)
+        return False
 
 
 def find_dropdown():
@@ -136,7 +147,8 @@ def find_dropdown():
 
         if len(found_elements) > 1:
             found_elements.sort(key=lambda e: driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;", e
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
+                e
             ))
 
         return found_elements
@@ -187,7 +199,6 @@ def check_redirect(url):
     # if not are_urls_equal(driver.current_url, url):
     #     load_site(url)
 
-
     all_windows = driver.window_handles
     if len(all_windows) > 1:
         for window in all_windows[1:]:
@@ -196,53 +207,75 @@ def check_redirect(url):
         driver.switch_to.window(all_windows[0])
 
 
-def printer(lst, msg):
-    print("\n\n", msg)
-    for i in lst:
-        print(i)
-
-
-def intercept_handler(button, icon):
-    def click_corners():
-        window_width = driver.execute_script("return window.innerWidth;")
-        window_height = driver.execute_script("return window.innerHeight;")
-
-        x_coordinate_left = 0
-        y_coordinate = window_height
-
-        x_coordinate_right = window_width
-
-        action = ActionChains(driver)
-        action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), x_coordinate_left,
-                                           y_coordinate).click().perform()
-
-        action.move_to_element_with_offset(driver.find_element('tag_name', 'body'), x_coordinate_right,
-                                           y_coordinate).click().perform()
-
-    try:
-        button.click()
-        pyautogui.press('esc')
-    except ElementClickInterceptedException:
-        click_corners()
-
-    except Exception:
-        driver.refresh()
-        sleep(5)
-        return find_dropdown(), icon
-    return find_dropdown(), icon - 1
-
-
 def collect_data(file, data):
     ...
 
 
-def test_drop_down(curr, errors, url, icon = 0):
+########################################################################################################################
+def intercept_handler(curr, icon, url):
+    # def click_corners():
+    #     screen_width = driver.execute_script("return window.innerWidth;")
+    #     screen_height = driver.execute_script("return window.innerHeight;")
+    #
+    #     actions = ActionChains(driver)
+    #
+    #     # print("Click on the bottom right corner")
+    #     actions.move_by_offset(screen_width - 1, screen_height - 1)
+    #     actions.click()
+    #     actions.perform()
+    #
+    #     # print("Click on the bottom left corner")
+    #     actions.move_by_offset(1 - screen_width, screen_height - 1)
+    #     actions.click()
+    #     actions.perform()
+
+    # try:
+    #     click_corners()
+    #     curr[icon].click()
+    #     check_redirect(url)
+    # except ElementClickInterceptedException:
+    try:
+        curr[icon - 1].click()
+    except Exception:
+        load_site(url)
+        print("couldn't resolve intercept error")
+        return find_dropdown(), icon
+
+    return curr, icon - 1
+
+
+def test_drop_down_no_refresh(curr, errors, url, icon=0):
+    while icon != len(curr):
+        try:
+            outer_html = curr[icon].get_attribute('outerHTML')
+            first_line = outer_html.splitlines()[0]
+        except Exception as e:
+            icon += 1
+            continue
+
+        try:
+            if not cursorChange(curr[icon]):
+                icon += 1
+                continue
+            curr[icon].click()
+            print("clicking on:", first_line)
+            sleep(3)
+            check_redirect(url)
+        except ElementClickInterceptedException:
+            curr, icon = intercept_handler(curr[icon - 1], icon)
+            print("Intercept Error")
+        except Exception as e:
+            errors.append(url)
+        icon += 1
+
+
+def test_drop_down(curr, errors, url, intercept, icon=0):
     # attempts to click the button and refreshes afterward
     global driver
     signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(100)
 
-    while icon != len(curr):
+    while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
             first_line = outer_html.splitlines()[0]
@@ -262,56 +295,33 @@ def test_drop_down(curr, errors, url, icon = 0):
             load_site(url)
             curr = find_dropdown()
         except ElementClickInterceptedException:
-            driver.close()
-            driver = webdriver.Chrome()
-            driver.set_window_size(1555, 900)
-            load_site(url)
-            return test_drop_down_no_refresh(find_dropdown(), errors, url)
+            curr, icon = intercept_handler(curr, icon, url)
+            intercept.append(url)
+
         except Exception as e:
             errors.append(f"{url} \t\t {first_line}")
         icon += 1
 
 
-def test_drop_down_no_refresh(curr, errors, url, icon=0):
-    while icon != len(curr):
-        try:
-            outer_html = curr[icon].get_attribute('outerHTML')
-            first_line = outer_html.splitlines()[0]
-        except Exception as e:
-            icon += 1
-            continue
-
-
-        try:
-            if not cursorChange(curr[icon]):
-                icon += 1
-                continue
-            curr[icon].click()
-            print("clicking on:", first_line)
-            sleep(3)
-            check_redirect(url)
-        except ElementClickInterceptedException:
-            curr, icon = intercept_handler(curr[icon - 1], icon)
-            print("Intercept Error")
-        except Exception as e:
-            errors.append(url)
-        icon += 1
 
 def main():
     errors = []
     could_not_scan = []
     timeout = []
+    intercept = []
+    skipped = []
 
     t = Tranco(cache=True, cache_dir='.tranco')
     latest_list = t.list()
     sites = latest_list.top(10000)
-    sites = ["apple.com/"]
+    # sites = ['apple.com']
     for url in sites:
         print("\n", url)
         # print_found_elems(find_dropdown(driver))
         try:
-            load_site(url)
-            test_drop_down(find_dropdown(), errors, url)
+            if load_site(url, skipped):
+                elems = find_dropdown()
+                test_drop_down(elems, errors, url, intercept)
 
         except TimeoutError:
             print("too long to load page")
@@ -320,14 +330,14 @@ def main():
             print("Intercept Error")
 
         except Exception as e:
-            print(e)
-            print("Failed to scan page")
+            # print(e)
+            print("Something went wrong. Failed to scan page")
             could_not_scan.append(url)
 
     print("DONE!")
-main()
 
+
+main()
 
 while 1:
     1
-
