@@ -90,7 +90,9 @@ attributes = [
     'ctabutton',
     'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
     'Toggle language selector',
-    'Open Navigation Drawer'
+    'Open Navigation Drawer',
+    'guide',
+    'Expand Your Library'
 ]
 
 xpaths = [
@@ -154,10 +156,14 @@ def find_dropdown():
         return found_elements
 
     try:
-        return collect()
+        ret = collect()
+        if ret:
+            return ret
     except Exception:
-        sleep(10)
-        return collect()
+        pass
+
+    sleep(5)
+    return collect()
 
 
 def cursorChange(element):
@@ -260,9 +266,9 @@ def test_drop_down_no_refresh(curr, errors, url, icon=0):
             curr[icon].click()
             print("clicking on:", first_line)
             sleep(3)
-            check_redirect(url)
+            driver.refresh()
         except ElementClickInterceptedException:
-            curr, icon = intercept_handler(curr[icon - 1], icon)
+            curr, icon = intercept_handler(curr[icon - 1], icon, url)
             print("Intercept Error")
         except Exception as e:
             errors.append(url)
@@ -314,12 +320,12 @@ def main():
     t = Tranco(cache=True, cache_dir='.tranco')
     latest_list = t.list()
     sites = latest_list.top(10000)
-    # sites = ['apple.com']
+    # sites = ['adobe.com']
     for url in sites:
-        print("\n", url)
         # print_found_elems(find_dropdown(driver))
         try:
             if load_site(url, skipped):
+                print("\n", url)
                 elems = find_dropdown()
                 test_drop_down(elems, errors, url, intercept)
 
@@ -341,3 +347,19 @@ main()
 
 while 1:
     1
+
+
+ linkedin.com
+doubleclick.net
+icloud.com
+fastly.net
+yahoo.com
+ui.com
+spotify.com
+ bit.ly   Message: no such execution context
+qq.com
+msn.com
+yandex.net
+whatsapp.net
+yandex.ru --robot detection
+blogspot.com
