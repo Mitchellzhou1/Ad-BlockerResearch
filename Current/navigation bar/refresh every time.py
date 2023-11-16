@@ -5,8 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
+from webdriver_manager.chrome import ChromeDriverManager
 from urllib.parse import urlparse
 from time import *
 import requests
@@ -104,12 +106,31 @@ xpaths = [
     '@data-testid',
 ]
 
-driver = webdriver.Chrome()
-driver.set_window_size(1555, 900)
-
+driver = None
 
 class TimeoutError(Exception):
     pass
+
+
+def initialize(adblocker, seconds=14):
+    """
+    This function will start a Chrome instance with the option of installing an ad blocker.
+    Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
+    """
+    chrome_options = webdriver.ChromeOptions()
+
+    if adblocker:
+        chrome_options.add_extension('adBlockerPlus.crx')
+
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    # give it time to install
+    if adblocker:
+        sleep(seconds)
+        pyautogui.hotkey('ctrl', 'w')
+
+    return driver
 
 
 def signal_handler(signum, frame):
@@ -128,7 +149,7 @@ def load_site(url, skipped=[]):
                 return True
             except TimeoutException:
                 raise TimeoutError("Took too long to load...")
-    except Exception:
+    except Exception as e:
         skipped.append(url)
         return False
 
@@ -294,7 +315,8 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
                 icon += 1
                 continue
             curr[icon].click()
-            print("clicking on:", first_line)
+            # print("clicking on:", first_line)
+            print(first_line)
 
             check_redirect(url)
             sleep(3)
@@ -311,16 +333,20 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
 
 
 def main():
+    global driver
     errors = []
     could_not_scan = []
     timeout = []
     intercept = []
     skipped = []
 
+    driver = initialize(True)
+    driver.set_window_size(1555, 900)
+
     t = Tranco(cache=True, cache_dir='.tranco')
     latest_list = t.list()
     sites = latest_list.top(10000)
-    # sites = ['yandex.ru']
+    # sites = ['en.softonic.com/articles']
     for url in sites:
         # print_found_elems(find_dropdown(driver))
         try:

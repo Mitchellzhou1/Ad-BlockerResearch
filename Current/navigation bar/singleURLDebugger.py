@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 from time import *
 
@@ -92,6 +94,29 @@ xpaths = [
     '@aria-describedby',
     '@data-testid'
 ]
+
+adBlockerIDs = {"adblockPlus": 'cfhdojbkjhnklbpkdaibdccddilifddb'}
+
+
+def initialize(adblocker, seconds=14):
+    """
+    This function will start a Chrome instance with the option of installing an ad blocker.
+    Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
+    """
+    chrome_options = webdriver.ChromeOptions()
+
+    if adblocker:
+        chrome_options.add_extension('adBlockerPlus.crx')
+
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    # give it time to install
+    if adblocker:
+        sleep(seconds)
+        pyautogui.hotkey('ctrl', 'w')
+
+    return driver
 
 
 def load_site(driver, url):
