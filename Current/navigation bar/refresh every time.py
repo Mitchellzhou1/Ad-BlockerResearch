@@ -117,11 +117,11 @@ def signal_handler(signum, frame):
 
 
 def load_site(url, skipped=[]):
-    new_url = f'https://{url}'
+    # url = f'https://{url}'
     try:
-        response = requests.get(new_url)
+        response = requests.get(url)
         if response.status_code == 200:
-            driver.get(new_url)
+            driver.get(url)
             wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
             try:
                 wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
@@ -275,6 +275,12 @@ def test_drop_down_no_refresh(curr, errors, url, icon=0):
         icon += 1
 
 
+def check_HTML(initial, after):
+    if initial != after:
+        return True
+    return False
+
+
 def test_drop_down(curr, errors, url, intercept, icon=0):
     # attempts to click the button and refreshes afterward
     global driver
@@ -284,7 +290,7 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
-            first_line = outer_html.splitlines()[0]
+            initial_html = outer_html.splitlines()[0]
         except Exception as e:
             icon += 1
             continue
@@ -294,10 +300,12 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
                 icon += 1
                 continue
             curr[icon].click()
-            print("clicking on:", first_line)
-
-            check_redirect(url)
+            # print("clicking on:", initial_html)
             sleep(3)
+            outer_html = curr[icon].get_attribute('outerHTML')
+            after_html = outer_html.splitlines()[0]
+            print(check_HTML(initial_html, after_html))
+            check_redirect(url)
             load_site(url)
             curr = find_dropdown()
         except ElementClickInterceptedException:
@@ -305,7 +313,7 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
             intercept.append(url)
 
         except Exception as e:
-            errors.append(f"{url} \t\t {first_line}")
+            errors.append(f"{url} \t\t {outer_html}")
         icon += 1
 
 
@@ -318,9 +326,9 @@ def main():
     skipped = []
 
     t = Tranco(cache=True, cache_dir='.tranco')
-    latest_list = t.list()
-    sites = latest_list.top(10000)
-    # sites = ['yandex.ru']
+    # latest_list = t.list()
+    # sites = latest_list.top(10000)
+    # sites = ['https://www.amazon.com']
     for url in sites:
         # print_found_elems(find_dropdown(driver))
         try:
