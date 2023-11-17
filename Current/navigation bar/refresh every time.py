@@ -5,10 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 from urllib.parse import urlparse
 from time import *
 import requests
@@ -106,31 +104,12 @@ xpaths = [
     '@data-testid',
 ]
 
-driver = None
+driver = webdriver.Chrome()
+driver.set_window_size(1555, 900)
+
 
 class TimeoutError(Exception):
     pass
-
-
-def initialize(adblocker, seconds=14):
-    """
-    This function will start a Chrome instance with the option of installing an ad blocker.
-    Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
-    """
-    chrome_options = webdriver.ChromeOptions()
-
-    if adblocker:
-        chrome_options.add_extension('adBlockerPlus.crx')
-
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-    # give it time to install
-    if adblocker:
-        sleep(seconds)
-        pyautogui.hotkey('ctrl', 'w')
-
-    return driver
 
 
 def signal_handler(signum, frame):
@@ -138,18 +117,18 @@ def signal_handler(signum, frame):
 
 
 def load_site(url, skipped=[]):
-    new_url = f'https://{url}'
+    # url = f'https://{url}'
     try:
-        response = requests.get(new_url)
+        response = requests.get(url)
         if response.status_code == 200:
-            driver.get(new_url)
+            driver.get(url)
             wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
             try:
                 wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
                 return True
             except TimeoutException:
                 raise TimeoutError("Took too long to load...")
-    except Exception as e:
+    except Exception:
         skipped.append(url)
         return False
 
@@ -222,9 +201,10 @@ def check_redirect(url):
 
         return normalized_url1 == normalized_url2 and path1 == path2
 
-    # sleep(2)
-    # if not are_urls_equal(driver.current_url, url):
-    #     load_site(url)
+    sleep(2)
+    if not are_urls_equal(driver.current_url, url):
+        load_site(url)
+        return True
 
     all_windows = driver.window_handles
     if len(all_windows) > 1:
@@ -232,7 +212,8 @@ def check_redirect(url):
             driver.switch_to.window(window)
             driver.close()
         driver.switch_to.window(all_windows[0])
-
+        return True
+    return False
 
 def collect_data(file, data):
     ...
@@ -296,6 +277,12 @@ def test_drop_down_no_refresh(curr, errors, url, icon=0):
         icon += 1
 
 
+def check_HTML(initial, after):
+    if initial != after:
+        return True
+    return False
+
+
 def test_drop_down(curr, errors, url, intercept, icon=0):
     # attempts to click the button and refreshes afterward
     global driver
@@ -305,7 +292,7 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
-            first_line = outer_html.splitlines()[0]
+            initial_html = outer_html.splitlines()[0]
         except Exception as e:
             icon += 1
             continue
@@ -315,11 +302,14 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
                 icon += 1
                 continue
             curr[icon].click()
-            # print("clicking on:", first_line)
-            print(first_line)
-
-            check_redirect(url)
+            # print("clicking on:", initial_html)
             sleep(3)
+            if check_redirect(url):
+                print(True)
+            else:
+                outer_html = curr[icon].get_attribute('outerHTML')
+                after_html = outer_html.splitlines()[0]
+                print(check_HTML(initial_html, after_html))
             load_site(url)
             curr = find_dropdown()
         except ElementClickInterceptedException:
@@ -327,26 +317,22 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
             intercept.append(url)
 
         except Exception as e:
-            errors.append(f"{url} \t\t {first_line}")
+            errors.append(f"{url} \t\t {outer_html}")
         icon += 1
 
 
 
 def main():
-    global driver
     errors = []
     could_not_scan = []
     timeout = []
     intercept = []
     skipped = []
 
-    driver = initialize(True)
-    driver.set_window_size(1555, 900)
-
     t = Tranco(cache=True, cache_dir='.tranco')
-    latest_list = t.list()
-    sites = latest_list.top(10000)
-    # sites = ['en.softonic.com/articles']
+    # latest_list = t.list()
+    # sites = latest_list.top(10000)
+    # sites = ['https://www.amazon.com']
     for url in sites:
         # print_found_elems(find_dropdown(driver))
         try:
