@@ -34,6 +34,7 @@ options.add_argument(
     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 # options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
+
 sites = [
     'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.amazon.com/',
@@ -300,11 +301,11 @@ def test_drop_down(curr, errors, url, intercept, icon=0):
                 icon += 1
                 continue
             curr[icon].click()
-            # print("clicking on:", initial_html)
+            print("clicking on:", initial_html)
             sleep(3)
             outer_html = curr[icon].get_attribute('outerHTML')
             after_html = outer_html.splitlines()[0]
-            print(check_HTML(initial_html, after_html))
+            # print(check_HTML(initial_html, after_html))
             check_redirect(url)
             load_site(url)
             curr = find_dropdown()
@@ -328,9 +329,7 @@ def main():
     t = Tranco(cache=True, cache_dir='.tranco')
     # latest_list = t.list()
     # sites = latest_list.top(10000)
-    # sites = ['https://www.amazon.com']
     for url in sites:
-        # print_found_elems(find_dropdown(driver))
         try:
             if load_site(url, skipped):
                 print("\n", url)
@@ -356,10 +355,3 @@ main()
 while 1:
     1
 
-
-
-# fastly.net: this website is broken
-# yahoo.com: going on it on crawler is different then on browser
-#  bit.ly   Message: no such execution context
-# msn.com
-# yandex.net
