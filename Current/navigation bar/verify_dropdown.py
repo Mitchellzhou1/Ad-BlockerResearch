@@ -4,16 +4,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
-from urllib.parse import urlparse
 from time import *
 from bs4 import BeautifulSoup
 import requests
 
+import openpyxl
 import pyautogui
 import signal
 from tranco import Tranco
@@ -231,7 +230,7 @@ def check_redirect(url):
 
     sleep(3)
     if not are_urls_equal(driver.current_url, url):
-        return True
+        return True, driver.current_url
 
     all_windows = driver.window_handles
     if len(all_windows) > 1:
@@ -239,12 +238,48 @@ def check_redirect(url):
             driver.switch_to.window(window)
             driver.close()
         driver.switch_to.window(all_windows[0])
-        return True
-    return False
+        return True, driver.current_url
+    return False, driver.current_url
 
 
-def collect_data(file, data):
-    ...
+def write_data_to_file(data, intercept, timeout, other):
+    def write_rows(lst, column, row):
+        for i in range(len(lst)):
+            ws[f'{column}{i+row}'] = lst[i]
+
+    def set_up_errors(intercept, timeout, other):
+        ws['A1'] = "Intercept Error"
+        ws['B1'] = "Timeout Error"
+        ws['c1'] = "Some Other Error"
+        write_rows(intercept, 'A', 2)
+        write_rows(timeout, 'B',2)
+        write_rows(other, 'C', 2)
+        return max(len(intercept), len(timeout), len(other))
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    row = set_up_errors(intercept, timeout, other) + 4
+    ws[f'A{row}'] = "Results"
+    ws[f'B{row}'] = "HTML / Link Before"
+    ws[f'C{row}'] = "HTML / Link After"
+
+    offset = row + 1
+    # ['True redirect', HTML / link Before, HTML / link After, tries]
+
+    for i in range(len(data)):
+        if len(data[i]) == 1:
+            ws[f'A{offset}'] = data[i][0]                       #website
+            offset += 1
+        else:
+            ws[f'A{offset}'] = data[i][0]                       #result
+            ws[f'B{offset}'] = data[i][1]                       #before
+            ws[f'C{offset}'] = data[i][2]                       #after
+            ws[f'D{offset}'] = f'Tries: {data[i][3]}'           #number of Tries
+            offset += 1
+
+
+    wb.save("TESTING.xlsx")
+
 
 
 ########################################################################################################################
@@ -280,131 +315,121 @@ def intercept_handler(curr, icon, url):
     return curr, icon - 1
 
 
-def test_drop_down_no_refresh(curr, errors, url, icon=0):
-    while icon != len(curr):
-        try:
-            outer_html = curr[icon].get_attribute('outerHTML')
-            first_line = outer_html.splitlines()[0]
-        except Exception as e:
-            icon += 1
-            continue
-
-        try:
-            if not cursor_change(curr[icon]):
-                icon += 1
-                continue
-            curr[icon].click()
-            print("clicking on:", first_line)
-            sleep(2)
-            driver.refresh()
-        except ElementClickInterceptedException:
-            curr, icon = intercept_handler(curr[icon - 1], icon, url)
-            print("Intercept Error")
-        except Exception as e:
-            errors.append(url)
-        icon += 1
-
-
 def check_opened(url, button, initial_html, initial_tag):
     def check_HTML(initial, after):
         if initial != after:
             return True
         return False
-    if check_redirect(url):
-        return "True - redirect"
 
-    outer_html = button.get_attribute('outerHTML')
-    clicked = outer_html.splitlines()[0]
+    redirect, new = check_redirect(url)
+    if redirect:
+        return "True - redirect", new
+
+    after_outer_html = button.get_attribute('outerHTML')
+    clicked = after_outer_html.splitlines()[0]
 
     if check_HTML(initial_html, clicked):
-        return "True - OuterHTML change"
+        return "True - OuterHTML change", after_outer_html
 
     if count_tags() > initial_tag:
-        return "True - More tags were generated"
-    return f"False {initial_html}"
+        return "True - More tags were generated", after_outer_html
+    return "False", after_outer_html
 
 
-def test_drop_down(curr, errors, url, intercept, icon=0):
+def test_drop_down(curr, url, tries=1, icon=0):
     # attempts to click the button and refreshes afterward
     global driver
     signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(100)
 
+    ret = []
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
             initial_html = outer_html.splitlines()[0]
+
         except Exception as e:
             icon += 1
             continue
 
-        try:
-            if not cursor_change(curr[icon]):
-                icon += 1
-                continue
+        if not cursor_change(curr[icon]):
+            icon += 1
+            continue
 
-            initial_tag = count_tags()
-            curr[icon].click()
+        initial_tag = count_tags()
+        curr[icon].click()
 
-            # print("clicking on:", initial_html)
-            # check_redirect(url)
+        check, after = check_opened(url, curr[icon], initial_html, initial_tag)
+        # if check == "False":
+        #     raise InterruptedError
 
-            print(check_opened(url, curr[icon], initial_html, initial_tag))
+        load_site(url)
+        curr = find_dropdown()
 
+        if check == "True - redirect":
+            ret.append([check, url, after, tries])
+        else:
+            ret.append([check, outer_html, after, tries])
 
-
-
-            load_site(url)
-            curr = find_dropdown()
-
-
-        except ElementClickInterceptedException:
-            curr, icon = intercept_handler(curr, icon, url)
-            intercept.append(url)
-
-        except Exception as e:
-            errors.append(f"{url} \t\t {outer_html}")
         icon += 1
 
+    return ret
 
 
 def main():
     global driver
-    errors = []
-    could_not_scan = []
-    timeout = []
-    intercept = []
-    skipped = []
-
+    errors, could_not_scan, timeout, intercept, skipped = [[] for _ in range(5)]
     driver = initialize(True)
     driver.set_window_size(1555, 900)
 
     t = Tranco(cache=True, cache_dir='.tranco')
     # latest_list = t.list()
     # sites = latest_list.top(10000)
-    # sites = ['https://en.softonic.com/articles', "https://open.spotify.com/"]
-    sites = ['https://naver.com']
-    for url in sites:
-        # print_found_elems(find_dropdown(driver))
+    sites = ['https://en.softonic.com/articles', "https://open.spotify.com/", "https://amazon.com/", "https://en.wikipedia.org/wiki/Main_Page", "https://www.apple.com/"]
+    # sites = ['https://www.apple.com/']
+
+    index = 0
+    data = []
+    tries = 1
+    while index < len(sites):
+        url = sites[index]
+        if url not in data:
+            data.append([url])
         try:
             if load_site(url, skipped):
+                sleep(tries * 2)
                 print("\n", url)
                 elems = find_dropdown()
-                test_drop_down(elems, errors, url, intercept)
-
-        except TimeoutError:
-            print("too long to load page")
-            timeout.append(url)
-        except ElementClickInterceptedException:
-            print("Intercept Error")
+                results = test_drop_down(elems, url, tries)
+                data.extend(results)
+            else:
+                data.append(["False - failed to scan site"])
+            index += 1
+            tries = 1
 
         except Exception as e:
-            # print(e)
-            print("Something went wrong. Failed to scan page")
-            could_not_scan.append(url)
+            if tries != 3:
+                driver.close()
+                driver = initialize(True)
+                driver.set_window_size(1555, 900)
+                continue
 
-    print("Finished Testing on All Sites!")
+            if isinstance(e, ElementClickInterceptedException):
+                print("Element Click Intercepted")
+                data.append(["Element Click Intercepted"])
+            elif isinstance(e, TimeoutError):
+                print("Timeout Error")
+                data.append(["Element Click Intercepted"])
+            else:
+                print(e)
+                could_not_scan.append(url)
+            tries += 1
+    print("Finished Testing on All Sites!\n\n\n")
 
+    for i in data:
+        print(i)
+
+    write_data_to_file(data, intercept, timeout, could_not_scan)
 
 main()
 
