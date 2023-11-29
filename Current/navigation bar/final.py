@@ -115,6 +115,7 @@ driver = None
 icon = 0
 outer_html = ''
 after_html = ''
+global_url = ''
 
 class TimeoutError(Exception):
     pass
@@ -148,6 +149,7 @@ def initialize(adblocker, seconds=14):
 
 def load_site(url, skipped=[]):
     # url = f'https://{url}'
+    global global_url
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -155,11 +157,11 @@ def load_site(url, skipped=[]):
             wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
             try:
                 wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-                sleep(2)
+                global_url = driver.current_url
                 return True
             except TimeoutException:
                 raise TimeoutError("Took too long to load...")
-    except Exception:
+    except Exception as e:
         skipped.append(url)
         return False
 
@@ -240,7 +242,7 @@ def check_redirect(url):
 
 ########################################################################################################################
 
-def check_opened(url, button, initial_html, initial_tag):
+def check_opened(url, button, initial_html, initial_tag, entire_html):
     def check_HTML(initial, after):
         if initial != after:
             return True
@@ -251,14 +253,15 @@ def check_opened(url, button, initial_html, initial_tag):
         return "True - redirect", new
 
     after_outer_html = button.get_attribute('outerHTML')
-    clicked = after_outer_html
 
-    if check_HTML(initial_html, clicked):
-        return "True - OuterHTML change", after_outer_html
+    DOM_change = check_HTML(entire_html, driver.page_source)
+
+    if check_HTML(initial_html, after_outer_html):
+        return f"True - outerHTML change\n{DOM_change} - DOM change", after_outer_html
 
     if count_tags() > initial_tag:
-        return "True - More tags were generated", after_outer_html
-    return "False", after_outer_html
+        return f"True - More tags were generated\n{DOM_change} - DOM change", after_outer_html
+    return f"False - outerHTML didn't change\n{DOM_change} - DOM change", after_outer_html
 
 
 def test_drop_down(curr, url, tries=1):
@@ -271,7 +274,8 @@ def test_drop_down(curr, url, tries=1):
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
-            initial_html = outer_html
+            what = outer_html
+            entire_html = driver.page_source
 
         except Exception as e:
             icon += 1
@@ -282,14 +286,14 @@ def test_drop_down(curr, url, tries=1):
             continue
 
         for prev in seen:
-            if initial_html in prev:
+            if outer_html in prev:
                 icon += 1
                 continue
 
         initial_tag = count_tags()
         curr[icon].click()
 
-        check, after_html = check_opened(url, curr[icon], initial_html, initial_tag)
+        check, after_html = check_opened(url, curr[icon], outer_html, initial_tag, entire_html)
         # if check == "False":
         #     raise InterruptedError
 
@@ -301,10 +305,9 @@ def test_drop_down(curr, url, tries=1):
         else:
             write_results([check, outer_html, after_html, tries])
 
-        seen.append(initial_html)
+        seen.append(outer_html)
 
         icon += 1
-
 
 
 def main():
@@ -313,8 +316,7 @@ def main():
     driver = initialize(True)
     driver.set_window_size(1555, 900)
 
-    sites = ["https://www.google.com/"]
-
+    sites = ["https://www.intuit.com/"]
     index = 0
     seen_sites = []
     tries = 1
@@ -325,7 +327,8 @@ def main():
             write_results(url)
         try:
             if load_site(url, skipped):
-                sleep(tries * 2)
+                url = global_url
+                sleep(tries * 5)
                 print("\n", url)
                 elms = find_dropdown()
                 test_drop_down(elms, url, tries)
