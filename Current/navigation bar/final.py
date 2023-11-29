@@ -214,7 +214,8 @@ def cursor_change(element):
             return True
         else:
             return False
-    except Exception:
+    except Exception as e:
+        driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
         if element.is_displayed():
             return True
         else:
@@ -316,7 +317,7 @@ def main():
     driver = initialize(True)
     driver.set_window_size(1555, 900)
 
-    sites = ["https://www.intuit.com/"]
+    sites = ["https://unity.com/"]
     index = 0
     seen_sites = []
     tries = 1
