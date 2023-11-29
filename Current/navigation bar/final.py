@@ -251,7 +251,7 @@ def check_opened(url, button, initial_html, initial_tag):
         return "True - redirect", new
 
     after_outer_html = button.get_attribute('outerHTML')
-    clicked = after_outer_html.splitlines()[0]
+    clicked = after_outer_html
 
     if check_HTML(initial_html, clicked):
         return "True - OuterHTML change", after_outer_html
@@ -267,10 +267,11 @@ def test_drop_down(curr, url, tries=1):
     signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(100)
 
+    seen = []
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
-            initial_html = outer_html.splitlines()[0]
+            initial_html = outer_html
 
         except Exception as e:
             icon += 1
@@ -279,6 +280,11 @@ def test_drop_down(curr, url, tries=1):
         if not cursor_change(curr[icon]):
             icon += 1
             continue
+
+        for prev in seen:
+            if initial_html in prev:
+                icon += 1
+                continue
 
         initial_tag = count_tags()
         curr[icon].click()
@@ -295,6 +301,8 @@ def test_drop_down(curr, url, tries=1):
         else:
             write_results([check, outer_html, after_html, tries])
 
+        seen.append(initial_html)
+
         icon += 1
 
 
@@ -305,7 +313,7 @@ def main():
     driver = initialize(True)
     driver.set_window_size(1555, 900)
 
-    sites = ["https//amazon.com/", "https://www.apple.com/"]
+    sites = ["https://www.google.com/"]
 
     index = 0
     seen_sites = []
@@ -354,5 +362,4 @@ def main():
 
 main()
 
-while 1:
-    1
+driver.close()

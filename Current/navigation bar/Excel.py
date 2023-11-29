@@ -53,7 +53,7 @@ def write_results(data):
         ws[f'A{row}'] = data                          #website
         row += 1
 
-    if len(data) == 2:
+    elif len(data) == 2:
         ws[f'A{row}'] = data[0]
         ws[f'B{row}'] = data[1]
         row += 1
