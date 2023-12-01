@@ -41,35 +41,16 @@ options.add_argument(
 adBlockerIDs = {"adblockPlus": 'cfhdojbkjhnklbpkdaibdccddilifddb'}
 
 sites = [
-    'https://en.wikipedia.org/wiki/Main_Page',
-    'https://www.amazon.com/',
-    'https://www.microsoft.com/en-us/',
-    'https://www.office.com/',
-    'https://weather.com/',
-    'https://openai.com/',
-    'https://www.bing.com/',
-    'https://duckduckgo.com/',
-    'https://cnn.com',
-    'https://www.nytimes.com/',
-    'https://www.twitch.tv/',
-    'https://www.imdb.com/',
-    'https://mail.ru/',
-    'https://naver.com',
-    'https://zoom.us/',
-    'https://www.globo.com/',
-    'https://www.ebay.com/',
-    'https://www.foxnews.com/',
-    'https://www.instructure.com/',
-    'https://www.walmart.com/',
-    'https://www.indeed.com/',
-    'https://www.paypal.com/us/home',
-    'https://www.accuweather.com/',
-    'https://www.pinterest.com/',
-    'https://www.bbc.com/',
-    'https://www.homedepot.com/',
-    'https://www.breitbart.com/',
-    'https://github.com/'
+    "picks.my",
+    "yusercontent.com",
+    "st.com",
+    "sandfirematsa.info",
+    "toketbagus.mom",
+    "awsdns-60.co.uk",
+    "betx365.win",
+    "sm.cn"
 ]
+
 
 tag = ['button',
        'div',
@@ -148,7 +129,7 @@ def initialize(adblocker, seconds=14):
 
 
 def load_site(url, skipped=[]):
-    # url = f'https://{url}'
+    url = f'https://{url}'
     global global_url
     try:
         response = requests.get(url)
@@ -275,7 +256,6 @@ def test_drop_down(curr, url, tries=1):
     while icon < len(curr):
         try:
             outer_html = curr[icon].get_attribute('outerHTML')
-            what = outer_html
             entire_html = driver.page_source
 
         except Exception as e:
@@ -290,7 +270,7 @@ def test_drop_down(curr, url, tries=1):
             if outer_html in prev:
                 icon += 1
                 continue
-
+        print(outer_html)
         initial_tag = count_tags()
         curr[icon].click()
 
@@ -316,8 +296,8 @@ def main():
     errors, could_not_scan, timeout, intercept, skipped = [[] for _ in range(5)]
     driver = initialize(True)
     driver.set_window_size(1555, 900)
-
-    sites = ["https://unity.com/"]
+    #
+    # sites = ["https://mail.google.com/", "https://www.rentcafe.com/]
     index = 0
     seen_sites = []
     tries = 1

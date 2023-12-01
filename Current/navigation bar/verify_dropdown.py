@@ -378,60 +378,11 @@ def test_drop_down(curr, url, tries=1):
 
 
 def main():
-    global driver, icon
-    errors, could_not_scan, timeout, intercept, skipped = [[] for _ in range(5)]
-    driver = initialize(True)
-    driver.set_window_size(1555, 900)
-
     t = Tranco(cache=True, cache_dir='.tranco')
-    # latest_list = t.list()
-    # sites = latest_list.top(10000)
-    sites = ["https://en.wikipedia.org/wiki/Main_Page", "https://www.apple.com/"]
-    # sites = ['https://www.apple.com/']
-
-    index = 0
-    data = []
-    tries = 1
-    while index < len(sites):
-        url = sites[index]
-        if url not in data:
-            data.append([url])
-        try:
-            if load_site(url, skipped):
-                sleep(tries * 2)
-                print("\n", url)
-                elems = find_dropdown()
-                results = test_drop_down(elems, url, tries)
-                data.extend(results)
-                icon = 0
-            else:
-                data.append(["False - failed to scan site"])
-            index += 1
-            tries = 1
-
-        except Exception as e:
-            if tries != 3:
-                driver.close()
-                driver = initialize(True)
-                driver.set_window_size(1555, 900)
-                continue
-
-            if isinstance(e, ElementClickInterceptedException):
-                print("Element Click Intercepted")
-                data.append(["Element Click Intercepted"])
-            elif isinstance(e, TimeoutError):
-                print("Timeout Error")
-                data.append(["Element Click Intercepted"])
-            else:
-                print(e)
-                could_not_scan.append(url)
-            tries += 1
-    print("Finished Testing on All Sites!\n\n\n")
-
-    for i in data:
+    latest_list = t.list()
+    sites = latest_list.top(10000)
+    for i in sites:
         print(i)
-
-    write_data_to_file(data, intercept, timeout, could_not_scan)
 
 main()
 
