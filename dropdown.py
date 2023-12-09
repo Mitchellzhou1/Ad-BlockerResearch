@@ -46,7 +46,7 @@ xpaths = [
 sites = [
     'https://cnn.com',
     'http://cnn.com',
-    'https://fdsfasdfdfsa.com',
+    'https://failedsite1111.com',
     'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.amazon.com/',
     'https://www.microsoft.com/en-us/',
@@ -84,7 +84,7 @@ def main():
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
     shared_driver.initialize('uBlock')
-    # sites = ["https://www.walmart.com/"]
+    sites = ['https://www.bing.com/']
     index = 0
     tries = 1
     while index < len(sites):

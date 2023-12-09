@@ -45,16 +45,11 @@ class Driver:
 
         self.initial_url = ''
         self.driver = None
-        self.skipped = []
-        self.errors = []
-        self.could_not_scan = []
-        self.timeout = []
-        self.intercept = []
         self.tries = 1
         self.seen_sites = []
 
         self.icon = 0
-        self.initial_html = ''
+        self.initial_outer_html = ''
         self.after_outer_html = ''
 
     def initialize(self, adblocker='', seconds=14):
@@ -191,9 +186,9 @@ class Driver:
                 return True
             return False
 
-        redirect, new = self.check_redirect(url)
+        redirect, new_url = self.check_redirect(url)
         if redirect:
-            return "True - redirect", new
+            return "True - Redirect", new_url
 
         after_outer_html = button.get_attribute('outerHTML')
 
@@ -231,7 +226,7 @@ class Driver:
             initial_tag = self.count_tags()
             curr[self.icon].click()
 
-            check, after_html = self.check_opened(url, curr[self.icon], outer_html, initial_tag, entire_html)
+            check, after_result = self.check_opened(url, curr[self.icon], outer_html, initial_tag, entire_html)
             # if check == "False":
             #     raise InterruptedError
 
@@ -239,7 +234,7 @@ class Driver:
             curr = self.find_dropdown(self.attributes, self.xpaths)
 
             if check == "True - redirect":
-                write_results([check, url, after_html, tries])
+                write_results(["True", '', '', '', '', '',  '', url, after_result, tries])
             else:
                 write_results([check, outer_html, after_html, tries])
 

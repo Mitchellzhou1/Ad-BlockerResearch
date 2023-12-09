@@ -13,16 +13,23 @@ notInteractable_row = 2
  staleElems_lst, noScan_lst, other_lst) = [[] for i in range(6)]
 
 def initialize():
-    ws['A1'] = "Results"
-    ws['B1'] = "HTML / Link Before"
-    ws['C1'] = "HTML / Link After"
-    ws['D1'] = "Tries"
-    ws['G1'] = "Links with Intercept Errors:"
-    ws['H1'] = "Links with Timeout Errors:"
-    ws['I1'] = "Links with Not Interactable Exception:"
-    ws['J1'] = "Links could not be scanned:"
-    ws['K1'] = "Links with Stale Element:"
-    ws['K1'] = "Links with unknown Errors:"
+    ws['A1'] = "Dropdown Opened?"
+    ws['B1'] = "Outer HTML Change"
+    ws['C1'] = "DOM structure Change"
+    ws['D1'] = "Initial Outer HTML "
+    ws['E1'] = "After Click Outer HTML"
+    ws['F1'] = "Initial DOM Structure"
+    ws['G1'] = "After Click DOM Structure"
+    ws['H1'] = "Initial Link"
+    ws['I1'] = "After Click Link"
+    ws['J1'] = "Tries"
+
+    ws['L1'] = "Links with Intercept Errors:"
+    ws['M1'] = "Links with Timeout Errors:"
+    ws['N1'] = "Links with Not Interactable Exception:"
+    ws['O1'] = "Links could not be scanned:"
+    ws['P1'] = "Links with Stale Element:"
+    ws['Q1'] = "Links with unknown Errors:"
     wb.save("TESTING.xlsx")
 
 def write_intercepts(site):
@@ -74,16 +81,18 @@ def write_results(data):
         row += 1
         ws[f'A{row}'] = data                          #website
 
-    elif len(data) == 2:
-        ws[f'A{row}'] = data[0]
-        ws[f'B{row}'] = data[1]
-
     else:
-        ws[f'A{row}'] = data[0]                       #result
-        ws[f'B{row}'] = data[1]                       #before
-        ws[f'C{row}'] = data[2]                       #after
-        ws[f'D{row}'] = f'Tries: {data[3]}'           #number of Tries
-        # ws[f'E{row}'] = f'{data[4]}'
+        ws[f'A{row}'] = data[0]                       #opened?
+        ws[f'B{row}'] = data[1]                       #OuterHTML Change
+        ws[f'C{row}'] = data[2]                       #DOM Change
+        ws[f'D{row}'] = data[3]                       #InitialOuterHTML
+        ws[f'E{row}'] = data[4]                       #AfterClickOuterHTML
+        ws[f'F{row}'] = data[5]                       #DOM Initial
+        ws[f'G{row}'] = data[6]                       #DOM After Click
+        ws[f'H{row}'] = data[7]                       #URL Initial
+        ws[f'I{row}'] = data[8]                       #URL AFter
+        ws[f'J{row}'] = f'Tries: {data[9]}'           #number of Tries
+
     row += 1
     wb.save("TESTING.xlsx")
 
