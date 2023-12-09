@@ -44,6 +44,9 @@ xpaths = [
 ]
 
 sites = [
+    'https://cnn.com',
+    'http://cnn.com',
+    'https://fdsfasdfdfsa.com',
     'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.amazon.com/',
     'https://www.microsoft.com/en-us/',
@@ -52,7 +55,6 @@ sites = [
     'https://openai.com/',
     'https://www.bing.com/',
     'https://duckduckgo.com/',
-    'https://cnn.com',
     'https://www.nytimes.com/',
     'https://www.twitch.tv/',
     'https://www.imdb.com/',
@@ -82,10 +84,8 @@ def main():
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
     shared_driver.initialize('uBlock')
-    #
-    # sites = ["https://en.wikipedia.org/wiki/Main_Page"]
+    # sites = ["https://www.walmart.com/"]
     index = 0
-    seen_sites = []
     tries = 1
     while index < len(sites):
         url = sites[index]
@@ -94,7 +94,6 @@ def main():
                 dropdowns = shared_driver.find_dropdown(attributes, xpaths)
                 # print(len(elms))
                 shared_driver.test_drop_down(dropdowns, url, tries)
-                icon = 0
             else:
                 write_noscan_row(url)
             index += 1
@@ -120,10 +119,11 @@ def main():
             else:
                 # print(e)
                 # print(["Failed - unknown error", e])
-                write_other_row(["Failed - unknown error", e])
+                write_other_row(e.msg.split("\n")[0])
+                write_results(["Failed - unknown error", e.msg.split()[0]])
             tries = 1
             shared_driver.tries = 1
-        index += 1
+            index += 1
 
 
     print("\n\nFinished Testing on All Sites!\n\n\n")
