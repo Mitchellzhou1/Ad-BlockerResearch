@@ -8,6 +8,7 @@ intercept_row = 2
 timeout_row = 2
 other_row = 2
 noscan_row = 2
+notInteractable = 2
 
 
 def initialize():
@@ -17,30 +18,35 @@ def initialize():
     ws['D1'] = "Tries"
     ws['G1'] = "Links with Intercept Errors:"
     ws['H1'] = "Links with Timeout Errors:"
-    ws['I1'] = "Links that could not be scanned"
-    ws['J1'] = "Links with unknown Errors:"
+    ws['I1'] = "Links with Not Interactable Exception:"
+    ws['J1'] = "Links could not be scanned:"
+    ws['K1'] = "Links with unknown Errors:"
 
 
-def write_intercepts(lst):
+def write_intercepts(site):
     global intercept_row
-    ws[f'G{intercept_row}'] = lst
+    ws[f'G{intercept_row}'] = site
     intercept_row += 1
 
 
-def write_timeout_row(lst):
+def write_timeout_row(site):
     global timeout_row
-    ws[f'H{timeout_row}'] = lst
+    ws[f'H{timeout_row}'] = site
     timeout_row += 1
 
-
-def write_noscan_row(lst):
+def write_notInteractable_row(site):
     global noscan_row
-    ws[f'I{noscan_row}'] = lst
+    ws[f'I{noscan_row}'] = site
     noscan_row += 1
 
-def write_other_row(lst):
+def write_noscan_row(site):
+    global noscan_row
+    ws[f'J{noscan_row}'] = site
+    noscan_row += 1
+
+def write_other_row(site):
     global other_row
-    ws[f'J{other_row}'] = lst
+    ws[f'K{other_row}'] = site
     other_row += 1
 
 

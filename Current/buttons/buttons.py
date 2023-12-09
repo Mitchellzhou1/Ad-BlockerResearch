@@ -12,12 +12,11 @@ from selenium.common.exceptions import ElementNotInteractableException
 from time import *
 from bs4 import BeautifulSoup
 import requests
+import random
 
-import openpyxl
 import pyautogui
 import signal
-from tranco import Tranco
-from Excel import *
+from Current.Excel import *
 
 # Prepare Chrome
 options = Options()
@@ -38,58 +37,38 @@ options.add_argument(
     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 # options.add_extension("/home/seluser/measure/harexporttrigger-0.6.3.crx")
 
-adBlockerIDs = {"adblockPlus": 'cfhdojbkjhnklbpkdaibdccddilifddb'}
+# adBlockerIDs = {"adblockPlus": 'cfhdojbkjhnklbpkdaibdccddilifddb'}
+
 
 sites = [
-    "picks.my",
-    "yusercontent.com",
-    "st.com",
-    "sandfirematsa.info",
-    "toketbagus.mom",
-    "awsdns-60.co.uk",
-    "betx365.win",
-    "sm.cn"
-]
-
-
-tag = ['button',
-       'div',
-       'input',
-       'svg',
-       'a'
-       ]
-
-attributes = [
-    'false',
-    'true',
-    'main menu',
-    'open menu',
-    'all microsoft menu',
-    'menu',
-    'navigation',
-    'primary navigation',
-    'hamburger',
-    'settings and quick links',
-    'dropdown',
-    'dialog',
-    'js-menu-toggle',
-    'searchDropdownDescription',
-    'ctabutton',
-    'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
-    'Toggle language selector',
-    'Open Navigation Drawer',
-    'guide',
-    'Expand Your Library',
-    'Collapse Your Library'
-]
-
-xpaths = [
-    '@aria-expanded',
-    '@aria-label',
-    '@class',
-    '@aria-haspopup',
-    '@aria-describedby',
-    '@data-testid',
+    'https://en.wikipedia.org/wiki/Main_Page',
+    'https://www.amazon.com/',
+    'https://www.microsoft.com/en-us/',
+    'https://www.office.com/',
+    'https://weather.com/',
+    'https://openai.com/',
+    'https://www.bing.com/',
+    'https://duckduckgo.com/',
+    'https://cnn.com',
+    'https://www.nytimes.com/',
+    'https://www.twitch.tv/',
+    'https://www.imdb.com/',
+    'https://mail.ru/',
+    'https://naver.com',
+    'https://zoom.us/',
+    'https://www.globo.com/',
+    'https://www.ebay.com/',
+    'https://www.foxnews.com/',
+    'https://www.instructure.com/',
+    'https://www.walmart.com/',
+    'https://www.indeed.com/',
+    'https://www.paypal.com/us/home',
+    'https://www.accuweather.com/',
+    'https://www.pinterest.com/',
+    'https://www.bbc.com/',
+    'https://www.homedepot.com/',
+    'https://www.breitbart.com/',
+    'https://github.com/'
 ]
 
 driver = None
@@ -129,10 +108,10 @@ def initialize(adblocker, seconds=14):
 
 
 def load_site(url, skipped=[]):
-    url = f'https://{url}'
+    #url = f'https://www.{url}'
     global global_url
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
             driver.get(url)
             wait = WebDriverWait(driver, 15)  # Changed timeout to 15 seconds
@@ -155,25 +134,10 @@ def count_tags():
 
 def find_dropdown():
     def collect():
-        found_elements = []
-        for attribute in attributes:
-            for path in xpaths:
-                xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
-                try:
-                    elements = driver.find_elements(By.XPATH, xpath)
-                    for element in elements:
-                        if element not in found_elements:
-                            found_elements.append(element)
-                except Exception as e:
-                    print(e)
-
-        if len(found_elements) > 1:
-            found_elements.sort(key=lambda e: driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
-                e
-            ))
-
-        return found_elements
+        ret = []
+        ret += driver.find_elements(By.TAG_NAME, 'button')
+        ret += driver.find_elements(By.XPATH, "//a[@href]")
+        return ret
 
     try:
         ret = collect()
@@ -294,24 +258,25 @@ def test_drop_down(curr, url, tries=1):
 def main():
     global driver, icon, outer_html, after_html
     errors, could_not_scan, timeout, intercept, skipped = [[] for _ in range(5)]
-    driver = initialize(True)
+    driver = initialize(False)
     driver.set_window_size(1555, 900)
     #
-    # sites = ["https://mail.google.com/", "https://www.rentcafe.com/]
     index = 0
     seen_sites = []
     tries = 1
+    # sites = ['https://duckduckgo.com/']
     while index < len(sites):
         url = sites[index]
-        if url not in seen_sites:
-            seen_sites.append(url)
-            write_results(url)
         try:
             if load_site(url, skipped):
+                if url not in seen_sites:
+                    seen_sites.append(url)
+                    write_results(url)
                 url = global_url
                 sleep(tries * 5)
                 print("\n", url)
                 elms = find_dropdown()
+                print(len(elms))
                 test_drop_down(elms, url, tries)
                 icon = 0
             else:
@@ -322,23 +287,27 @@ def main():
         except Exception as e:
             if tries != 3:
                 driver.close()
-                driver = initialize(True)
+                driver = initialize(False)
                 driver.set_window_size(1555, 900)
                 tries += 1
                 continue
 
             if isinstance(e, ElementClickInterceptedException):
                 print("Element Click Intercepted")
+                write_intercepts(url)
                 write_results(["Failed - Element Click Intercepted", outer_html, after_html, tries])
             elif isinstance(e, TimeoutError):
                 print("Timeout Error")
+                write_timeout_row(url)
                 write_results("Failed - Site Timeout Error")
             elif isinstance(e, ElementNotInteractableException):
                 print("Not Interactable")
+                write_notInteractable_row(url)
                 write_results(["Failed - Not Interactable", outer_html])
             else:
                 print(e)
-                write_other_row(["Failed - unknown error", e])
+                write_other_row(url)
+                write_results(["Failed - unknown error", str(e).split("\n")[0]])
             icon += 1
             tries = 1
     print("\n\nFinished Testing on All Sites!\n\n\n")
