@@ -44,6 +44,7 @@ xpaths = [
 ]
 
 sites = [
+    'https://azure.microsoft.com/',
     'https://cnn.com',
     'http://cnn.com',
     'https://failedsite1111.com',
@@ -84,7 +85,7 @@ def main():
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
     shared_driver.initialize('uBlock')
-    sites = ['https://www.bing.com/']
+    # sites = ['https://en.wikipedia.org/wiki/Main_Page']
     index = 0
     tries = 1
     while index < len(sites):
@@ -93,7 +94,7 @@ def main():
             if shared_driver.load_site(url):
                 dropdowns = shared_driver.find_dropdown(attributes, xpaths)
                 # print(len(elms))
-                shared_driver.test_drop_down(dropdowns, url, tries)
+                shared_driver.test_drop_down(dropdowns, tries)
             else:
                 write_noscan_row(url)
             index += 1
@@ -107,20 +108,19 @@ def main():
 
             if isinstance(e, ElementClickInterceptedException):
                 # print("Element Click Intercepted")
-                write_results(["Failed - Element Click Intercepted", shared_driver.initial_html, shared_driver.after_outer_html, tries])
+                error = "Failed - Element Click Intercepted"
             elif isinstance(e, TimeoutError):
                 # print("Timeout Error")
-                # print("Failed - Site Timeout Error")
-                write_results("Failed - Site Timeout Error")
+                error = "Failed - Site Timeout Error"
             elif isinstance(e, ElementNotInteractableException):
                 # print("Not Interactable")
-                # print(["Failed - Not Interactable", shared_driver.outer_html])
-                write_results(["Failed - Not Interactable", shared_driver.initial_html])
+                error = "Failed - Not Interactable"
             else:
                 # print(e)
                 # print(["Failed - unknown error", e])
-                write_other_row(e.msg.split("\n")[0])
-                write_results(["Failed - unknown error", e.msg.split()[0]])
+                error = e.msg.split("\n")[0]
+
+            write_results([error, "Failed", "Failed", shared_driver.initial_outer_html, tries])
             tries = 1
             shared_driver.tries = 1
             index += 1

@@ -77,11 +77,18 @@ def write_results(data):
     global row
 
     # Format = ['True redirect', HTML / link Before, HTML / link After, tries, DOM]
-    if type(data) is str:
+    if type(data) is str:                             # Website
         row += 1
         ws[f'A{row}'] = data                          #website
 
-    else:
+    elif len(data) == 5:                              # Errors
+        ws[f'A{row}'] = data[0]                       #Error Message
+        ws[f'B{row}'] = data[1]                       #OuterHTML Change
+        ws[f'C{row}'] = data[2]                       #DOM Change
+        ws[f'D{row}'] = data[3]                       #Button HTML
+        ws[f'J{row}'] = f'Tries: {data[4]}'           #number of Tries
+
+    elif len(data) == 10:                             # Clicked button results
         ws[f'A{row}'] = data[0]                       #opened?
         ws[f'B{row}'] = data[1]                       #OuterHTML Change
         ws[f'C{row}'] = data[2]                       #DOM Change

@@ -43,7 +43,8 @@ class Driver:
         self.attributes = []
         self.xpaths = []
 
-        self.initial_url = ''
+        self.url = ''
+        self.redirect_url = ''
         self.driver = None
         self.tries = 1
         self.seen_sites = []
@@ -51,6 +52,12 @@ class Driver:
         self.icon = 0
         self.initial_outer_html = ''
         self.after_outer_html = ''
+
+        self.initial_DOM = ''
+        self.after_DOM = ''
+
+        self.DOM_changed = False
+        self.outer_HTML_changed = False
 
     def initialize(self, adblocker='', seconds=14):
         """
@@ -88,25 +95,39 @@ class Driver:
 
         url = helper(url)
         try:
-
             headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0'}
             response = requests.get(url, timeout=60, allow_redirects=True, headers=headers)
             if response.status_code == 200:
-                self.driver.get(url)
-                wait = WebDriverWait(self.driver, self.tries * 5)
                 try:
+                    self.driver.get(url)
+                    wait = WebDriverWait(self.driver, self.tries * 5)
                     wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-                    self.initial_url = url
-                    if url not in self.seen_sites:
-                        self.seen_sites.append(url)
-                        write_results(url)
-                    sleep(self.tries * 5)
+                    sleep((self.tries - 1) * 6)
+                    self.url = self.driver.current_url
+                    if self.url not in self.seen_sites:
+                        write_results(self.url)
+                        self.seen_sites.append(self.url)
+
                     return True
                 except TimeoutException:
                     raise TimeoutError("Took too long to load...")
         except Exception as e:
-            self.skipped.append(url)
+            self.seen_sites.append(url)
             return False
+
+    def reinitialize(self):
+        self.driver.close()
+        self.initialize("uBlock")
+        self.tries += 1
+
+    def click_button(self, button):
+        try:
+            button.click()
+        except Exception:
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });", button)
+            sleep(1)
+            button.click()
 
     def cursor_change(self, element):
         actions = ActionChains(self.driver)
@@ -118,11 +139,7 @@ class Driver:
             else:
                 return False
         except Exception as e:
-            self.driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
-            if element.is_displayed():
-                return True
-            else:
-                return False
+            return False
 
     def check_redirect(self, url):
         def are_urls_equal(url1, url2):
@@ -148,39 +165,7 @@ class Driver:
         tags = soup.find_all()
         return len(tags)
 
-    def find_dropdown(self, attributes, xpaths):
-        def collect():
-            found_elements = []
-            for attribute in attributes:
-                for path in xpaths:
-                    xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
-                    try:
-                        elements = self.driver.find_elements(By.XPATH, xpath)
-                        for element in elements:
-                            if element not in found_elements:
-                                found_elements.append(element)
-                    except Exception as e:
-                        print(e)
-
-            if len(found_elements) > 1:
-                found_elements.sort(key=lambda e: self.driver.execute_script(
-                    "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
-                    e
-                ))
-
-            return found_elements
-
-        try:
-            ret = collect()
-            if ret:
-                return ret
-        except Exception:
-            pass
-
-        sleep(5)
-        return collect()
-
-    def check_opened(self, url, button, initial_html, initial_tag, entire_html):
+    def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
             if initial != after:
                 return True
@@ -188,27 +173,32 @@ class Driver:
 
         redirect, new_url = self.check_redirect(url)
         if redirect:
-            return "True - Redirect", new_url
+            return "True - Redirect"
 
-        after_outer_html = button.get_attribute('outerHTML')
+        self.after_outer_html = button.get_attribute('outerHTML')
 
-        DOM_change = check_HTML(entire_html, self.driver.page_source)
+        self.DOM_changed = check_HTML(self.initial_DOM, self.driver.page_source)
+        self.outer_HTML_changed = check_HTML(self.initial_outer_html, self.after_outer_html)
 
-        if check_HTML(initial_html, after_outer_html):
-            return f"True - outerHTML change\n{DOM_change} - DOM change", after_outer_html
+        if self.outer_HTML_changed:
+            return "True - outerHTML change"
+
+        if self.DOM_changed:
+            return "True? - DOM Change"
 
         if self.count_tags() > initial_tag:
-            return f"True - More tags were generated\n{DOM_change} - DOM change", after_outer_html
-        return f"False - outerHTML didn't change\n{DOM_change} - DOM change", after_outer_html
+            return "True - More Tags"
 
-    def test_drop_down(self, curr, url, tries=1):
+        return "False"
+
+    def test_elems(self, curr, type, tries=1):
         # attempts to click the button and refreshes afterward
 
-        seen = []
         while self.icon < len(curr):
+            print(len(curr))
             try:
-                outer_html = curr[self.icon].get_attribute('outerHTML')
-                entire_html = self.driver.page_source
+                self.initial_outer_html = curr[self.icon].get_attribute('outerHTML')
+                self.initial_DOM = self.driver.page_source
 
             except Exception as e:
                 self.icon += 1
@@ -218,35 +208,100 @@ class Driver:
                 self.icon += 1
                 continue
 
-            for prev in seen:
-                if outer_html in prev:
-                    self.icon += 1
-                    continue
-            print(outer_html)
+            print("clicking on: ", self.initial_outer_html)
             initial_tag = self.count_tags()
-            curr[self.icon].click()
 
-            check, after_result = self.check_opened(url, curr[self.icon], outer_html, initial_tag, entire_html)
-            # if check == "False":
-            #     raise InterruptedError
+            self.click_button(curr[self.icon])
 
-            self.load_site(url)
-            curr = self.find_dropdown(self.attributes, self.xpaths)
+            check = self.check_opened(self.url, curr[self.icon], initial_tag)
+            self.load_site(self.url)
+            curr = self.get_elements(type)
 
-            if check == "True - redirect":
-                write_results(["True", '', '', '', '', '',  '', url, after_result, tries])
-            else:
-                write_results([check, outer_html, after_html, tries])
+            if check == "True - Redirect":
+                # outer_HTML_change = url
+                # Dom_change = new_url
+                write_results([check, '', '', self.initial_outer_html, '', '',  '',
+                               self.url, self.driver.current_url, tries])
+            elif check == "True - outerHTML change":
+                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html,
+                               self.after_outer_html, '',  '', '', '', tries])
 
-            seen.append(outer_html)
+            elif check == "True? - DOM Change":
+                # need to figure out algo after find the difference
+                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
+                               "self.initial_DOM",  "self.after_DOM", '', '', tries])
 
             self.icon += 1
         self.icon = 0
 
-    def reinitialize(self):
-        self.driver.close()
-        self.initialize("uBlock")
-        self.tries += 1
+############################################################
+
+    def get_elements(self, type):
+        if type == "drop downs":
+            return self.find_dropdown()
+        elif type == "buttons":
+            return self.find_buttons()
+        # else:
+        #     return self.find links()
+
+    def filter(self, list):
+        final = []
+        for element in list:
+            if self.cursor_change(element):
+                final.append(element)
+        return final
+
+    def specific_element_finder(self):
+        found_elements = []
+        for attribute in self.attributes:
+            for path in self.xpaths:
+                xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
+                try:
+                    elements = self.driver.find_elements(By.XPATH, xpath)
+                    for element in elements:
+                        if element not in found_elements:
+                            found_elements.append(element)
+                except Exception as e:
+                    print(e)
+        if len(found_elements) > 1:
+            found_elements.sort(key=lambda e: self.driver.execute_script(
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
+                e
+            ))
+        return found_elements
+
+    def find_buttons(self):
+        def collect():
+            found_elements = self.driver.find_elements(By.TAG_NAME, 'button')
+            found_elements += [anchor for anchor in
+                               self.driver.find_elements(By.TAG_NAME, 'a') if not anchor.get_attribute("href")]
+            found_elements += self.specific_element_finder()
+            return found_elements
+        try:
+            ret = collect()
+            if ret:
+                return self.filter(ret)
+        except Exception:
+            pass
+
+        sleep(5)
+        return collect()
+
+    def find_dropdown(self):
+
+        try:
+            ret = self.specific_element_finder()
+            if ret:
+                return self.filter(ret)
+        except Exception:
+            pass
+
+        sleep(5)
+        return self.specific_element_finder()
+
+
+
+
 
 
 shared_driver = Driver()
