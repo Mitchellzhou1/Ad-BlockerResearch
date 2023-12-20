@@ -102,7 +102,7 @@ class Driver:
                     self.driver.get(url)
                     wait = WebDriverWait(self.driver, self.tries * 5)
                     wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-                    sleep((self.tries - 1) * 6)
+                    sleep(self.tries * 5)
                     self.url = self.driver.current_url
                     if self.url not in self.seen_sites:
                         write_results(self.url)
@@ -131,6 +131,7 @@ class Driver:
 
     def cursor_change(self, element):
         actions = ActionChains(self.driver)
+        print(element.get_attribute('outerHTML'))
         try:
             actions.move_to_element(element).perform()
             cursor_property = element.value_of_css_property('cursor')
@@ -251,15 +252,14 @@ class Driver:
                 final.append(element)
         return final
 
-    def specific_element_finder(self):
-        found_elements = []
+    def specific_element_finder(self, found_elements=[]):
         for attribute in self.attributes:
             for path in self.xpaths:
                 xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
                 try:
                     elements = self.driver.find_elements(By.XPATH, xpath)
                     for element in elements:
-                        if element not in found_elements:
+                        if element not in found_elements and self.cursor_change(element):
                             found_elements.append(element)
                 except Exception as e:
                     print(e)
@@ -275,7 +275,7 @@ class Driver:
             found_elements = self.driver.find_elements(By.TAG_NAME, 'button')
             found_elements += [anchor for anchor in
                                self.driver.find_elements(By.TAG_NAME, 'a') if not anchor.get_attribute("href")]
-            found_elements += self.specific_element_finder()
+            found_elements += self.specific_element_finder(found_elements)
             return found_elements
         try:
             ret = collect()
