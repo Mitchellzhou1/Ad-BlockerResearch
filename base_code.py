@@ -1,20 +1,21 @@
-from time import sleep
-import time
-from Excel import *
 import os
+import random
+import time
+from time import sleep
+
 import pyautogui
 import requests
-import random
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver import ActionChains
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
+from selenium.common import NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+
+from Excel import *
 
 options = Options()
 # options.headless = False
@@ -34,12 +35,6 @@ options.add_argument(
     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
 
-
-
-
-
-
-
 class Driver:
     def __init__(self):
         # specific test for these attributes
@@ -55,13 +50,14 @@ class Driver:
         self.seen_sites = []
         self.website_sleep_time = 3        # longer this value, more consistent the results
         self.html_obj = 'buttons'
+        self.DOM_traversal_amt = 4
 
         # used for testing
         self.icon = 0
         self.initial_outer_html = ''
         self.after_outer_html = ''
-        self.initial_DOM = ''
-        self.after_DOM = ''
+        self.initial_local_DOM = ''
+        self.after_local_DOM = ''
         self.url = ''
         self.redirect_url = ''
         self.DOM_changed = False
@@ -70,8 +66,7 @@ class Driver:
         # used for random picking
         self.no_elms = 15
         self.chosen_elms = []
-
-
+        self.all_html_elms = []
 
     def initialize(self, seconds=14):
         """
@@ -96,6 +91,14 @@ class Driver:
         if self.adBlocker_name == 'AdBlockPlus':
             sleep(seconds)
             pyautogui.hotkey('ctrl', 'w')
+
+        if not self.all_html_elms:
+            file_path = f'{self.html_obj}.csv'
+            with open(file_path, newline='') as csvfile:
+                csv_reader = csv.reader(csvfile)
+                # header = next(csv_reader)
+                for row in csv_reader:
+                    self.all_html_elms.append(row)
 
     def is_loaded(self):
         return self.driver.execute_script("return document.readyState") == "complete"
@@ -130,10 +133,6 @@ class Driver:
                     self.driver.get(url)
                     self.is_loaded()
                     sleep(self.website_sleep_time)
-
-                    # wait = WebDriverWait(self.driver, self.tries * 5)
-                    # wait.until(EC.presence_of_element_located((By.XPATH, "//*")))
-                    # sleep(self.website_sleep_time)                                      # increasing sleep time gives more consistent results
                     self.url = self.driver.current_url
                     if self.url not in self.seen_sites:
                         write_results(self.url)
@@ -156,7 +155,7 @@ class Driver:
         except Exception:
             self.driver.execute_script(
                 "arguments[0].scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });", button)
-            sleep(1)
+            sleep(2)
             button.click()
 
     def cursor_change(self, element):
@@ -199,6 +198,11 @@ class Driver:
         tags = soup.find_all()
         return len(tags)
 
+    def get_local_DOM(self, elem):
+        for i in range(self.DOM_traversal_amt):
+            elem = elem.find_element(By.XPATH, '..')
+        return elem.get_attribute('outerHTML')
+
     def generate_xpath(self, html_string):
         def parse_html_string(string):
             soup = BeautifulSoup(string, 'html.parser')
@@ -226,7 +230,7 @@ class Driver:
                         xpath += f'[@{attr}="{value}"]'
 
             return xpath
-        return None
+        return ''
 
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
@@ -240,73 +244,53 @@ class Driver:
 
         self.after_outer_html = button.get_attribute('outerHTML')
 
-        self.DOM_changed = check_HTML(self.initial_DOM, self.driver.page_source)
+        self.DOM_changed = check_HTML(self.initial_local_DOM, self.get_local_DOM(button))
         self.outer_HTML_changed = check_HTML(self.initial_outer_html, self.after_outer_html)
 
         if self.outer_HTML_changed:
             return "True - outerHTML change"
 
         if self.DOM_changed:
-            return "True? - DOM Change"
+            return "True? - Local DOM Change"
 
         if self.count_tags() > initial_tag:
             return "True - More Tags"
 
         return "False"
 
-    def test_elms(self, html_obj, tries=1):
-        # attempts to click the button and refreshes afterward
-        while self.load_site(self.url):
-            self.get_elements()
-            add_to_csv(self.url, )
+    def click_on_elms(self, tries):
+        while self.icon < len(self.all_html_elms):
+            site, outerHTML = self.all_html_elms[self.icon]
+            xpath = self.generate_xpath(outerHTML)
 
+            self.load_site(site)
+            element = shared_driver.driver.find_element(By.XPATH, xpath)
 
-            # try:
-            #     self.initial_outer_html = curr[self.icon].get_attribute('outerHTML')
-            #     self.initial_DOM = self.driver.page_source
-            #
-            # except Exception as e:
-            #     self.icon += 1
-            #     continue
-            #
-            # # this is filter but may not need...
-            # if not self.cursor_change(curr[self.icon]):
-            #     self.icon += 1
-            #     continue
-            #
-            # print("clicking on: ", self.initial_outer_html)
-            # initial_tag = self.count_tags()
-            #
-            # actions = ActionChains(self.driver)
-            # actions.move_to_element(curr[self.icon]).perform()
-            # self.click_button(curr[self.icon])
-            #
-            # check = self.check_opened(self.url, curr[self.icon], initial_tag)
-            #
-            # if check == "True - Redirect":
-            #     # outer_HTML_change = url
-            #     # Dom_change = new_url
-            #     write_results([check, '', '', self.initial_outer_html, '', '',  '',
-            #                    self.url, self.driver.current_url, tries])
-            # elif check == "True - outerHTML change":
-            #     write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html,
-            #                    self.after_outer_html, '',  '', '', '', tries])
-            #
-            # elif check == "True? - DOM Change":
-            #     # need to figure out algo after find the difference
-            #     write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
-            #                    "self.initial_DOM",  "self.after_DOM", '', '', tries])
-            #
-            # self.icon += 1
-            #
-            # if self.icon >= len(curr):
-            #     self.icon = 0
-            #     break
+            self.initial_outer_html = outerHTML
+            self.initial_local_DOM = self.get_local_DOM(element)
 
-    def scan_page(self):
-        self.get_elements()
-        for HTML in self.chosen_elms:
-            add_to_csv(self.url, ''.join(HTML.split("\n")), self.html_obj)
+            initial_tag = self.count_tags()
+
+            self.click_button(element)
+
+            check = self.check_opened(self.url, element, initial_tag)
+
+            if check == "True - Redirect":
+                # outer_HTML_change = url
+                # Dom_change = new_url
+                write_results([check, '', '', self.initial_outer_html, '', '', '',
+                               self.url, self.driver.current_url, tries])
+            elif check == "True - outerHTML change":
+                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html,
+                               self.after_outer_html, '', '', '', '', tries])
+
+            elif check == "True? - Local DOM Change":
+                # need to figure out algo after find the difference
+                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
+                               "self.initial_DOM", "self.after_DOM", '', '', tries])
+
+            self.icon += 1
+        self.icon = 0
 
 ############################################################
 
@@ -315,10 +299,15 @@ class Driver:
     """
 
 ############################################################
+
+    def scan_page(self):
+        self.get_elements()
+        for HTML in self.chosen_elms:
+            add_to_csv(self.url, ''.join(HTML.split("\n")), self.html_obj)
+
     def final_list(self, potential):
         self.chosen_elms = [elem.get_attribute("outerHTML") for elem in potential]
-        self.chosen_elms = set(self.chosen_elms)
-
+        self.chosen_elms = list(set(self.chosen_elms))
 
 
     def get_elements(self):
@@ -344,7 +333,8 @@ class Driver:
     def filter(self, total):
         final = []
         for element in total:
-            if self.cursor_change(element):
+            print(element.get_attribute("outerHTML"))
+            if self.cursor_change(element):  # and element.is_displayed()   not always working correctly :(
                 final.append(element)
 
         if len(final) > 1:

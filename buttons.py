@@ -15,14 +15,14 @@ xpaths = [
 ]
 
 sites = [
-    'https://en.wikipedia.org/wiki/Main_Page',
-    # 'https://www.amazon.com/',
+    # 'https://en.wikipedia.org/wiki/Main_Page',
+    'https://www.amazon.com/',
     # 'https://www.microsoft.com/en-us/',
     # 'https://www.office.com/',
     # 'https://weather.com/',
     # 'https://openai.com/',
     # 'https://www.bing.com/',
-    # 'https://duckduckgo.com/',
+    # 'https://duckduckgo.com/'
     # 'https://cnn.com',
     # 'https://www.nytimes.com/',
     # 'https://www.twitch.tv/',
@@ -60,15 +60,15 @@ def main():
     curr_site = 0
     tries = 1
 
-    initialize_csv_file(HTML_obj)
-    initialize()
+    # initialize_csv_file(HTML_obj)
+    # initialize()
 
     while curr_site < len(sites):
         url = sites[curr_site]
         try:
             if shared_driver.load_site(url):
-                # shared_driver.test_elms(tries)
                 shared_driver.scan_page()
+                # shared_driver.click_on_elms(tries)
             else:
                 write_noscan_row(url)
             curr_site += 1
