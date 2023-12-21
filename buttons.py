@@ -14,30 +14,65 @@ xpaths = [
     '@type'
 ]
 
+sites = [
+    'https://en.wikipedia.org/wiki/Main_Page',
+    # 'https://www.amazon.com/',
+    # 'https://www.microsoft.com/en-us/',
+    # 'https://www.office.com/',
+    # 'https://weather.com/',
+    # 'https://openai.com/',
+    # 'https://www.bing.com/',
+    # 'https://duckduckgo.com/',
+    # 'https://cnn.com',
+    # 'https://www.nytimes.com/',
+    # 'https://www.twitch.tv/',
+    # 'https://www.imdb.com/',
+    # 'https://mail.ru/',
+    # 'https://naver.com',
+    # 'https://zoom.us/',
+    # 'https://www.globo.com/',
+    # 'https://www.ebay.com/',
+    # 'https://www.foxnews.com/',
+    # 'https://www.instructure.com/',
+    # 'https://www.walmart.com/',
+    # 'https://www.indeed.com/',
+    # 'https://www.paypal.com/us/home',
+    # 'https://www.accuweather.com/',
+    # 'https://www.pinterest.com/',
+    # 'https://www.bbc.com/',
+    # 'https://www.homedepot.com/',
+    # 'https://www.breitbart.com/',
+    # 'https://github.com/'
+]
 
 shared_driver.attributes = attributes
-shared_driver.xpaths = xpaths
+shared_driver.xPaths = xpaths
+shared_driver.adBlocker_name = 'uBlock'
+shared_driver.html_obj = 'buttons'
+HTML_obj = 'buttons'
 
 def main():
 
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
-    shared_driver.initialize('uBlock')
-    sites = ['https://www.imdb.com/']
+    shared_driver.initialize()
+    # sites = ['https://www.imdb.com/']
     curr_site = 0
     tries = 1
+
+    initialize_csv_file(HTML_obj)
+    initialize()
+
     while curr_site < len(sites):
         url = sites[curr_site]
         try:
             if shared_driver.load_site(url):
-                buttons = shared_driver.get_elements("buttons")
-                shared_driver.test_elems(buttons, "buttons", tries)
+                # shared_driver.test_elms(tries)
+                shared_driver.scan_page()
             else:
                 write_noscan_row(url)
             curr_site += 1
             tries = 1
-
-
 
         except Exception as e:
             if shared_driver.tries != 3:
@@ -57,7 +92,7 @@ def main():
             else:
                 # print(e)
                 # print(["Failed - unknown error", e])
-                error = e.msg.split("\n")[0]
+                error = str(e).split("\n")[0]
 
             write_results([error, "Failed", "Failed", shared_driver.initial_outer_html, tries])
             tries = 1

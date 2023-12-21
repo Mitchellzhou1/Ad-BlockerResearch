@@ -78,7 +78,7 @@ sites = [
 ]
 
 shared_driver.attributes = attributes
-shared_driver.xpaths = xpaths
+shared_driver.xPaths = xpaths
 
 def main():
 
