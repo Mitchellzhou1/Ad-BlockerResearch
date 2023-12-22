@@ -84,7 +84,7 @@ def main():
 
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
-    shared_driver.initialize('uBlock')
+    shared_driver.initialize_xlsx('uBlock')
     # sites = ['https://en.wikipedia.org/wiki/Main_Page']
     index = 0
     tries = 1

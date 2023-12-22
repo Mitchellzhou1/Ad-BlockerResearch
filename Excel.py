@@ -16,7 +16,7 @@ notInteractable_row = 2
  staleElems_lst, noScan_lst, other_lst) = [[] for i in range(6)]
 HTML_obj = "None"
 
-def initialize():
+def initialize_xlsx():
     ws['A1'] = "Dropdown Opened?"
     ws['B1'] = "Outer HTML Change"
     ws['C1'] = "DOM structure Change"

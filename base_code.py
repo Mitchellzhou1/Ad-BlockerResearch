@@ -238,6 +238,12 @@ class Driver:
             return xpath
         return None
 
+    def get_correct_elem(self, xpath):
+        elements = shared_driver.driver.find_elements(By.XPATH, xpath)      # will error if no elms are found
+        for i in elements:
+            if i.get_attribute("outerHTML") == self.initial_outer_html:
+                return i
+        return shared_driver.driver.find_element(By.XPATH, xpath)
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
             if initial != after:
@@ -270,9 +276,8 @@ class Driver:
             xpath = self.generate_xpath(outerHTML)
 
             self.load_site(site)
-            element = shared_driver.driver.find_element(By.XPATH, xpath)
-
             self.initial_outer_html = outerHTML
+            element = self.get_correct_elem(xpath)
             self.initial_local_DOM = self.get_local_DOM(element)
 
             initial_tag = self.count_tags()

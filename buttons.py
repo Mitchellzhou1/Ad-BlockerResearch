@@ -15,8 +15,8 @@ xpaths = [
 ]
 
 sites = [
-    'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.amazon.com/',
+    'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.microsoft.com/en-us/',
     'https://www.office.com/',
     'https://weather.com/',
@@ -55,20 +55,20 @@ def main():
 
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
-    shared_driver.initialize()
+    shared_driver.initialize_xlsx()
     # sites = ['https://www.imdb.com/']
     curr_site = 0
     tries = 1
 
     # initialize_csv_file(HTML_obj)
-    # initialize()
+    initialize_xlsx()
 
     while curr_site < len(sites):
         url = sites[curr_site]
         try:
             if shared_driver.load_site(url):
-                shared_driver.scan_page()
-
+                # shared_driver.scan_page()
+                shared_driver.click_on_elms(tries)
             else:
                 write_noscan_row(url)
             curr_site += 1
