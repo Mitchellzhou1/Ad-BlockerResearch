@@ -223,14 +223,20 @@ class Driver:
 
             xpath = f'//{tag_name}'
             for attr, value in attributes.items():
-                if attr != 'class':  # Exclude 'class' attribute
+                if attr == 'class':
+                    if isinstance(value, list):
+                        for class_value in value:
+                            xpath += f'[contains(@{attr}, "{class_value}")]'
+                    else:
+                        xpath += f'[contains(@{attr}, "{value}")]'
+                else:
                     if isinstance(value, list):
                         xpath += f'[@{attr}="{value[0]}"]'
                     else:
                         xpath += f'[@{attr}="{value}"]'
 
             return xpath
-        return ''
+        return None
 
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
@@ -301,6 +307,7 @@ class Driver:
 ############################################################
 
     def scan_page(self):
+        self.load_site(self.url)                                   # extra refresh helps get rid of some false findings
         self.get_elements()
         for HTML in self.chosen_elms:
             add_to_csv(self.url, ''.join(HTML.split("\n")), self.html_obj)
@@ -333,7 +340,6 @@ class Driver:
     def filter(self, total):
         final = []
         for element in total:
-            print(element.get_attribute("outerHTML"))
             if self.cursor_change(element):  # and element.is_displayed()   not always working correctly :(
                 final.append(element)
 

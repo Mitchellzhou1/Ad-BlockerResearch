@@ -15,34 +15,34 @@ xpaths = [
 ]
 
 sites = [
-    # 'https://en.wikipedia.org/wiki/Main_Page',
+    'https://en.wikipedia.org/wiki/Main_Page',
     'https://www.amazon.com/',
-    # 'https://www.microsoft.com/en-us/',
-    # 'https://www.office.com/',
-    # 'https://weather.com/',
-    # 'https://openai.com/',
-    # 'https://www.bing.com/',
-    # 'https://duckduckgo.com/'
-    # 'https://cnn.com',
-    # 'https://www.nytimes.com/',
-    # 'https://www.twitch.tv/',
-    # 'https://www.imdb.com/',
-    # 'https://mail.ru/',
-    # 'https://naver.com',
-    # 'https://zoom.us/',
-    # 'https://www.globo.com/',
-    # 'https://www.ebay.com/',
-    # 'https://www.foxnews.com/',
-    # 'https://www.instructure.com/',
-    # 'https://www.walmart.com/',
-    # 'https://www.indeed.com/',
-    # 'https://www.paypal.com/us/home',
-    # 'https://www.accuweather.com/',
-    # 'https://www.pinterest.com/',
-    # 'https://www.bbc.com/',
-    # 'https://www.homedepot.com/',
-    # 'https://www.breitbart.com/',
-    # 'https://github.com/'
+    'https://www.microsoft.com/en-us/',
+    'https://www.office.com/',
+    'https://weather.com/',
+    'https://openai.com/',
+    'https://www.bing.com/',
+    'https://duckduckgo.com/'
+    'https://cnn.com',
+    'https://www.nytimes.com/',
+    'https://www.twitch.tv/',
+    'https://www.imdb.com/',
+    'https://mail.ru/',
+    'https://naver.com',
+    'https://zoom.us/',
+    'https://www.globo.com/',
+    'https://www.ebay.com/',
+    'https://www.foxnews.com/',
+    'https://www.instructure.com/',
+    'https://www.walmart.com/',
+    'https://www.indeed.com/',
+    'https://www.paypal.com/us/home',
+    'https://www.accuweather.com/',
+    'https://www.pinterest.com/',
+    'https://www.bbc.com/',
+    'https://www.homedepot.com/',
+    'https://www.breitbart.com/',
+    'https://github.com/'
 ]
 
 shared_driver.attributes = attributes
@@ -68,7 +68,7 @@ def main():
         try:
             if shared_driver.load_site(url):
                 shared_driver.scan_page()
-                # shared_driver.click_on_elms(tries)
+
             else:
                 write_noscan_row(url)
             curr_site += 1
@@ -81,14 +81,16 @@ def main():
                 continue
 
             if isinstance(e, ElementClickInterceptedException):
-                # print("Element Click Intercepted")
                 error = "Failed - Element Click Intercepted"
             elif isinstance(e, TimeoutError):
-                # print("Timeout Error")
                 error = "Failed - Site Timeout Error"
             elif isinstance(e, ElementNotInteractableException):
-                # print("Not Interactable")
                 error = "Failed - Not Interactable"
+            elif isinstance(e, StaleElementReferenceException):
+                error = "StaleElementReferenceException"
+            elif isinstance(e, NoSuchElementException):
+                error = "Element not found using the specified XPath."
+
             else:
                 # print(e)
                 # print(["Failed - unknown error", e])
