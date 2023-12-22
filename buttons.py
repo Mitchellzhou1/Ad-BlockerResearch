@@ -55,7 +55,7 @@ def main():
 
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
-    shared_driver.initialize_xlsx()
+    shared_driver.initialize()
     # sites = ['https://www.imdb.com/']
     curr_site = 0
     tries = 1
@@ -67,7 +67,7 @@ def main():
         url = sites[curr_site]
         try:
             if shared_driver.load_site(url):
-                # shared_driver.scan_page()
+                # shared_driver.scan_page()s
                 shared_driver.click_on_elms(tries)
             else:
                 write_noscan_row(url)
