@@ -1,6 +1,8 @@
 import os
 import random
 import time
+import signal
+import functools
 from time import sleep
 
 import pyautogui
@@ -34,6 +36,45 @@ options.add_argument("--disable-features=AudioServiceOutOfProcess")
 options.add_argument(
     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
+options.binary_location = '/usr/local/bin/chrome_113/chrome'
+
+# folder_path = f"/home/chatacter/wpr_data/"
+# if not os.path.exists(folder_path):
+# # Create the folder
+#     os.makedirs(folder_path)
+#
+# # options.add_argument('--ignore-certificate-errors')
+# options.add_argument(folder_path)
+# options.add_argument(f'--host-resolver-rules="MAP *:80 127.0.0.1:9090,MAP *:443 127.0.0.1:9091,EXCLUDE localhost')
+# options.add_argument('--ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=')
+#
+"""
+go run src/wpr.go replay --http_port=9090 --https_port=9091 ~/control.wprgo
+go run src/wpr.go record --http_port=9090 --https_port=9091 ~/control.wprgo
+"""
+
+class TimeoutError(Exception):
+    pass
+
+
+def timeout(seconds):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            def handler(signum, frame):
+                raise TimeoutError
+
+            signal.signal(signal.SIGALRM, handler)
+            signal.alarm(seconds)
+
+            result = func(*args, **kwargs)
+            signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
+
 
 class Driver:
     def __init__(self):
@@ -47,13 +88,24 @@ class Driver:
         self.tries = 1
 
         # used for optimization
+        self.login_keywords = [
+            'login', 'log in', 'signin', 'sign in', 'sign-in', 'account',
+            'authenticate', 'authentication',
+            'access', 'access account',
+            'enter', 'enter account',
+            'connect', 'connect account',
+            'authorize', 'authorization',
+        ]
         self.seen_sites = []
-        self.website_sleep_time = 3        # longer this value, more consistent the results
+        self.xpath_remover = 3
+        self.website_sleep_time = 3  # longer this value, more consistent the results
         self.html_obj = 'buttons'
         self.DOM_traversal_amt = 4
+        self.scan_timeout = 180
+        self.test_elem_timeout = 300
 
         # used for testing
-        self.icon = 0
+        self.line = 0
         self.initial_outer_html = ''
         self.after_outer_html = ''
         self.initial_local_DOM = ''
@@ -85,7 +137,9 @@ class Driver:
             chrome_options.add_extension(extension_path)
 
         chrome_options.add_argument('--disable-dev-shm-usage')
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        self.driver = webdriver.Chrome(options=options)
+
         self.driver.set_window_size(1555, 900)
         # give it time to install
         if self.adBlocker_name == 'AdBlockPlus':
@@ -97,8 +151,8 @@ class Driver:
             with open(file_path, newline='') as csvfile:
                 csv_reader = csv.reader(csvfile)
                 # header = next(csv_reader)
-                for row in csv_reader:
-                    self.all_html_elms.append(row)
+                for row_ in csv_reader:
+                    self.all_html_elms.append(row_)
 
     def is_loaded(self):
         return self.driver.execute_script("return document.readyState") == "complete"
@@ -119,9 +173,10 @@ class Driver:
             makes selenium load the site. will add http://www. if needed and filters out to see if the website is
             accessible or not.
         """
-        def helper(url):
+
+        def helper(url_):
             if url[:4] != 'http':
-                return f'http://www.{url}'
+                return f'http://www.{url_}'
             return url
 
         url = helper(url)
@@ -216,6 +271,13 @@ class Driver:
                     return tag_info
             return None
 
+        def format_attribute(attr, value):
+            if isinstance(value, list):
+                return f'[contains(@{attr}, "{value[0]}")]'
+            else:
+                return f"""[@{attr}='{value}']"""
+
+
         parsed_info = parse_html_string(html_string)
         if parsed_info:
             tag_name = parsed_info['tag_name']
@@ -230,20 +292,28 @@ class Driver:
                     else:
                         xpath += f'[contains(@{attr}, "{value}")]'
                 else:
-                    if isinstance(value, list):
-                        xpath += f'[@{attr}="{value[0]}"]'
-                    else:
-                        xpath += f'[@{attr}="{value}"]'
+                    xpath += format_attribute(attr, value)
 
             return xpath
         return None
 
     def get_correct_elem(self, xpath):
-        elements = shared_driver.driver.find_elements(By.XPATH, xpath)      # will error if no elms are found
-        for i in elements:
-            if i.get_attribute("outerHTML") == self.initial_outer_html:
-                return i
-        return shared_driver.driver.find_element(By.XPATH, xpath)
+        counter = self.xpath_remover
+        while "[" in xpath and counter:
+            elements = self.driver.find_elements(By.XPATH, xpath)  # will return [] if none are found
+            for i in elements:
+                if i.get_attribute("outerHTML") == self.initial_outer_html:
+                    return i
+            try:    # sometimes the structure is the same.
+                return self.driver.find_element(By.XPATH, xpath)
+            except Exception:
+                xpath_list = xpath.split("[")
+                xpath_list.remove(max(xpath_list, key=len))
+                xpath = "[".join(xpath_list)
+            self.xpath_remover -= 1
+        self.xpath_remover = 3
+        return self.driver.find_element(By.XPATH, xpath)  # will error if none are found
+
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
             if initial != after:
@@ -254,7 +324,12 @@ class Driver:
         if redirect:
             return "True - Redirect"
 
-        self.after_outer_html = button.get_attribute('outerHTML')
+        try:
+            self.after_outer_html = button.get_attribute('outerHTML')
+        except StaleElementReferenceException:
+            # this is good, means that the button disappeared after clicking
+            # could be things like "close", "search", "expand", "show more", etc.
+            return "True - Stale Element"
 
         self.DOM_changed = check_HTML(self.initial_local_DOM, self.get_local_DOM(button))
         self.outer_HTML_changed = check_HTML(self.initial_outer_html, self.after_outer_html)
@@ -270,57 +345,64 @@ class Driver:
 
         return "False"
 
+    @timeout(300)
+    def test_button(self, tries):
+        site, outerHTML = self.all_html_elms[self.line]
+        xpath = self.generate_xpath(outerHTML)
+
+        self.load_site(site)
+        self.initial_outer_html = outerHTML
+        element = self.get_correct_elem(xpath)
+        self.initial_local_DOM = self.get_local_DOM(element)
+
+        initial_tag = self.count_tags()
+
+        self.click_button(element)
+
+        check = self.check_opened(self.url, element, initial_tag)
+
+        if check == "True - Redirect":
+            # outer_HTML_change = url
+            # Dom_change = new_url
+            write_results([check, '', '', self.initial_outer_html, '', '', '',
+                           self.url, self.driver.current_url, tries])
+        elif check == "True - outerHTML change" or check == "True - Stale Element":
+            write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html,
+                           self.after_outer_html, '', '', '', '', tries])
+
+        elif check == "True? - Local DOM Change":
+            # need to figure out algo after find the difference
+            write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
+                           self.initial_local_DOM, self.after_local_DOM, '', '', tries])
+
+        elif check == "False":
+            write_results([check, "False", "False", self.initial_outer_html, '',
+                           "", "", '', '', tries])
+        self.line += 1
+
     def click_on_elms(self, tries):
-        while self.icon < len(self.all_html_elms):
-            site, outerHTML = self.all_html_elms[self.icon]
-            xpath = self.generate_xpath(outerHTML)
+        while self.line < len(self.all_html_elms):
+            self.test_button(tries)
+        self.line = -1
 
-            self.load_site(site)
-            self.initial_outer_html = outerHTML
-            element = self.get_correct_elem(xpath)
-            self.initial_local_DOM = self.get_local_DOM(element)
-
-            initial_tag = self.count_tags()
-
-            self.click_button(element)
-
-            check = self.check_opened(self.url, element, initial_tag)
-
-            if check == "True - Redirect":
-                # outer_HTML_change = url
-                # Dom_change = new_url
-                write_results([check, '', '', self.initial_outer_html, '', '', '',
-                               self.url, self.driver.current_url, tries])
-            elif check == "True - outerHTML change":
-                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html,
-                               self.after_outer_html, '', '', '', '', tries])
-
-            elif check == "True? - Local DOM Change":
-                # need to figure out algo after find the difference
-                write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
-                               "self.initial_DOM", "self.after_DOM", '', '', tries])
-
-            self.icon += 1
-        self.icon = 0
-
-############################################################
+    ############################################################
 
     """            
             FINDING AND FILTERING THE HTML Elements
     """
 
-############################################################
-
+    ############################################################
+    @timeout(300)
     def scan_page(self):
-        self.load_site(self.url)                                   # extra refresh helps get rid of some false findings
+        self.load_site(self.url)  # extra refresh helps get rid of some false findings
         self.get_elements()
         for HTML in self.chosen_elms:
             add_to_csv(self.url, ''.join(HTML.split("\n")), self.html_obj)
+        sleep(300)
 
-    def final_list(self, potential):
+    def make_unique(self, potential):
         self.chosen_elms = [elem.get_attribute("outerHTML") for elem in potential]
         self.chosen_elms = list(set(self.chosen_elms))
-
 
     def get_elements(self):
         # returns the contents (will be selenium objs)
@@ -329,12 +411,15 @@ class Driver:
             ret = self.find_dropdown()
         elif self.html_obj == "buttons":
             ret = self.find_buttons()
-        # elif type == "links":
-        #     ret = self.find_links()
+        elif self.html_obj == "links":
+            ret = self.find_links()
+        elif self.html_obj == "login":
+            ret = self.find_login()
+
         else:
             print("Invalid Element type to retrieve")
 
-        self.final_list(ret)
+        self.make_unique(ret)
 
         if len(self.chosen_elms) <= self.no_elms:
             write_results(f"testing {len(self.chosen_elms)} / {len(self.chosen_elms)}")
@@ -345,12 +430,16 @@ class Driver:
     def filter(self, total):
         final = []
         for element in total:
+            if self.html_obj == "login" and element.get_attribute("outerHTML") in self.login_keywords:
+                final.append(element)
+                continue
             if self.cursor_change(element):  # and element.is_displayed()   not always working correctly :(
                 final.append(element)
 
         if len(final) > 1:
             final.sort(key=lambda e: self.driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = "
+                "elem.parentElement; parents++; } return parents;",
                 e
             ))
         return list(set(final))
@@ -361,7 +450,8 @@ class Driver:
             found_elements = []
         for attribute in self.attributes:
             for path in self.xPaths:
-                xpath = f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]'
+                xpath = (f'//*[translate({path}, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", '
+                         f'"abcdefghijklmnopqrstuvwxyz")="{attribute.lower()}"]')
                 try:
                     elements = self.driver.find_elements(By.XPATH, xpath)
                     for element in elements:
@@ -375,8 +465,8 @@ class Driver:
 
         if len(found_elements) > 1:
             found_elements.sort(key=lambda e: self.driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = elem.parentElement; parents++; } return parents;",
-                e
+                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) "
+                "{ elem = elem.parentElement; parents++; } return parents;", e
             ))
         return found_elements
 
@@ -389,12 +479,11 @@ class Driver:
 
             final = self.specific_element_finder(found_elements)
             return self.filter(final)
+
         try:
             ret = collect()
-            # for i in ret:
-            #     print(i.get_attribute("outerHTML"))
             return ret
-        except Exception as e:       # not tested
+        except Exception as e:  # not tested
             try:
                 sleep(5)
                 return collect()
@@ -414,6 +503,45 @@ class Driver:
                 error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
                 write_results(error_message)
 
+    def find_links(self):
+        def collect():
+            final = []
+            for anchor in self.driver.find_elements(By.TAG_NAME, 'a'):
+                if anchor.get_attribute("href"):
+                    final.append(anchor)
+
+            return self.filter(final)
+
+        try:
+            ret = collect()
+            return ret
+        except Exception as e:  # not tested
+            try:
+                sleep(5)
+                return collect()
+            except Exception as e:
+                error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
+                write_results(error_message)
+
+    def find_login(self):
+        def collect():
+            found_elements = self.driver.find_elements(By.TAG_NAME, 'button')
+            found_elements += self.driver.find_elements(By.TAG_NAME, 'a')
+            final = self.specific_element_finder(found_elements)
+            return self.filter(final)
+
+        try:
+            ret = collect()
+            # for i in ret:
+            #     print(i.get_attribute("outerHTML"))
+            return ret
+        except Exception as e:  # not tested
+            try:
+                sleep(5)
+                return collect()
+            except Exception as e:
+                error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
+                write_results(error_message)
+
 
 shared_driver = Driver()
-

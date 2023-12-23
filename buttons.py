@@ -1,18 +1,32 @@
 from base_code import *
 from Excel import *
 
-from selenium.common import ElementClickInterceptedException, ElementNotInteractableException
+from selenium.common import ElementClickInterceptedException, ElementNotInteractableException, InvalidSelectorException
 
-attributes = [
-    'button',
-    'submit',
-    '#'
-]
+attributes_dict = {
+    "buttons": {
+        "attributes": ['button', 'submit', '#'],
+        "xpaths": ['@role', '@type']
+    },
+    "drop downs": {
+        "attributes": ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
+                       'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
+                       'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
+                       'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
+                       'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
+                       'Collapse Your Library'],
+        "xpaths": ['@aria-expanded', '@aria-label', '@class', '@aria-haspopup', '@aria-describedby', '@data-testid']
+    },
+    "links": {
+        "attributes": [],
+        "xpaths": ['href']
+    },
+    "login": {  # remember to enable HREF
+        "attributes": ['button', 'submit', '#'],
+        "xpaths": ['@role', '@type']
+    }
 
-xpaths = [
-    '@role',
-    '@type'
-]
+}
 
 sites = [
     'https://www.amazon.com/',
@@ -45,11 +59,14 @@ sites = [
     'https://github.com/'
 ]
 
-shared_driver.attributes = attributes
-shared_driver.xPaths = xpaths
-shared_driver.adBlocker_name = 'uBlock'
-shared_driver.html_obj = 'buttons'
-HTML_obj = 'buttons'
+HTML_TEST = 'buttons'
+ad_blocker = 'uBlock'
+
+shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
+shared_driver.xPaths = attributes_dict[HTML_TEST]["xpaths"]
+shared_driver.adBlocker_name = ad_blocker
+shared_driver.html_obj = HTML_TEST
+HTML_obj = HTML_TEST
 
 def main():
 
@@ -63,43 +80,48 @@ def main():
     # initialize_csv_file(HTML_obj)
     initialize_xlsx()
 
-    while curr_site < len(sites):
+    while curr_site < len(sites) and shared_driver.line > -1:
         url = sites[curr_site]
         try:
             if shared_driver.load_site(url):
-                # shared_driver.scan_page()s
-                shared_driver.click_on_elms(tries)
+                shared_driver.scan_page()
+                # shared_driver.click_on_elms(tries)
             else:
                 write_noscan_row(url)
             curr_site += 1
             tries = 1
 
         except Exception as e:
-            if shared_driver.tries != 3:
-                shared_driver.reinitialize()
-                tries += 1
-                continue
+            # if shared_driver.tries != 3:
+            #     shared_driver.reinitialize()
+            #     tries += 1
+            #     continue
 
             if isinstance(e, ElementClickInterceptedException):
-                error = "Failed - Element Click Intercepted"
-            elif isinstance(e, TimeoutError):
-                error = "Failed - Site Timeout Error"
+                error = "N/A - Element Click Intercepted"
             elif isinstance(e, ElementNotInteractableException):
-                error = "Failed - Not Interactable"
+                error = "N/A - Not Interactable"
             elif isinstance(e, StaleElementReferenceException):
                 error = "StaleElementReferenceException"
             elif isinstance(e, NoSuchElementException):
-                error = "Element not found using the specified XPath."
+                error = "N/A - No such Element"
+            elif isinstance(e, InvalidSelectorException):
+                error = "N/A - InvalidSelectorException"
+            elif isinstance(e, TimeoutError):
+                write_noscan_row(url)
+                tries = 1
+                shared_driver.tries = 1
+                shared_driver.line += 1
+                print("TIME OUT EERRORRR IS GOOD")
+                continue
 
             else:
-                # print(e)
-                # print(["Failed - unknown error", e])
                 error = str(e).split("\n")[0]
 
-            write_results([error, "Failed", "Failed", shared_driver.initial_outer_html, tries])
+            write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
             tries = 1
             shared_driver.tries = 1
-            shared_driver.icon += 1
+            shared_driver.line += 1
 
     print("\n\nFinished Testing on All Sites!\n\n\n")
     # vdisplay.stop()
