@@ -60,7 +60,7 @@ sites = [
     'https://github.com/'
 ]
 
-HTML_TEST = 'drop downs'
+HTML_TEST = 'links'
 ad_blocker = 'uBlock'
 
 shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
