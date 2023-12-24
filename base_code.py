@@ -3,6 +3,7 @@ import random
 import time
 import signal
 import functools
+import json
 from time import sleep
 
 import pyautogui
@@ -47,11 +48,14 @@ options.binary_location = '/usr/local/bin/chrome_113/chrome'
 # options.add_argument(folder_path)
 # options.add_argument(f'--host-resolver-rules="MAP *:80 127.0.0.1:9090,MAP *:443 127.0.0.1:9091,EXCLUDE localhost')
 # options.add_argument('--ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=')
-#
+
 """
-go run src/wpr.go replay --http_port=9090 --https_port=9091 ~/control.wprgo
+cd /go/src/catapult/web_page_replay_go
+
 go run src/wpr.go record --http_port=9090 --https_port=9091 ~/control.wprgo
+go run src/wpr.go replay --http_port=9090 --https_port=9091 ~/control.wprgo
 """
+
 
 class TimeoutError(Exception):
     pass
@@ -88,24 +92,23 @@ class Driver:
         self.tries = 1
 
         # used for optimization
-        self.login_keywords = [
-            'login', 'log in', 'signin', 'sign in', 'sign-in', 'account',
-            'authenticate', 'authentication',
-            'access', 'access account',
-            'enter', 'enter account',
-            'connect', 'connect account',
-            'authorize', 'authorization',
+        self.keywords = [
+            'login', 'my account', 'sign in', 'sign-in', 'signin', 'log in',  # English
+            '登录', '我的帐户',  # Chinese (Simplified)
+            'вход', 'войти', 'мой аккаунт',  # Russian
+            'iniciar sesión', 'mi cuenta'  # Spanish
         ]
         self.seen_sites = []
         self.xpath_remover = 3
         self.website_sleep_time = 3  # longer this value, more consistent the results
-        self.html_obj = 'buttons'
+        self.html_obj = None
         self.DOM_traversal_amt = 4
         self.scan_timeout = 180
         self.test_elem_timeout = 300
 
         # used for testing
-        self.line = 0
+        self.curr_site = 0
+        self.curr_elem = 0
         self.initial_outer_html = ''
         self.after_outer_html = ''
         self.initial_local_DOM = ''
@@ -116,6 +119,8 @@ class Driver:
         self.outer_HTML_changed = False
 
         # used for random picking
+        self.dictionary = {}
+        self.all_sites = {}
         self.no_elms = 15
         self.chosen_elms = []
         self.all_html_elms = []
@@ -146,13 +151,11 @@ class Driver:
             sleep(seconds)
             pyautogui.hotkey('ctrl', 'w')
 
-        if not self.all_html_elms:
-            file_path = f'{self.html_obj}.csv'
-            with open(file_path, newline='') as csvfile:
-                csv_reader = csv.reader(csvfile)
-                # header = next(csv_reader)
-                for row_ in csv_reader:
-                    self.all_html_elms.append(row_)
+        if not self.all_html_elms and self.html_obj:
+            file_path = f'{self.html_obj}.json'
+            with open(file_path, 'r') as json_file:
+                self.dictionary = json.load(json_file)
+            self.all_sites = list(self.dictionary.keys())
 
     def is_loaded(self):
         return self.driver.execute_script("return document.readyState") == "complete"
@@ -272,9 +275,17 @@ class Driver:
             return None
 
         def format_attribute(attr, value):
+            # if "'" in value:
+            #     value_lst = value.split("'")
+            #     return "[contains(@" + attr + ", " + "concat(" + value_lst[0] + ", \"'\", " + value_lst[1] + ", \"'\", " + value_lst[2] + "))]"
+
             if isinstance(value, list):
                 return f'[contains(@{attr}, "{value[0]}")]'
             else:
+                if "'" and '"' in value:
+                    return ''           # this case is too weird. will just skip it.
+                elif "'" in value:
+                    return f"""[@{attr}="{value}"]"""
                 return f"""[@{attr}='{value}']"""
 
 
@@ -347,7 +358,8 @@ class Driver:
 
     @timeout(300)
     def test_button(self, tries):
-        site, outerHTML = self.all_html_elms[self.line]
+        site = self.all_sites[self.curr_site]
+        outerHTML = self.dictionary[site][self.curr_elem]
         xpath = self.generate_xpath(outerHTML)
 
         self.load_site(site)
@@ -378,12 +390,17 @@ class Driver:
         elif check == "False":
             write_results([check, "False", "False", self.initial_outer_html, '',
                            "", "", '', '', tries])
-        self.line += 1
 
     def click_on_elms(self, tries):
-        while self.line < len(self.all_html_elms):
+
+        while self.curr_site < len(self.all_sites):
             self.test_button(tries)
-        self.line = -1
+            self.curr_elem += 1
+            if self.curr_elem >= len(self.dictionary[self.all_sites[self.curr_site]]):
+                self.curr_site += 1
+                self.curr_elem = 0
+
+        self.curr_site = -1
 
     ############################################################
 
@@ -396,9 +413,22 @@ class Driver:
     def scan_page(self):
         self.load_site(self.url)  # extra refresh helps get rid of some false findings
         self.get_elements()
-        for HTML in self.chosen_elms:
-            add_to_csv(self.url, ''.join(HTML.split("\n")), self.html_obj)
-        sleep(300)
+        self.dictionary[self.url] = self.chosen_elms
+
+        while self.curr_elem < len(self.dictionary[self.url]):
+            try:
+                xpath = self.generate_xpath(self.dictionary[self.url][self.curr_elem])
+                elm = self.get_correct_elem(xpath)
+                elm.click()
+                sleep(1)
+                self.load_site(self.url)
+            except Exception:
+                pass
+            self.curr_elem += 1
+        self.curr_elem = 0
+        self.curr_site += 1
+
+        storeDictionary(self.dictionary)
 
     def make_unique(self, potential):
         self.chosen_elms = [elem.get_attribute("outerHTML") for elem in potential]
@@ -415,34 +445,46 @@ class Driver:
             ret = self.find_links()
         elif self.html_obj == "login":
             ret = self.find_login()
-
         else:
             print("Invalid Element type to retrieve")
 
-        self.make_unique(ret)
+        if self.html_obj == "login":
+            final_lst = []
+            for i in range(len(ret)):
+                try:
+                    if self.filter(ret[i]):
+                        final_lst.append(ret[i])
+                except Exception as e:
+                    continue
+        else:
+            random.shuffle(ret)
+            final_lst = []
+            limit = min(15, len(ret))
+            i = 0
+            while len(final_lst) < limit and i < len(ret):
+                if self.filter(ret[i]):
+                    final_lst.append(ret[i])
+                i += 1
 
+        self.make_unique(final_lst)         # unique by looking at the outerHTML
+
+        # the chosen_elms will be the unique outerHTML
         if len(self.chosen_elms) <= self.no_elms:
             write_results(f"testing {len(self.chosen_elms)} / {len(self.chosen_elms)}")
         else:
-            self.chosen_elms = random.sample(self.chosen_elms, self.no_elms)
             write_results(f"testing {len(self.chosen_elms)} / {self.no_elms}")
 
-    def filter(self, total):
-        final = []
-        for element in total:
-            if self.html_obj == "login" and element.get_attribute("outerHTML") in self.login_keywords:
-                final.append(element)
-                continue
-            if self.cursor_change(element):  # and element.is_displayed()   not always working correctly :(
-                final.append(element)
+    def filter(self, element):
 
-        if len(final) > 1:
-            final.sort(key=lambda e: self.driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) { elem = "
-                "elem.parentElement; parents++; } return parents;",
-                e
-            ))
-        return list(set(final))
+        if self.html_obj == "login":
+            if any(keyword.lower() in element.text.lower() for keyword in self.login_keywords):
+                if self.cursor_change(element):
+                    print(f"{self.url} \t {element.text}")
+                    return True
+        elif self.cursor_change(element):  # and element.is_displayed()   not always working correctly :(
+            return True
+        else:
+            return False
 
     def specific_element_finder(self, found_elements=None):
         # will just add on to the current found_elements list.
@@ -458,16 +500,10 @@ class Driver:
                         if element not in found_elements:
                             if self.html_obj == "buttons" and "href" not in element.get_attribute("outerHTML"):
                                 found_elements.append(element)
-                        else:
-                            found_elements.append(element)
+                            else:
+                                found_elements.append(element)
                 except Exception as e:
                     print(e)
-
-        if len(found_elements) > 1:
-            found_elements.sort(key=lambda e: self.driver.execute_script(
-                "var elem = arguments[0], parents = 0; while (elem && elem.parentElement) "
-                "{ elem = elem.parentElement; parents++; } return parents;", e
-            ))
         return found_elements
 
     def find_buttons(self):
@@ -478,7 +514,7 @@ class Driver:
                     found_elements.append(anchor)
 
             final = self.specific_element_finder(found_elements)
-            return self.filter(final)
+            return final
 
         try:
             ret = collect()
@@ -494,7 +530,7 @@ class Driver:
     def find_dropdown(self):
         try:
             ret = self.specific_element_finder()
-            return self.filter(ret)
+            return ret
         except Exception as e:
             try:
                 sleep(5)
@@ -510,7 +546,7 @@ class Driver:
                 if anchor.get_attribute("href"):
                     final.append(anchor)
 
-            return self.filter(final)
+            return final
 
         try:
             ret = collect()
@@ -528,7 +564,7 @@ class Driver:
             found_elements = self.driver.find_elements(By.TAG_NAME, 'button')
             found_elements += self.driver.find_elements(By.TAG_NAME, 'a')
             final = self.specific_element_finder(found_elements)
-            return self.filter(final)
+            return final
 
         try:
             ret = collect()

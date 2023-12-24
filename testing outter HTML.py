@@ -6,19 +6,20 @@ shared_driver.html_obj = 'buttons'
 HTML_obj = 'buttons'
 shared_driver = Driver()
 shared_driver.initialize()
-shared_driver.load_site("https://www.homedepot.com/")
-# string = """
-# <div class="swiper-button-next" tabindex="0" role="button" aria-label="Go to slide 6" aria-controls="swiper-wrapper-3106f23a78b1fa434" aria-disabled="false"></div># //button[@type="button"][contains(@class, "c-button-logo")][contains(@class, "all-ms-nav")][@aria-expanded="false"][@data-m='{"cN":"GlobalNav_More_nonnav","id":"nn1c1c9c2m1r1a1","sN":1,"aN":"c1c9c2m1r1a1"}'][@style="overflow-x: visible;"]
-# """
+shared_driver.load_site("https://en.wikipedia.org/wiki/Main_Page")
+string = """
+<a data-mw="interface" href="/w/index.php?title=Special:UserLogin&amp;returnto=Main+Page" title="You're encouraged to log in; however, it's not mandatory. [alt-shift-o]" accesskey="o" class=""><span>Log in</span></a>
+"""
 # xpath = """
-# //button[@type='button'][contains(@class, "c-button-logo")][contains(@class, "all-ms-nav")][@aria-expanded='false'][@data-m='{"cN":"GlobalNav_More_nonnav","id":"nn1c1c9c2m1r1a1","sN":1,"aN":"c1c9c2m1r1a1"}'][@style='overflow-x: visible;']"""
-# xpath = shared_driver.generate_xpath(string)
-# print(xpath)
-# elm = shared_driver.get_correct_elem(xpath)
-# elm.click()
-# print(xpath)
+# //a[@data-mw='interface'][@href='/w/index.php?title=Special:UserLogin&returnto=Main+Page'][@title='You're encouraged to log in; however, it's not mandatory. [alt-shift-o]'][contains(@accesskey, "o")]
+#
+# """
+xpath = shared_driver.generate_xpath(string)
+print(xpath)
+elm = shared_driver.get_correct_elem(xpath)
+elm.click()
+print(xpath)
 
 
 while 1:
     1
-

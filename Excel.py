@@ -2,6 +2,7 @@
 
 import openpyxl
 import csv
+from base_code import *
 
 wb = openpyxl.Workbook()
 ws = wb.active
@@ -16,8 +17,12 @@ notInteractable_row = 2
  staleElems_lst, noScan_lst, other_lst) = [[] for i in range(6)]
 HTML_obj = "None"
 
+def set_HTML_obj(new_value):
+    global HTML_obj
+    HTML_obj = new_value
+
 def initialize_xlsx():
-    ws['A1'] = "Dropdown Opened?"
+    ws['A1'] = f"{HTML_obj} Opened?"
     ws['B1'] = "Outer HTML Change"
     ws['C1'] = "DOM structure Change"
     ws['D1'] = "Initial Outer HTML "
@@ -34,8 +39,7 @@ def initialize_xlsx():
     ws['O1'] = "Links could not be scanned:"
     ws['P1'] = "Links with Stale Element:"
     ws['Q1'] = "Links with unknown Errors:"
-    wb.save("TESTING.xlsx")
-
+    wb.save(f"{HTML_obj}.xlsx")
 
 def write_intercepts(site):
     global intercept_row
@@ -43,8 +47,7 @@ def write_intercepts(site):
         intercept_lst.append(site)
         ws[f'G{intercept_row}'] = site
         intercept_row += 1
-        wb.save("TESTING.xlsx")
-
+        wb.save(f"{HTML_obj}.xlsx")
 
 def write_timeout_row(site):
     global timeout_row
@@ -52,8 +55,7 @@ def write_timeout_row(site):
         timeout_lst.append(site)
         ws[f'H{timeout_row}'] = site
         timeout_row += 1
-        wb.save("TESTING.xlsx")
-
+        wb.save(f"{HTML_obj}.xlsx")
 
 def write_notInteractable_row(site):
     global notInteractable_row
@@ -61,8 +63,7 @@ def write_notInteractable_row(site):
         notInteractable_lst.append(site)
         ws[f'I{noscan_row}'] = site
         notInteractable_row += 1
-        wb.save("TESTING.xlsx")
-
+        wb.save(f"{HTML_obj}.xlsx")
 
 def write_noscan_row(site):
     global noscan_row
@@ -70,7 +71,7 @@ def write_noscan_row(site):
         noScan_lst.append(site)
         ws[f'J{noscan_row}'] = site
         noscan_row += 1
-        wb.save("TESTING.xlsx")
+        wb.save(f"{HTML_obj}.xlsx")
 
 
 def write_other_row(site):
@@ -79,7 +80,7 @@ def write_other_row(site):
         other_lst.append(site)
         ws[f'K{other_row}'] = site
         other_row += 1
-        wb.save("TESTING.xlsx")
+        wb.save(f"{HTML_obj}.xlsx")
 
 
 def write_test_size(tested, total):
@@ -87,6 +88,7 @@ def write_test_size(tested, total):
     row -= 1
     ws[f'B{row}'] = f"{tested} / {total}"
     row += 1
+    wb.save(f"{HTML_obj}.xlsx")
 
 
 def write_results(data):
@@ -117,31 +119,14 @@ def write_results(data):
         ws[f'J{row}'] = f'Tries: {data[9]}'  # number of Tries
 
     row += 1
-    wb.save("TESTING.xlsx")
+    wb.save(f"{HTML_obj}.xlsx")
 
 
-def initialize_csv_file(HTML_obj):
-    filename = f"{HTML_obj}.csv"
-    fieldnames = ["Website Name", "HTML Content"]
-
-    with open(filename, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
+def storeDictionary(dictionary):
+    filename = f"{HTML_obj}.json"
+    with open(filename, "w") as json_file:
+        json.dump(dictionary, json_file, indent=4)
 
 
-def add_to_csv(website_name, html_content, HTML_obj):
-    filename = f"{HTML_obj}.csv"
-    object = f"{HTML_obj} HTML Content"
-    fieldnames = ["Website Name", object]
-
-    data = {"Website Name": website_name, object: html_content}
-
-    with open(filename, mode='a', newline='', encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-
-        # Write data rows
-        writer.writerow(data)
-
-    print("Added Elem")
 
 
