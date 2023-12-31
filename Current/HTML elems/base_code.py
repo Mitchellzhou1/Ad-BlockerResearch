@@ -131,7 +131,8 @@ class Driver:
             Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
         """
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        extensions_dir = os.path.abspath(os.path.join(current_dir, 'Extensions', 'Ad-Blockers'))
+        parent_directory = os.path.dirname(os.path.dirname(current_dir))
+        extensions_dir = os.path.abspath(os.path.join(parent_directory, 'Extensions', 'Ad-Blockers'))
         chrome_options = webdriver.ChromeOptions()
         # chrome_options.add_extension('Captcha-Solver-Auto-Recognition-and-Bypass.crx')
         if self.adBlocker_name == 'AdBlockPlus':
@@ -142,8 +143,8 @@ class Driver:
             chrome_options.add_extension(extension_path)
 
         chrome_options.add_argument('--disable-dev-shm-usage')
-        # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        # self.driver = webdriver.Chrome(options=options)
 
         self.driver.set_window_size(1555, 900)
         # give it time to install
@@ -151,7 +152,7 @@ class Driver:
             sleep(seconds)
             pyautogui.hotkey('ctrl', 'w')
 
-        if not self.all_html_elms and self.html_obj:
+        if self.html_obj:
             file_path = f'{self.html_obj}.json'
             with open(file_path, 'r') as json_file:
                 self.dictionary = json.load(json_file)
@@ -283,11 +284,10 @@ class Driver:
                 return f'[contains(@{attr}, "{value[0]}")]'
             else:
                 if "'" and '"' in value:
-                    return ''           # this case is too weird. will just skip it.
+                    return ''  # this case is too weird. will just skip it.
                 elif "'" in value:
                     return f"""[@{attr}="{value}"]"""
                 return f"""[@{attr}='{value}']"""
-
 
         parsed_info = parse_html_string(html_string)
         if parsed_info:
@@ -315,7 +315,7 @@ class Driver:
             for i in elements:
                 if i.get_attribute("outerHTML") == self.initial_outer_html:
                     return i
-            try:    # sometimes the structure is the same.
+            try:  # sometimes the structure is the same.
                 return self.driver.find_element(By.XPATH, xpath)
             except Exception:
                 xpath_list = xpath.split("[")
@@ -425,6 +425,12 @@ class Driver:
             except Exception:
                 pass
             self.curr_elem += 1
+        all_windows = self.driver.window_handles
+        if len(all_windows) > 1:
+            for window in all_windows[1:]:
+                self.driver.switch_to.window(window)
+                self.driver.close()
+            self.driver.switch_to.window(all_windows[0])
         self.curr_elem = 0
         self.curr_site += 1
 
@@ -466,7 +472,7 @@ class Driver:
                     final_lst.append(ret[i])
                 i += 1
 
-        self.make_unique(final_lst)         # unique by looking at the outerHTML
+        self.make_unique(final_lst)  # unique by looking at the outerHTML
 
         # the chosen_elms will be the unique outerHTML
         if len(self.chosen_elms) <= self.no_elms:
@@ -477,7 +483,7 @@ class Driver:
     def filter(self, element):
 
         if self.html_obj == "login":
-            if any(keyword.lower() in element.text.lower() for keyword in self.login_keywords):
+            if any(keyword.lower() in element.text.lower() for keyword in self.keywords):
                 if self.cursor_change(element):
                     print(f"{self.url} \t {element.text}")
                     return True
@@ -579,5 +585,17 @@ class Driver:
                 error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
                 write_results(error_message)
 
+    ############################################################
+    """            
+            Resources
+    """
+
+    ############################################################
+    def collect_failed_resources(self):
+        logs = self.driver.get_log('browser')
+        for log in logs:
+            resource, message = log['message'].split(" - ")
+            if message == "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT":
+                print(resource)
 
 shared_driver = Driver()

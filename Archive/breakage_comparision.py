@@ -78,8 +78,8 @@ def main():
         'changed': []
     }
 
-    reg_browser = initialize(False)
     abp_browser = initialize(True)
+    reg_browser = initialize(False)
     
     for website in source:
         abp_code = grab_sections(get_source_code(abp_browser, website))

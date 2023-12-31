@@ -31,9 +31,9 @@ attributes_dict = {
 sites = [
     # 'https://www.amazon.com/',
     # 'https://en.wikipedia.org/wiki/Main_Page',
-    'https://www.microsoft.com/en-us/',
-    'https://www.office.com/',
-    'https://weather.com/',
+    # 'https://www.microsoft.com/en-us/',
+    # 'https://www.office.com/',
+    # 'https://weather.com/',
     'https://openai.com/',
     'https://www.bing.com/',
     'https://duckduckgo.com/',
@@ -60,7 +60,7 @@ sites = [
     'https://github.com/'
 ]
 
-HTML_TEST = 'links'
+HTML_TEST = 'login'
 ad_blocker = 'uBlock'
 
 shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
