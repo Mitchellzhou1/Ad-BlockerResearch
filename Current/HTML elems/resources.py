@@ -3,7 +3,7 @@ from base_code import *
 
 shared_driver.adBlocker_name = 'uBlock'
 shared_driver.initialize()
-shared_driver.load_site("https://www.youtube.com/watch?v=KFNrWW9R0_8")
+shared_driver.load_site("https://github.com/")
 
 shared_driver.collect_failed_resources()
 

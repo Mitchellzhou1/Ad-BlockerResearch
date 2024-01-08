@@ -39,6 +39,14 @@ options.add_argument(
 
 options.binary_location = '/usr/local/bin/chrome_113/chrome'
 
+
+# /usr/local/bin/chrome_113/chrome --user-data-dir=/home/chatacter/Downloads/manual_analysis/wpr_data  --host-resolver-rules=“MAP *:80 127.0.0.1:9090,MAP *:443 127.0.0.1:9091,EXCLUDE localhost” --ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=
+
+
+
+
+
+
 # folder_path = f"/home/chatacter/wpr_data/"
 # if not os.path.exists(folder_path):
 # # Create the folder
@@ -59,7 +67,6 @@ go run src/wpr.go replay --http_port=9090 --https_port=9091 ~/control.wprgo
 
 class TimeoutError(Exception):
     pass
-
 
 def timeout(seconds):
     def decorator(func):
@@ -133,8 +140,12 @@ class Driver:
         current_dir = os.path.dirname(os.path.realpath(__file__))
         parent_directory = os.path.dirname(os.path.dirname(current_dir))
         extensions_dir = os.path.abspath(os.path.join(parent_directory, 'Extensions', 'Ad-Blockers'))
+
+        proxy_address = "127.0.0.1:8080"
         chrome_options = webdriver.ChromeOptions()
         # chrome_options.add_extension('Captcha-Solver-Auto-Recognition-and-Bypass.crx')
+        chrome_options.add_argument('--enable-logging')
+        options.add_argument('--proxy-server={}'.format(proxy_address))
         if self.adBlocker_name == 'AdBlockPlus':
             extension_path = os.path.join(extensions_dir, 'adBlockerPlus.crx')
             chrome_options.add_extension(extension_path)
