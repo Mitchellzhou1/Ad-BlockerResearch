@@ -1,43 +1,68 @@
-def match(rule, url):
-    parts = rule.split("*")
-    for part in parts:
-        if part not in url:
-            return False
-    return True
+import json
+import requests
 
-def binary_search(easylist, url):
-    low = 0
-    high = len(easylist) - 1
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-    while low <= high:
-        mid = (low + high) // 2
-        rule = easylist[mid].lstrip("||").rstrip("$^")  # Strip characters for comparison
-        if match(rule, url):
-            return True  # Match found
-        elif rule < url:
-            low = mid + 1
+# Initialize the WebDriver (assuming Chrome in this case)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+# Open a webpage
+driver.get("https://www.uxmatters.com/")
+
+
+def resource_type(url):
+    response = requests.head(url)
+    if response and response.headers.get('Content-Type'):
+        extension = response.headers.get('Content-Type')
+    else:
+        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg', '.ico',
+                            '.jfif', '.pjpeg', '.pjp', '.svgz', '.tif', '.tga', '.exif', '.ppm', '.pgm',
+                            '.pbm', '.pnm', '.webm', '.hdr', '.heif', '.bat', '.bpg', '.jpe', '.jp2', '.jpm',
+                            '.jpx', '.j2k', '.j2c', '.jpf', '.jpx', '.jxr', '.hdp', '.wdp', '.cur', '.dds']
+
+        if any(ext in url.lower() for ext in image_extensions):
+            extension = "image"
+
+        elif ".css" in url.lower():
+            extension = "stylesheet"
+
         else:
-            high = mid - 1
+            extension = "N/A"
 
-    return False  # No match found
+    return extension
+
+def retrieve_all_resources():
+    script = """
+    const resources = performance.getEntriesByType('resource');
+    let results = [];
+    resources.forEach(resource => {
+        results.push({
+            'URL': resource.name
+        });
+    });
+    return results;
+    """
+    result = driver.execute_script(script)
+    return [item['URL'] for item in result]
 
 
-url_to_check = 'https://geotargetly-api-ll.com/'
+def retrieve_blocked_resources():
+    blocked_resources = []
+    logs = driver.get_log('browser')
+    for log in logs:
+        resource, message = log['message'].split(" - ")
+        if message == "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT":
+            blocked_resources.append(resource)
+    return blocked_resources
 
-easylist_sample = [
-    "||g990421675.co^",
-    "||g990421676.co^",
-    "||gbqofs.com^",
-    "||geoedge.be^",
-    "||geotargetly-api-*.com^"
-]
 
-# Sort the EasyList rules for binary search (assuming the list is not too large)
-easylist_sample.sort()
+for url in retrieve_all_resources():
+    print(url)
+    print(resource_type(url))
+    print()
 
-# Perform binary search
-result = binary_search(easylist_sample, url_to_check)
-if result:
-    print(f"{url_to_check} matches an EasyList rule.")
-else:
-    print(f"{url_to_check} does not match any EasyList rule.")
+print("Done")
+while 1:
+    1
