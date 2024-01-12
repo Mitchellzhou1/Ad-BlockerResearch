@@ -4,6 +4,16 @@ shared_driver.initialize()
 shared_driver.load_site("https://www.uxmatters.com/")
 
 
+def remove_after_substring(link, substring):
+
+    for seperator in substring:
+        index = link.find(seperator)
+        if index != -1:
+            link = link[:index]
+
+    return link
+
+
 def black_list():
     """
     Combines all the Black lists into 1 big list
@@ -16,41 +26,41 @@ def black_list():
     easy_privacy = open(f"{extensions_dir}/easyprivacy.txt", "r")
     peter_lowe = open(f"{extensions_dir}/Peter Lowe", "r")
 
-    combined = []
+    combined = set()
 
     for rule in easy_privacy:
         if rule[:2] == "||":
-            rule = rule.strip().lstrip("||").rstrip("$^")
-            combined.append(rule)
+            rule = remove_after_substring(rule.strip().lstrip("||"), "^$~*")
+            combined.add(rule)
 
     for rule in easy_list:
-        if rule == "||uxmatters.com/images/sponsors/":
-            print()
         if rule[:2] == "||":
-            rule = rule.strip().lstrip("||").rstrip("$^")
-            combined.append(rule)
-
+            rule = remove_after_substring(rule.strip().lstrip("||"), "^$~*")
+            combined.add(rule)
     for rule in peter_lowe:
         if rule[:10] == "127.0.0.1 ":
             rule = rule.strip()[10:]
-            combined.append(rule)
+            combined.add(rule)
 
     return sorted(combined)
 
 
 def binary_search(blacklist, url):
-    def match(rule, url):
+    def url_formatter(link):
+        return link.strip("https://www.").strip("http://www.")
+
+    def match(rule, link):
         parts = rule.split("*")
         for part in parts:
-            if part not in url:
+            if part not in link:
                 return False
         return True
     low = 0
     high = len(blacklist) - 1
-
+    url = url_formatter(url)
     while low <= high:
         mid = (low + high) // 2
-        rule = blacklist[mid].lstrip("||").rstrip("$").rstrip("^")  # Strip characters for comparison
+        rule = blacklist[mid]
         if match(rule, url):
             print(rule)
             return True  # Match found
