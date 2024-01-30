@@ -1,28 +1,45 @@
-from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from seleniumwire import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-chrome_driver_path = '/usr/local/bin/chrome_113/chromedriver'  # Adjust this to your Chrome WebDriver path
-
-# Set up Chrome options with DevTools capabilities
+# Set up options for Chrome WebDriver with selenium-wire
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument('--headless')  # Run in headless mode (optional)
 
-# Initialize the Chrome browser with specified WebDriver path
-service = Service(chrome_driver_path)
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+# Create a proxy_options object
+proxy_options = {
+    'httpProxy': 'http://localhost:8888',  # Replace with your proxy server address
+    'sslProxy': 'http://localhost:8888',
+    'noProxy': 'localhost,127.0.0.1',  # Exclude localhost from proxy
+}
 
-# Navigate to the webpage
-driver.get('https://www.example.com')
+# Set up proxy in Chrome options
+chrome_options.add_argument('--proxy-server=http://localhost:8888')
 
-# Get all resources loaded on the page
-resources = driver.execute_cdp_cmd('Network.getAllLoadedResources', {})
+# Create a WebDriver instance with the configured options
+driver = webdriver.Chrome(
+    service=Service(ChromeDriverManager().install()),
+    options=chrome_options
+)
 
-# Print the resources
-for resource in resources['resources']:
-    print(resource['url'])
+# Send a request to the specified URL
+url = 'https://www.uxmatters.com/'
+driver.get(url)
 
-# Close the browser
+# Wait for a moment to ensure all resources are loaded
+driver.implicitly_wait(5)
+
+# Output all fetched resources
+for request in driver.requests:
+    if request.response:
+        if request.response.status_code != 200:
+            print("something blocked")
+        else:
+            print(f"URL: {request.url}")
+            print(f"Method: {request.method}")
+            print(f"Status Code: {request.response.status_code}")
+            print(f"Type: {request.response.headers['content-type']}")
+            print("")
+
+# Close the WebDriver when done
 driver.quit()
