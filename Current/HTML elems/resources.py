@@ -1,12 +1,17 @@
-from base_code import *
-# Get browser logs
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
-shared_driver.adBlocker_name = 'uBlock'
-shared_driver.initialize()
-shared_driver.load_site("https://github.com/")
+# Set up the WebDriver (you need to download the appropriate driver for your browser)
+driver = webdriver.Chrome()
 
-shared_driver.collect_failed_resources()
+# Navigate to a webpage
+driver.get("https://en.wikipedia.org/wiki/Main_Page")
 
-print("Done")
-while 1:
-    1
+try:
+    # Find elements using XPath
+    element = driver.find_element(By.XPATH, "//div[@class='thumbinner mp-thumb']")
+    print(element.screenshot_as_base64)
+
+finally:
+    # Close the WebDriver
+    driver.quit()

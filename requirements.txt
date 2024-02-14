@@ -1,0 +1,4 @@
+selenium
+webdriver_manager
+selenium-wire
+browsermob-proxy
