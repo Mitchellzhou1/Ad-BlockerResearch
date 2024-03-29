@@ -29,38 +29,38 @@ attributes_dict = {
 }
 
 sites = [
-    'https://www.amazon.com/',
-    'https://en.wikipedia.org/wiki/Main_Page',
-    'https://www.microsoft.com/en-us/',
-    'https://www.office.com/',
-    'https://weather.com/',
-    'https://openai.com/',
-    'https://www.bing.com/',
-    'https://duckduckgo.com/',
-    'https://cnn.com',
-    'https://www.nytimes.com/',
-    'https://www.twitch.tv/',
-    'https://www.imdb.com/',
-    'https://www.qq.com/',
-    'https://mail.ru/',
-    'https://naver.com',
-    'https://zoom.us/',
-    'https://www.globo.com/',
-    'https://www.ebay.com/',
-    'https://www.foxnews.com/',
-    'https://www.instructure.com/',
-    'https://www.walmart.com/',
-    'https://www.indeed.com/',
-    'https://www.paypal.com/us/home',
-    'https://www.accuweather.com/',
-    'https://www.pinterest.com/',
-    'https://www.bbc.com/',
-    'https://www.homedepot.com/',
-    'https://www.breitbart.com/',
-    'https://github.com/'
+    'http://www.feimaoyun.com',
+    # 'https://en.wikipedia.org/wiki/Main_Page',
+    # 'https://www.microsoft.com/en-us/',
+    # 'https://www.office.com/',
+    # 'https://weather.com/',
+    # 'https://openai.com/',
+    # 'https://www.bing.com/',
+    # 'https://duckduckgo.com/',
+    # 'https://cnn.com',
+    # 'https://www.nytimes.com/',
+    # 'https://www.twitch.tv/',
+    # 'https://www.imdb.com/',
+    # 'https://www.qq.com/',
+    # 'https://mail.ru/',
+    # 'https://naver.com',
+    # 'https://zoom.us/',
+    # 'https://www.globo.com/',
+    # 'https://www.ebay.com/',
+    # 'https://www.foxnews.com/',
+    # 'https://www.instructure.com/',
+    # 'https://www.walmart.com/',
+    # 'https://www.indeed.com/',
+    # 'https://www.paypal.com/us/home',
+    # 'https://www.accuweather.com/',
+    # 'https://www.pinterest.com/',
+    # 'https://www.bbc.com/',
+    # 'https://www.homedepot.com/',
+    # 'https://www.breitbart.com/',
+    # 'https://github.com/'
 ]
 
-HTML_TEST = 'dropdown'
+HTML_TEST = 'buttons'
 ad_blocker = 'uBlock'
 
 shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
@@ -119,10 +119,12 @@ def main():
     if not os.path.isfile(f"{HTML_TEST}.json"):
         storeDictionary({})
     shared_driver.initialize()
-    initialize_xlsx()
+    # initialize_xlsx()
 
-    # sites = ['https://www.imdb.com/']
+    sites = ["http://www.feimaoyun.com"]
     tries = 1
+    for url in sites:
+        shared_driver.load_site(url)
 
     try:
         scan_website()
@@ -131,6 +133,7 @@ def main():
     except Exception as e:
         error = str(e).split("\n")[0]
         write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
+
 
     # while shared_driver.curr_site > -1:
     #     try:
@@ -145,6 +148,7 @@ def main():
     #             tries = 1
     #             shared_driver.tries = 1
     #             shared_driver.curr_elem += 1
+
 
 
 

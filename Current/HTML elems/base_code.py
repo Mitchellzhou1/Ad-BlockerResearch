@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import time
 import signal
 import functools
@@ -319,22 +320,29 @@ class Driver:
             return xpath
         return None
 
-    def get_correct_elem(self, xpath):
+    def get_correct_elem(self, xpath, outerHTML):
         counter = self.xpath_remover
         while "[" in xpath and counter:
             elements = self.driver.find_elements(By.XPATH, xpath)  # will return [] if none are found
             for i in elements:
-                if i.get_attribute("outerHTML") == self.initial_outer_html:
+                if i.get_attribute("outerHTML") == outerHTML:
                     return i
             try:  # sometimes the structure is the same.
                 return self.driver.find_element(By.XPATH, xpath)
             except Exception:
-                xpath_list = xpath.split("[")
-                xpath_list.remove(max(xpath_list, key=len))
-                xpath = "[".join(xpath_list)
-            self.xpath_remover -= 1
-        self.xpath_remover = 3
-        return self.driver.find_element(By.XPATH, xpath)  # will error if none are found
+                button_part = xpath.split("[")[0]
+                xpath_list = re.findall(r'\[@.*?\]', xpath)
+                rem_candidate = max(xpath_list, key=len)
+                if "aria-label" in rem_candidate:
+                    rem_candidate = min(xpath_list, key=len)
+                xpath_list.remove(rem_candidate)
+                xpath = ''.join([button_part] + xpath_list)
+            counter -= 1
+        try:
+            return self.driver.find_element(By.XPATH, xpath)  # will error if none are found
+        except Exception as e:
+            print("Didn't find element")
+        return None
 
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
@@ -370,12 +378,13 @@ class Driver:
     @timeout(300)
     def test_button(self, tries):
         site = self.all_sites[self.curr_site]
-        outerHTML = self.dictionary[site][self.curr_elem]
+        outerHTML, refresh = self.dictionary[site][self.curr_elem]
         xpath = self.generate_xpath(outerHTML)
 
-        self.load_site(site)
+        if refresh:
+            self.load_site(site)
         self.initial_outer_html = outerHTML
-        element = self.get_correct_elem(xpath)
+        element = self.get_correct_elem(xpath, outerHTML)
         self.initial_local_DOM = self.get_local_DOM(element)
 
         initial_tag = self.count_tags()
@@ -398,6 +407,11 @@ class Driver:
             write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
                            self.initial_local_DOM, self.after_local_DOM, '', '', tries])
 
+        elif check == "True - More Tags":
+            # need to figure out algo after find the difference
+            write_results([check, self.outer_HTML_changed, self.DOM_changed, self.initial_outer_html, '',
+                           self.initial_local_DOM, self.after_local_DOM, '', '', tries])
+
         elif check == "False":
             write_results([check, "False", "False", self.initial_outer_html, '',
                            "", "", '', '', tries])
@@ -405,11 +419,12 @@ class Driver:
     def click_on_elms(self, tries):
 
         while self.curr_site < len(self.all_sites):
-            self.test_button(tries)
-            self.curr_elem += 1
             if self.curr_elem >= len(self.dictionary[self.all_sites[self.curr_site]]):
                 self.curr_site += 1
                 self.curr_elem = 0
+            else:
+                self.test_button(tries)
+                self.curr_elem += 1
 
         self.curr_site = -1
 
@@ -426,16 +441,16 @@ class Driver:
         self.get_elements()
         self.dictionary[self.url] = self.chosen_elms
 
-        while self.curr_elem < len(self.dictionary[self.url]):
-            try:
-                xpath = self.generate_xpath(self.dictionary[self.url][self.curr_elem])
-                elm = self.get_correct_elem(xpath)
-                elm.click()
-                sleep(1)
-                self.load_site(self.url)
-            except Exception:
-                pass
-            self.curr_elem += 1
+        # while self.curr_elem < len(self.dictionary[self.url]):
+        #     try:
+        #         xpath = self.generate_xpath(self.dictionary[self.url][self.curr_elem])
+        #         elm = self.get_correct_elem(xpath, self.initial_outer_html)
+        #         elm.click()
+        #         sleep(1)
+        #         self.load_site(self.url)
+        #     except Exception:
+        #         pass
+        #     self.curr_elem += 1
         all_windows = self.driver.window_handles
         if len(all_windows) > 1:
             for window in all_windows[1:]:
@@ -448,8 +463,9 @@ class Driver:
         storeDictionary(self.dictionary)
 
     def make_unique(self, potential):
-        self.chosen_elms = [elem.get_attribute("outerHTML") for elem in potential]
-        self.chosen_elms = list(set(self.chosen_elms))
+        temp = [elem.get_attribute("outerHTML") for elem in potential]
+        temp = list(set(temp))
+        self.chosen_elms = [[html, 2] for html in temp]
 
     def get_elements(self):
         # returns the contents (will be selenium objs)
