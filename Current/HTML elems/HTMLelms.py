@@ -5,7 +5,7 @@ from selenium.common import ElementClickInterceptedException, ElementNotInteract
 
 attributes_dict = {
     "buttons": {
-        "attributes": ['button', 'submit', '#'],
+        "attributes": ['button', '#', '/'],
         "xpaths": ['@role', '@type']
     },
     "drop downs": {
@@ -29,7 +29,7 @@ attributes_dict = {
 }
 
 sites = [
-    'http://www.feimaoyun.com',
+    # 'http://www.feimaoyun.com',
     # 'https://en.wikipedia.org/wiki/Main_Page',
     # 'https://www.microsoft.com/en-us/',
     # 'https://www.office.com/',
@@ -59,7 +59,6 @@ sites = [
     # 'https://www.breitbart.com/',
     # 'https://github.com/'
 ]
-
 HTML_TEST = 'buttons'
 ad_blocker = 'uBlock'
 
@@ -70,7 +69,7 @@ shared_driver.html_obj = HTML_TEST
 set_HTML_obj(HTML_TEST)
 
 
-def scan_website():
+def scan_website(sites):
     curr_site = 0
     while curr_site < len(sites):
         url = sites[curr_site]
@@ -121,13 +120,12 @@ def main():
     shared_driver.initialize()
     # initialize_xlsx()
 
-    sites = ["http://www.feimaoyun.com"]
+    sites = ["https://www.br.de/index.html"]
     tries = 1
     for url in sites:
         shared_driver.load_site(url)
-
     try:
-        scan_website()
+        scan_website(sites)
     except TimeoutException:
         write_noscan_row(shared_driver.url)
     except Exception as e:

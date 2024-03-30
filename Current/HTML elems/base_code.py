@@ -463,9 +463,9 @@ class Driver:
         storeDictionary(self.dictionary)
 
     def make_unique(self, potential):
-        temp = [elem.get_attribute("outerHTML") for elem in potential]
-        temp = list(set(temp))
-        self.chosen_elms = [[html, 2] for html in temp]
+        # temp = [elem.get_attribute("outerHTML") for elem in potential]
+        # temp = list(set(temp))
+        self.chosen_elms = [[elem, 2] for elem in potential]
 
     def get_elements(self):
         # returns the contents (will be selenium objs)
@@ -490,16 +490,17 @@ class Driver:
                 except Exception as e:
                     continue
         else:
-            random.shuffle(ret)
-            final_lst = []
+            # random.shuffle(ret)   No random shuffle so that the slideshows are better to click on
+            unique = []
             limit = min(15, len(ret))
             i = 0
-            while len(final_lst) < limit and i < len(ret):
-                if self.filter(ret[i]):
-                    final_lst.append(ret[i])
+            while len(unique) < limit and i < len(ret):
+                print(i, len(unique), ret[i].get_attribute("outerHTML"))
+                if self.filter(ret[i]) and ret[i].get_attribute("outerHTML") not in unique:
+                    unique.append(ret[i].get_attribute("outerHTML"))
                 i += 1
 
-        self.make_unique(final_lst)  # unique by looking at the outerHTML
+        self.make_unique(unique)  # unique by looking at the outerHTML
 
         # the chosen_elms will be the unique outerHTML
         if len(self.chosen_elms) <= self.no_elms:
