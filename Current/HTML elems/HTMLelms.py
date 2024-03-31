@@ -120,7 +120,7 @@ def main():
     shared_driver.initialize()
     # initialize_xlsx()
 
-    sites = ["https://www.br.de/index.html"]
+    sites = ["http://www.bidtheatre.com"]
     tries = 1
     for url in sites:
         shared_driver.load_site(url)
@@ -149,7 +149,7 @@ def main():
 
 
 
-
+    shared_driver.driver.close()
     print("\n\nFinished Testing on All Sites!\n\n\n")
     # vdisplay.stop()
 

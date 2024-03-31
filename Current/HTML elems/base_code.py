@@ -413,8 +413,26 @@ class Driver:
                            self.initial_local_DOM, self.after_local_DOM, '', '', tries])
 
         elif check == "False":
+            if self.is_slideshow(self.initial_outer_html):
+                check = 'True? - slideshow'
+            elif self.is_required(self.initial_outer_html):
+                check = 'Filtered - user interaction required'
+            elif self.is_scrollpage(self.initial_outer_html):
+                check = 'True? - page was scrolled'
+            elif self.is_download_link(self.initial_outer_html):
+                check = 'True? - download link'
+            elif self.is_open_application(self.initial_outer_html):
+                check = 'True? - opened application'
+            else:
+                self.dictionary[site][self.curr_elem][1] = 0
+                lst = self.dictionary[self.all_sites[self.curr_site]]
+                if self.curr_elem + 1 < len(lst):
+                    lst[self.curr_elem], lst[self.curr_elem + 1] = lst[self.curr_elem + 1], lst[self.curr_elem]
+                    self.curr_elem -= 1
+                return
+
             write_results([check, "False", "False", self.initial_outer_html, '',
-                           "", "", '', '', tries])
+                       "", "", '', '', tries])
 
     def click_on_elms(self, tries):
 
@@ -465,7 +483,7 @@ class Driver:
     def make_unique(self, potential):
         # temp = [elem.get_attribute("outerHTML") for elem in potential]
         # temp = list(set(temp))
-        self.chosen_elms = [[elem, 2] for elem in potential]
+        self.chosen_elms = [[elem, 1] for elem in potential]
 
     def get_elements(self):
         # returns the contents (will be selenium objs)
@@ -532,8 +550,9 @@ class Driver:
                     elements = self.driver.find_elements(By.XPATH, xpath)
                     for element in elements:
                         if element not in found_elements:
-                            if self.html_obj == "buttons" and "href" not in element.get_attribute("outerHTML"):
-                                found_elements.append(element)
+                            if self.html_obj == "buttons":
+                                if "href" not in element.get_attribute("outerHTML"):
+                                    found_elements.append(element)
                             else:
                                 found_elements.append(element)
                 except Exception as e:
@@ -625,5 +644,72 @@ class Driver:
             resource, message = log['message'].split(" - ")
             if message == "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT":
                 print(resource)
+
+
+    ############################################################
+
+    """            
+            False Positive Findings
+    """
+
+    ############################################################
+
+    def is_slideshow(self, html):
+        html = html.lower()
+        possible = ['active', 'aria-pressed="true"', 'aria-selected="true"']
+        for attribute in possible:
+            if attribute in html:
+                return None
+        return False
+
+    def is_required(self, html):
+        soup = BeautifulSoup(html, 'html.parser')
+        tag = soup
+        if soup.find() == 'input':
+            return True
+        keywords = ['aria-disabled="true"', ' disabled ', 'disabled=""']
+        if any(keyword in html.lower() for keyword in keywords):
+            return True
+        return False
+
+    def is_scrollpage(self, html):
+        soup = BeautifulSoup(html, 'html.parser')
+        # Find all <a> tags with href starting with "#"
+        scroll_links = soup.find_all('a', href=lambda href: href and href.startswith('#') and len(href) > 1)
+        if scroll_links:
+            return True
+
+        keywords = ['scrollintoview', 'scroll-down']
+        if any(keyword in html.lower() for keyword in keywords):
+            return True
+        return False
+
+    def is_download_link(self, html):
+        file_extensions = [
+            '.aac', '.aif', '.aifc', '.aiff', '.au', '.avi', '.bat', '.bin', '.bmp', '.bz2',
+            '.c', '.class', '.com', '.cpp', '.css', '.csv', '.dat', '.dmg', '.doc', '.docx',
+            '.dot', '.dotx', '.eps', '.exe', '.flac', '.flv', '.gif', '.gzip', '.h', '.htm',
+            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.json', '.log', '.m4a',
+            '.m4v', '.mid', '.midi', '.mov', '.mp3', '.mp4', '.mpa', '.mpeg', '.mpg', '.odp',
+            '.ods', '.odt', '.ogg', '.otf', '.pdf', '.php', '.pl', '.png', '.ppt', '.pptx',
+            '.ps', '.psd', '.py', '.qt', '.rar', '.rb', '.rtf', '.s', '.sh', '.svg', '.swf',
+            '.tar', '.tar.gz', '.tex', '.tif', '.tiff', '.ttf', '.txt', '.wav', '.webm', '.wma',
+            '.wmv', '.woff', '.woff2', '.xls', '.xlsx', '.xml', '.yml', '.zip', '.apk'
+        ]
+        if any(html.endswith(ext) for ext in file_extensions):
+            return True
+
+        # Check if URL contains certain keywords
+        if 'download' in html.lower() or 'file' in html.lower():
+            return True
+        return False
+
+    def is_open_application(self, html):
+        potential = ['mailto', 'tel', 'sms']
+        for attribute in potential:
+            if attribute in html.lower():
+                return True
+        return False
+
 
 shared_driver = Driver()
