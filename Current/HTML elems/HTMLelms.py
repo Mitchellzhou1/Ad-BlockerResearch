@@ -1,157 +1,80 @@
-from base_code import *
-from Excel import *
+import pandas as pd
+import json
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+import os
 
-from selenium.common import ElementClickInterceptedException, ElementNotInteractableException, InvalidSelectorException
+# Path to your JSON file
+# json_file_path = 'buttons_control.json'
+# Path to your Excel file
+# excel_file_path = 'buttons_control.xlsx'
 
-attributes_dict = {
-    "buttons": {
-        "attributes": ['button', '#', '/'],
-        "xpaths": ['@role', '@type']
-    },
-    "drop downs": {
-        "attributes": ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
-                       'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
-                       'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
-                       'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
-                       'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
-                       'Collapse Your Library'],
-        "xpaths": ['@aria-expanded', '@aria-label', '@class', '@aria-haspopup', '@aria-describedby', '@data-testid']
-    },
-    "links": {
-        "attributes": [],
-        "xpaths": ['href']
-    },
-    "login": {  # remember to enable HREF
-        "attributes": ['button', 'submit', '#'],
-        "xpaths": ['@role', '@type']
-    }
+# Load JSON data
 
-}
-
-sites = [
-    # 'http://www.feimaoyun.com',
-    # 'https://en.wikipedia.org/wiki/Main_Page',
-    # 'https://www.microsoft.com/en-us/',
-    # 'https://www.office.com/',
-    # 'https://weather.com/',
-    # 'https://openai.com/',
-    # 'https://www.bing.com/',
-    # 'https://duckduckgo.com/',
-    # 'https://cnn.com',
-    # 'https://www.nytimes.com/',
-    # 'https://www.twitch.tv/',
-    # 'https://www.imdb.com/',
-    # 'https://www.qq.com/',
-    # 'https://mail.ru/',
-    # 'https://naver.com',
-    # 'https://zoom.us/',
-    # 'https://www.globo.com/',
-    # 'https://www.ebay.com/',
-    # 'https://www.foxnews.com/',
-    # 'https://www.instructure.com/',
-    # 'https://www.walmart.com/',
-    # 'https://www.indeed.com/',
-    # 'https://www.paypal.com/us/home',
-    # 'https://www.accuweather.com/',
-    # 'https://www.pinterest.com/',
-    # 'https://www.bbc.com/',
-    # 'https://www.homedepot.com/',
-    # 'https://www.breitbart.com/',
-    # 'https://github.com/'
+extn_lst = [
+    # 'manual'
+    'control',
+    'adblock',
+    'ublock'
+    # , 'privacy-badger'
+    #     "ghostery",
+    #     "adguard"
 ]
-HTML_TEST = 'buttons'
-ad_blocker = 'uBlock'
 
-shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
-shared_driver.xPaths = attributes_dict[HTML_TEST]["xpaths"]
-shared_driver.adBlocker_name = ad_blocker
-shared_driver.html_obj = HTML_TEST
-set_HTML_obj(HTML_TEST)
+HTML_TEST = {'buttons', "drop downs", "links", "login"}
+HTML_TEST = {'buttons'}
 
+# Your specified headers
+headers = ["URL_KEY", "HTML_obj Opened?", "Outer HTML Change", "DOM structure Change", "Initial Outer HTML",
+           "After Click Outer HTML", "Initial DOM Structure", "After Click DOM Structure", "Initial Link",
+           "After Click Link", "Tries"]
 
-def scan_website(sites):
-    curr_site = 0
-    while curr_site < len(sites):
-        url = sites[curr_site]
+# Process the JSON data
+for extn in extn_lst:
+    # Iterate through each HTML object and its data
+    for html_obj in HTML_TEST:
 
-        if shared_driver.load_site(url):
-            shared_driver.scan_page()
-        else:
-            write_noscan_row(url)
+        with open(f"xlsx/{html_obj}_control.json", 'r') as file:
+            control = json.load(file)
 
-        curr_site += 1
+        with open(f"xlsx/{html_obj}_{extn}.json", 'r') as file:
+            curr_data = json.load(file)
 
+        rows = []
+        for url_key, inner_data in curr_data.items():
+            if curr_data[url_key] == []:
+                continue
+            if url_key not in control.keys():
+                # Check everything if the site was not found in the control!!!
+                rows.append([url_key] + ["Site not found in Control"] + [None] * (len(headers) - 2))  # URL row
+                for unit_data in inner_data:
+                    row_data = [None] + unit_data
+                    rows.append(row_data[:len(headers)])
 
-def error_catcher(e, tries, url):
-    if shared_driver.tries != 3:
-        shared_driver.reinitialize()
-        tries += 1
-        return tries
+            else:
+                # if the site was not found in the control!!!
+                rows.append([url_key] + ["Filtered with Control Results"] + [None] * (len(headers) - 2))  # URL row
+                for extn_unit_data in inner_data:
+                    found = False
+                    for control_unit_data in control[url_key]:
+                        # compare the outer HTML to make sure we looking at the right elem
+                        if control_unit_data[3] == extn_unit_data[3]:
+                            if control_unit_data[0] == extn_unit_data[0]:
+                                pass
+                            else:
+                                row_data = ["Diff result"] + control_unit_data
+                                rows.append(row_data[:len(headers)])
+                            found = True
+                            break
 
-    if isinstance(e, ElementClickInterceptedException):
-        error = "N/A - Element Click Intercepted"
-    elif isinstance(e, ElementNotInteractableException):
-        error = "N/A - Not Interactable"
-    elif isinstance(e, StaleElementReferenceException):
-        error = "StaleElementReferenceException"
-    elif isinstance(e, NoSuchElementException):
-        error = "N/A - No such Element"
-    elif isinstance(e, InvalidSelectorException):
-        error = "N/A - InvalidSelectorException"
-    elif isinstance(e, IndexError):
-        print("ok")
-    elif isinstance(e, TimeoutError):
-        write_noscan_row(url)
-        tries = 1
-        shared_driver.tries = 1
-        shared_driver.curr_elem += 1
-        print("TIME OUT EERRORRR")
-        return tries
+                    if not found:
+                        row_data = ["elem not in control"] + control_unit_data
+                        rows.append(row_data[:len(headers)])
 
-    error = str(e).split("\n")[0]
-    return error
+        # Create a DataFrame with the collected rows
+        df = pd.DataFrame(rows, columns=headers)
 
-def main():
+        # Save the DataFrame to an Excel file
+        df.to_excel(f"{html_obj}_{extn}_filtered.xlsx", index=False)
 
-    # vdisplay = Display(visible=False, size=(1920, 1080))
-    # vdisplay.start()
-    if not os.path.isfile(f"{HTML_TEST}.json"):
-        storeDictionary({})
-    shared_driver.initialize()
-    # initialize_xlsx()
-
-    sites = ["http://www.bidtheatre.com"]
-    tries = 1
-    for url in sites:
-        shared_driver.load_site(url)
-    try:
-        scan_website(sites)
-    except TimeoutException:
-        write_noscan_row(shared_driver.url)
-    except Exception as e:
-        error = str(e).split("\n")[0]
-        write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
-
-
-    # while shared_driver.curr_site > -1:
-    #     try:
-    #         shared_driver.click_on_elms(tries)
-    #     except Exception as e:
-    #         result = error_catcher(e, tries, shared_driver.url)
-    #         if type(result) is int:
-    #             tries = result
-    #         else:
-    #             print(shared_driver.url, "\t", result, shared_driver.initial_outer_html)
-    #             write_results([result, "N/A", "N/A", shared_driver.initial_outer_html, tries])
-    #             tries = 1
-    #             shared_driver.tries = 1
-    #             shared_driver.curr_elem += 1
-
-
-
-    shared_driver.driver.close()
-    print("\n\nFinished Testing on All Sites!\n\n\n")
-    # vdisplay.stop()
-
-
-main()
+print('Data successfully saved to Excel file.')
