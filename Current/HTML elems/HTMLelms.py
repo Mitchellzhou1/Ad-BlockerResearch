@@ -15,19 +15,28 @@ extn_lst = [
     # 'manual'
     'control',
     'adblock',
-    'ublock'
+    # 'ublock'
     # , 'privacy-badger'
     #     "ghostery",
     #     "adguard"
 ]
 
+with open(f"xlsx/buttons_control.json", 'r') as file:
+    control = json.load(file)
+
+with open(f"xlsx/buttons_adblock.json", 'r') as file:
+    curr_data = json.load(file)
+
+
 HTML_TEST = {'buttons', "drop downs", "links", "login"}
 HTML_TEST = {'buttons'}
 
 # Your specified headers
-headers = ["URL_KEY", "HTML_obj Opened?", "Outer HTML Change", "DOM structure Change", "Initial Outer HTML",
-           "After Click Outer HTML", "Initial DOM Structure", "After Click DOM Structure", "Initial Link",
-           "After Click Link", "Tries"]
+# headers = ["URL_KEY", "HTML_obj Opened?", "Outer HTML Change", "DOM structure Change", "Initial Outer HTML",
+#            "After Click Outer HTML", "Initial DOM Structure", "After Click DOM Structure", "Initial Link",
+#            "After Click Link", "Tries"]
+
+headers = ["URL_KEY", "HTML_obj Opened?", "Control Result", "Initial Outer HTML"]
 
 # Process the JSON data
 for extn in extn_lst:
