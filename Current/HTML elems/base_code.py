@@ -1,5 +1,4 @@
 import os
-import random
 import re
 import time
 import signal
@@ -11,7 +10,7 @@ import pyautogui
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common import NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException
+from selenium.common import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
@@ -40,14 +39,7 @@ options.add_argument(
 
 options.binary_location = '/usr/local/bin/chrome_113/chrome'
 
-
 # /usr/local/bin/chrome_113/chrome --user-data-dir=/home/chatacter/Downloads/manual_analysis/wpr_data  --host-resolver-rules=“MAP *:80 127.0.0.1:9090,MAP *:443 127.0.0.1:9091,EXCLUDE localhost” --ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=
-
-
-
-
-
-
 # folder_path = f"/home/chatacter/wpr_data/"
 # if not os.path.exists(folder_path):
 # # Create the folder
@@ -712,4 +704,4 @@ class Driver:
         return False
 
 
-shared_driver = Driver()
+# shared_driver = Driver()
