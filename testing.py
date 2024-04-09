@@ -157,7 +157,7 @@ def content_eval(content_header):
 
 
 def write_JSON(name, my_dict):
-    json_file_path = name + ".json"
+    json_file_path = name + ".replay_0"
     with open(json_file_path, "w") as json_file:
         json.dump(my_dict, json_file)
 

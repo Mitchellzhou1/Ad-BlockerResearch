@@ -1,11 +1,11 @@
-from PSAL_base_code import *
+from base_code import *
 from Excel import *
 
 from selenium.common import ElementClickInterceptedException, ElementNotInteractableException, InvalidSelectorException
 
 attributes_dict = {
     "buttons": {
-        "attributes": ['button', 'submit', '#'],
+        "attributes": ['button', '#', '/'],
         "xpaths": ['@role', '@type']
     },
     "drop downs": {
@@ -29,7 +29,7 @@ attributes_dict = {
 }
 
 sites = [
-    # 'https://www.amazon.com/',
+    # 'http://www.feimaoyun.com',
     # 'https://en.wikipedia.org/wiki/Main_Page',
     # 'https://www.microsoft.com/en-us/',
     # 'https://www.office.com/',
@@ -59,23 +59,17 @@ sites = [
     # 'https://www.breitbart.com/',
     # 'https://github.com/'
 ]
-
 HTML_TEST = 'buttons'
 ad_blocker = 'uBlock'
-replay = 1
-data_dict = {}
-excel_dict = {}
-hierarchy_dict = {}
-# shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
-# shared_driver.xPaths = attributes_dict[HTML_TEST]["xpaths"]
-# shared_driver.adBlocker_name = ad_blocker
-# html_obj = shared_driver.html_obj = HTML_TEST
+
+shared_driver.attributes = attributes_dict[HTML_TEST]["attributes"]
+shared_driver.xPaths = attributes_dict[HTML_TEST]["xpaths"]
+shared_driver.adBlocker_name = ad_blocker
+shared_driver.html_obj = HTML_TEST
 set_HTML_obj(HTML_TEST)
-shared_driver = Driver(attributes_dict[HTML_TEST]["attributes"], attributes_dict[HTML_TEST]["xpaths"], ad_blocker,
-                       replay, data_dict, excel_dict, hierarchy_dict)
 
 
-def scan_website():
+def scan_website(sites):
     curr_site = 0
     while curr_site < len(sites):
         url = sites[curr_site]
@@ -123,20 +117,21 @@ def main():
     # vdisplay.start()
     if not os.path.isfile(f"{HTML_TEST}.json"):
         storeDictionary({})
+    shared_driver.initialize()
+    # initialize_xlsx()
 
-    options = Options()
-    num_tries = 3
-    shared_driver.initialize(options, num_tries, )
-    initialize_xlsx()
+    sites = ["http://www.bidtheatre.com"]
     tries = 1
-
+    for url in sites:
+        shared_driver.load_site(url)
     try:
-        scan_website()
+        scan_website(sites)
     except TimeoutException:
         write_noscan_row(shared_driver.url)
     except Exception as e:
         error = str(e).split("\n")[0]
         write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
+
 
     # while shared_driver.curr_site > -1:
     #     try:
@@ -154,6 +149,7 @@ def main():
 
 
 
+    shared_driver.driver.close()
     print("\n\nFinished Testing on All Sites!\n\n\n")
     # vdisplay.stop()
 

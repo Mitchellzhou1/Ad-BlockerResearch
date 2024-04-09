@@ -1,0 +1,172 @@
+{
+    "http://www.asianmobilenews.com/": [],
+    "https://www.niost.org/": [
+        [
+            "<a href=\"#\" wk-slidenav-previous=\"\" wk-slideshow-item=\"previous\" class=\"wk-icon wk-slidenav-previous wk-slidenav\" role=\"button\" aria-controls=\"wk-slideshow-1\" aria-label=\"Previous slide\"><svg width=\"14\" height=\"24\" viewBox=\"0 0 14 24\"><polyline fill=\"none\" stroke=\"#000\" stroke-width=\"1.4\" points=\"12.775,1 1.225,12 12.775,23\"></polyline></svg></a>",
+            1
+        ],
+        [
+            "<a href=\"#\" wk-slidenav-next=\"\" wk-slideshow-item=\"next\" class=\"wk-icon wk-slidenav-next wk-slidenav\" role=\"button\" aria-controls=\"wk-slideshow-1\" aria-label=\"Next slide\"><svg width=\"14\" height=\"24\" viewBox=\"0 0 14 24\"><polyline fill=\"none\" stroke=\"#000\" stroke-width=\"1.4\" points=\"1.225,23 12.775,12 1.225,1\"></polyline></svg></a>",
+            1
+        ]
+    ],
+    "https://theoceanpaper.com/": [
+        [
+            "<button type=\"submit\" class=\"btn newsletter__submit\" name=\"commit\" id=\"Subscribe\">\n                <span class=\"newsletter__submit-text--large\">Join</span>\n              </button>",
+            1
+        ],
+        [
+            "<input type=\"submit\" id=\"footer-subscribe\" value=\"Join\">",
+            1
+        ]
+    ],
+    "https://www.ecbeing.net/": [],
+    "https://www.w3.org/": [],
+    "http://www.geocinema.ge/ka": [
+        [
+            "<button type=\"submit\" class=\"form-control sb\">&gt;\n\t\t\t\t\t\t\t\t\n\t\t\t                </button>",
+            1
+        ]
+    ],
+    "https://www.goldtip.com/": [
+        [
+            "<button type=\"submit\" name=\"search-button\" class=\"search \" aria-label=\"Submit search keywords\"></button>",
+            1
+        ],
+        [
+            "<button class=\"slick-prev slick-arrow\" aria-label=\"Previous\" type=\"button\" style=\"\">Previous</button>",
+            1
+        ],
+        [
+            "<button class=\"slick-next slick-arrow\" aria-label=\"Next\" type=\"button\" style=\"\">Next</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" role=\"tab\" id=\"slick-slide-control00\" aria-controls=\"slick-slide00\" aria-label=\"1 of 2\" tabindex=\"-1\">1</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" role=\"tab\" id=\"slick-slide-control01\" aria-controls=\"slick-slide01\" aria-label=\"2 of 2\" tabindex=\"0\" aria-selected=\"true\">2</button>",
+            1
+        ],
+        [
+            "<button id=\"onetrust-pc-btn-handler\" class=\"cookie-setting-link\">Manage Choices</button>",
+            1
+        ],
+        [
+            "<button id=\"onetrust-reject-all-handler\">Reject All</button>",
+            1
+        ],
+        [
+            "<button id=\"onetrust-accept-btn-handler\">Accept Cookies</button>",
+            1
+        ],
+        [
+            "<button class=\"onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon\" style=\"background-image: url(&quot;https://cdn.cookielaw.org/logos/static/ot_close.svg&quot;);\" aria-label=\"Close\"></button>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/hunting-arrows/\" class=\"nav-link click-to-open dropdown-toggle dropdown-toggle__category\" role=\"button\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n<span class=\"nav-link__text\">Hunting Arrows\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/target-arrows/\" class=\"nav-link click-to-open dropdown-toggle dropdown-toggle__category\" role=\"button\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n<span class=\"nav-link__text\">Target Arrows\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/youth-arrows/\" class=\"nav-link click-to-open dropdown-toggle dropdown-toggle__category\" role=\"button\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n<span class=\"nav-link__text\">Youth Arrows\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/crossbow-bolts/\" class=\"nav-link click-to-open dropdown-toggle dropdown-toggle__category\" role=\"button\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n<span class=\"nav-link__text\">Crossbow Bolts\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/components-2/\" class=\"nav-link click-to-open dropdown-toggle dropdown-toggle__category\" role=\"button\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n<span class=\"nav-link__text\">Components\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ],
+        [
+            "<a href=\"https://www.goldtip.com/gear/arrow-tubes/gold-tip-arrow-tube/GT-GTARROWTUBE.html\" class=\"nav-link dropdown-toggle__link\" role=\"button\">\n<span class=\"nav-link__text\">Arrow Tube\n<span class=\"font-fix\"></span>\n</span>\n</a>",
+            1
+        ]
+    ],
+    "http://molekula-polzy.ru/": [
+        [
+            "<a data-snid=\"vk\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"fb\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"ok\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"tw\" class=\"sn-icon\"></a>",
+            1
+        ]
+    ],
+    "https://aevm.pt/": [],
+    "https://www.dazn.com/en-US/welcome": [
+        [
+            "<button id=\"HEADER_SIGN_UP\" class=\"css-1bpjs9g\"><span>SIGN UP NOW</span></button>",
+            1
+        ],
+        [
+            "<button id=\"HEADER_SIGN_IN\" class=\"css-1ly319g\"><span>SIGN IN</span></button>",
+            1
+        ],
+        [
+            "<button class=\"css-zgmwi4\">BUY NOW FOR $69.99 \u2192</button>",
+            1
+        ],
+        [
+            "<button aria-label=\"Go to previous item\" cursor=\"pointer\" class=\"sc-bqiRlB gBLxyW css-sx4ymz\"><span class=\"sc-ksdxgE bNwVPD\"><svg width=\"18\" height=\"10\" viewBox=\"0 0 18 10\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 9.91003L0.590004 1.50003L2 0.0900269L9 7.09003L16 0.0900269L17.41 1.50003L9 9.91003Z\" fill=\"#F9FAFA\"></path></svg></span></button>",
+            1
+        ],
+        [
+            "<button aria-label=\"Go to next item\" cursor=\"pointer\" class=\"sc-bqiRlB gBLxyW css-1lqb9h0\"><span class=\"sc-ksdxgE iGSIvz\"><svg width=\"18\" height=\"10\" viewBox=\"0 0 18 10\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 9.91003L0.590004 1.50003L2 0.0900269L9 7.09003L16 0.0900269L17.41 1.50003L9 9.91003Z\" fill=\"#F9FAFA\"></path></svg></span></button>",
+            1
+        ],
+        [
+            "<button id=\"onetrust-accept-btn-handler\">Agree</button>",
+            1
+        ]
+    ],
+    "https://hyperallergic.com/": [
+        [
+            "<button type=\"button\" class=\"newspack-reader__logins__google\">\n\t\t\t\t<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M19.6 10.227C19.6 9.51801 19.536 8.83701 19.418 8.18201H10V12.05H15.382C15.2706 12.6619 15.0363 13.2448 14.6932 13.7635C14.3501 14.2822 13.9054 14.726 13.386 15.068V17.578H16.618C18.509 15.836 19.6 13.273 19.6 10.228V10.227Z\" fill=\"#4285F4\"></path>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M9.99996 20C12.7 20 14.964 19.105 16.618 17.577L13.386 15.068C12.491 15.668 11.346 16.023 9.99996 16.023C7.39496 16.023 5.18996 14.263 4.40496 11.9H1.06396V14.49C1.89597 16.1468 3.17234 17.5395 4.7504 18.5126C6.32846 19.4856 8.14603 20.0006 9.99996 20Z\" fill=\"#34A853\"></path>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M4.405 11.9C4.205 11.3 4.091 10.66 4.091 10C4.091 9.34001 4.205 8.70001 4.405 8.10001V5.51001H1.064C0.364015 6.90321 -0.000359433 8.44084 2.66054e-07 10C2.66054e-07 11.614 0.386 13.14 1.064 14.49L4.404 11.9H4.405Z\" fill=\"#FBBC05\"></path>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M9.99996 3.977C11.468 3.977 12.786 4.482 13.823 5.473L16.691 2.605C14.959 0.99 12.695 0 9.99996 0C6.08996 0 2.70996 2.24 1.06396 5.51L4.40396 8.1C5.19196 5.736 7.39596 3.977 9.99996 3.977Z\" fill=\"#EA4335\"></path>\n</svg>\n\t\t\t\t<span>\n\t\t\t\t\tSign in with Google\t\t\t\t</span>\n\t\t\t</button>",
+            1
+        ],
+        [
+            "<button class=\"newspack-lightbox__close\" aria-label=\"Close Pop-up\">\n\t\t\t\t\t\t<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z\"></path></svg>\n\t\t\t\t\t</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"wp-block-button__link\" data-next=\"https://hyperallergic.com/wp-json/newspack-blocks/v1/articles?className&amp;showDate=0&amp;moreButton=1&amp;showAvatar=0&amp;showCategory=1&amp;postsToShow=5&amp;mediaPosition=left&amp;categoryExclusions%5B0%5D=54&amp;typeScale=3&amp;imageScale=2&amp;mobileStack=1&amp;showExcerpt=1&amp;excerptLength=55&amp;showReadMore=0&amp;readMoreLabel=Keep%20reading&amp;showImage=1&amp;showCaption=0&amp;showCredit=0&amp;disableImageLazyLoad=0&amp;fetchPriority&amp;imageShape=landscape&amp;minHeight=0&amp;moreButtonText&amp;showAuthor=1&amp;postLayout=list&amp;columns=3&amp;colGap=3&amp;&amp;&amp;includeSubcategories=1&amp;&amp;&amp;&amp;&amp;sectionHeader&amp;specificMode=0&amp;textColor&amp;customTextColor&amp;singleMode=0&amp;showSubtitle=0&amp;postType%5B0%5D=post&amp;textAlign=left&amp;includedPostStatuses%5B0%5D=publish&amp;deduplicate=1&amp;page=2\">\n\t\t\tLoad more posts\t\t\t</button>",
+            1
+        ],
+        [
+            "<button class=\"jetpack-instant-search__overlay-close\" tabindex=\"0\" aria-label=\"Close search results\"><svg class=\"gridicon gridicons-cross \" focusable=\"false\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" style=\"height: 24px; width: 24px;\"><title>Close search results</title><g><path d=\"M18.36 19.78L12 13.41l-6.36 6.37-1.42-1.42L10.59 12 4.22 5.64l1.42-1.42L12 10.59l6.36-6.36 1.41 1.41L13.41 12l6.36 6.36z\"></path></g></svg></button>",
+            1
+        ],
+        [
+            "<button aria-current=\"false\" class=\"jetpack-instant-search__search-sort-option \" data-value=\"relevance\">Relevance</button>",
+            1
+        ],
+        [
+            "<button aria-current=\"true\" class=\"jetpack-instant-search__search-sort-option is-selected\" data-value=\"newest\">Newest</button>",
+            1
+        ],
+        [
+            "<button aria-current=\"false\" class=\"jetpack-instant-search__search-sort-option \" data-value=\"oldest\">Oldest</button>",
+            1
+        ],
+        [
+            "<input type=\"submit\" value=\"Sign up\">",
+            1
+        ]
+    ]
+}

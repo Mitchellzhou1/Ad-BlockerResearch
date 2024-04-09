@@ -90,7 +90,7 @@ class TimeoutError(Exception):
     pass
 
 
-class Driver:
+class PSALDriver:
     def __init__(self, attributes, xPATH, adB, replay, data_dict, excel_dict, hierarchy_dict):
         # specific test for these attributes
         self.attributes = attributes
@@ -101,6 +101,7 @@ class Driver:
         self.driver = None
         self.tries = 1
         self.vdisplay = ''
+        self.actions = None
 
         # used for optimization
         self.keywords = [
@@ -146,61 +147,99 @@ class Driver:
         self.options = ''
         self.replay = replay
 
-    def initialize(self, options, num_tries, url):
+    # def initialize(self, options, num_tries, url):
+    #     """
+    #         This function will start a Chrome instance with the option of installing an ad blocker.
+    #         Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
+    #     """
+    #     self.url_key = url
+    #
+    #     key = ''
+    #     if 'www' in url:
+    #         key = url.split('www.')[1]
+    #     if '://' in key:
+    #         key = key.split('://')[1]
+    #     # Specify the version of Chrome browser you are using
+    #     self.chrome_version = "113.0.5672.0"  # Chrome browser version
+    #
+    #     while num_tries > 0:
+    #         try:
+    #             self.options = options
+    #             log_file_path = f"/home/mitch/work/pes/measurements/break/html_elements/logs/chromedriver_{key}.log"
+    #             service = Service(executable_path='/home/mitch/work/pes/chromedriver_113/chromedriver',
+    #                               service_args=["--verbose", f"--log-path={log_file_path}"])
+    #             # service = Service(ChromeDriverManager(version=self.chrome_version).install(), service_args=["--verbose", f"--log-path={log_file_path}"])
+    #             self.driver = webdriver.Chrome(options=options, service=service)
+    #             self.driver.set_page_load_timeout(45)
+    #             time.sleep(2)
+    #             break
+    #         except Exception as e:
+    #             if num_tries == 1:
+    #                 print(f"couldn't create browser session... not trying again -- {self.url_key}")
+    #                 error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
+    #                 # print(1, e)
+    #                 return 0
+    #             else:
+    #                 print("couldn't create browser session... trying again")
+    #                 num_tries = num_tries - 1
+    #                 time.sleep(5)
+    #
+    #     if self.adBlocker_name == 'adblock':
+    #         time.sleep(15)
+    #     elif self.adBlocker_name == 'ghostery':
+    #         windows = self.driver.window_handles
+    #         for window in windows:
+    #             try:
+    #                 self.driver.switch_to.window(window)
+    #                 url_start = self.driver.current_url[:16]
+    #                 if url_start == 'chrome-extension':
+    #                     element = self.driver.find_element(By.XPATH, "//ui-button[@type='success']")
+    #                     element.click()
+    #                     time.sleep(2)
+    #                     break
+    #             except Exception as e:
+    #                 error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
+    #                 # print('ghostery', 1, e)
+    #                 return 0
+    #     return 1
+
+    def initialize(self, seconds=14):
         """
             This function will start a Chrome instance with the option of installing an ad blocker.
             Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
         """
-        self.url_key = url
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        parent_directory = os.path.dirname(os.path.dirname(current_dir))
+        extensions_dir = os.path.abspath(os.path.join(parent_directory, 'Extensions', 'Ad-Blockers'))
 
-        key = ''
-        if 'www' in url:
-            key = url.split('www.')[1]
-        if '://' in key:
-            key = key.split('://')[1]
-        # Specify the version of Chrome browser you are using
-        self.chrome_version = "113.0.5672.0"  # Chrome browser version
+        proxy_address = "127.0.0.1:8080"
+        chrome_options = webdriver.ChromeOptions()
+        # chrome_options.add_extension('Captcha-Solver-Auto-Recognition-and-Bypass.crx')
+        chrome_options.add_argument('--enable-logging')
+        options.add_argument('--proxy-server={}'.format(proxy_address))
+        if self.adBlocker_name == 'AdBlockPlus':
+            extension_path = os.path.join(extensions_dir, 'adBlockerPlus.crx')
+            chrome_options.add_extension(extension_path)
+        elif self.adBlocker_name == 'uBlock':
+            extension_path = os.path.join(extensions_dir, 'uBlock-Origin.crx')
+            chrome_options.add_extension(extension_path)
 
-        while num_tries > 0:
-            try:
-                self.options = options
-                log_file_path = f"/home/mitch/work/pes/measurements/break/html_elements/logs/chromedriver_{key}.log"
-                service = Service(executable_path='/home/mitch/work/pes/chromedriver_113/chromedriver',
-                                  service_args=["--verbose", f"--log-path={log_file_path}"])
-                # service = Service(ChromeDriverManager(version=self.chrome_version).install(), service_args=["--verbose", f"--log-path={log_file_path}"])
-                self.driver = webdriver.Chrome(options=options, service=service)
-                self.driver.set_page_load_timeout(45)
-                time.sleep(2)
-                break
-            except Exception as e:
-                if num_tries == 1:
-                    print(f"couldn't create browser session... not trying again -- {self.url_key}")
-                    error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
-                    # print(1, e)
-                    return 0
-                else:
-                    print("couldn't create browser session... trying again")
-                    num_tries = num_tries - 1
-                    time.sleep(5)
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        # self.driver = webdriver.Chrome(options=options)
 
-        if self.adBlocker_name == 'adblock':
-            time.sleep(15)
-        elif self.adBlocker_name == 'ghostery':
-            windows = self.driver.window_handles
-            for window in windows:
-                try:
-                    self.driver.switch_to.window(window)
-                    url_start = self.driver.current_url[:16]
-                    if url_start == 'chrome-extension':
-                        element = self.driver.find_element(By.XPATH, "//ui-button[@type='success']")
-                        element.click()
-                        time.sleep(2)
-                        break
-                except Exception as e:
-                    error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
-                    # print('ghostery', 1, e)
-                    return 0
-        return 1
+        self.driver.set_window_size(1555, 900)
+        # give it time to install
+        if self.adBlocker_name == 'AdBlockPlus':
+            sleep(seconds)
+            pyautogui.hotkey('ctrl', 'w')
+        self.actions = ActionChains(self.driver)
+
+        # if self.html_obj:
+        #     file_path = f'{self.html_obj}.replay_0'
+        #     with open(file_path, 'r') as json_file:
+        #         self.dictionary = replay_0.load(json_file)
+        #     self.all_sites = list(self.dictionary.keys())
 
     def replay_initialize(self):
         # print('replay_initialize', self.html_obj)
@@ -215,7 +254,7 @@ class Driver:
         self.outer_HTML_changed = False
         # during replay phase
         # if self.replay:
-        file_path = f"json/{self.html_obj}_control.json"
+        file_path = f"replay_0/{self.html_obj}_control.replay_0"
         # self.excel[self.adBlocker_name][self.html_obj][self.url_key] = []
         # self.excel['errors'][self.adBlocker_name][self.html_obj][self.url_key] = []
 
@@ -225,9 +264,9 @@ class Driver:
                     self.dictionary = {}
                     self.dictionary[self.adBlocker_name] = {}
                     self.dictionary[self.adBlocker_name][self.html_obj] = {}
-                    self.dictionary[self.adBlocker_name][self.html_obj][self.url_key] = json.load(json_file)[
+                    self.dictionary[self.adBlocker_name][self.html_obj][self.url_key] = replay_0.load(json_file)[
                         self.url_key]
-                    # self.dictionary[self.url_key] = json.load(json_file)[self.url_key]
+                    # self.dictionary[self.url_key] = replay_0.load(json_file)[self.url_key]
                 json_file.close()
 
             elems = self.dictionary[self.adBlocker_name][self.html_obj][self.url_key]
@@ -235,7 +274,7 @@ class Driver:
 
             # print('self.dictionary', self.dictionary)
         except KeyError as k:
-            print(f"site not found in json --- site:{self.url_key}, extn:{self.adBlocker_name}, html: {self.html_obj}")
+            print(f"site not found in replay_0 --- site:{self.url_key}, extn:{self.adBlocker_name}, html: {self.html_obj}")
             return 0
         except Exception as e:
             error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
@@ -304,7 +343,7 @@ class Driver:
 
     def reinitialize(self):
         self.driver.close()
-        self.initialize(self.options, 3, self.url_key)
+        self.initialize()
         self.tries += 1
 
     def scroll(self):
@@ -360,6 +399,7 @@ class Driver:
 
     def click_button(self, button):
         try:
+            self.actions.move_to_element(button).perform()
             button.click()
         except Exception:
             self.driver.execute_script(
@@ -368,10 +408,9 @@ class Driver:
             button.click()
 
     def cursor_change(self, element):
-        actions = ActionChains(self.driver)
         # print(element.get_attribute('outerHTML'))
         try:
-            actions.move_to_element(element).perform()
+            self.actions.move_to_element(element).perform()
             sleep(1)
             cursor_property = element.value_of_css_property('cursor')
             if cursor_property == 'pointer':
@@ -518,7 +557,8 @@ class Driver:
     def test_button(self, tries):
         site = self.all_sites[self.curr_site]
         try:
-            outerHTML, refresh = self.dictionary[self.adBlocker_name][self.html_obj][site][self.curr_elem]
+            # outerHTML, refresh = self.dictionary[self.adBlocker_name][self.html_obj][site][self.curr_elem]
+            outerHTML, refresh = self.dictionary[site][self.curr_elem]
             xpath = self.generate_xpath(outerHTML)
         except IndexError as e:
             self.excel_errors_list.append(['IndexError: list is empty', '', '', self.initial_outer_html, '', '', '',
@@ -589,11 +629,25 @@ class Driver:
             self.excel_list.append([check, "False", "False", self.initial_outer_html, '',
                                     "", "", '', '', tries])
 
+    # def click_on_elms(self, tries):
+    #     while self.curr_site < len(self.all_sites):
+    #         # print(f'curr_site: {self.curr_site}, all_sites: {self.all_sites}, curr_elem: {self.curr_elem}, xpaths: {self.dictionary[self.adBlocker_name][self.html_obj][self.all_sites[self.curr_site]]}')
+    #         if self.curr_elem >= len(
+    #                 self.dictionary[self.adBlocker_name][self.html_obj][self.all_sites[self.curr_site]]):
+    #             self.curr_site += 1
+    #             self.curr_elem = 0
+    #         else:
+    #             self.test_button(tries)
+    #             self.curr_elem += 1
+    #
+    #     self.curr_site = -1
+    #     self.excel[self.adBlocker_name][self.html_obj][self.url_key] = self.excel_list
+    #     self.excel['errors'][self.adBlocker_name][self.html_obj][self.url_key] = self.excel_errors_list
+
     def click_on_elms(self, tries):
+
         while self.curr_site < len(self.all_sites):
-            # print(f'curr_site: {self.curr_site}, all_sites: {self.all_sites}, curr_elem: {self.curr_elem}, xpaths: {self.dictionary[self.adBlocker_name][self.html_obj][self.all_sites[self.curr_site]]}')
-            if self.curr_elem >= len(
-                    self.dictionary[self.adBlocker_name][self.html_obj][self.all_sites[self.curr_site]]):
+            if self.curr_elem >= len(self.dictionary[self.all_sites[self.curr_site]]):
                 self.curr_site += 1
                 self.curr_elem = 0
             else:
@@ -601,8 +655,6 @@ class Driver:
                 self.curr_elem += 1
 
         self.curr_site = -1
-        self.excel[self.adBlocker_name][self.html_obj][self.url_key] = self.excel_list
-        self.excel['errors'][self.adBlocker_name][self.html_obj][self.url_key] = self.excel_errors_list
 
     def hierarchy_change(self, tries):
         while self.curr_site < len(self.all_sites):
@@ -722,6 +774,33 @@ class Driver:
     def scan_page(self):
         self.load_site(self.url)  # extra refresh helps get rid of some false findings
         self.get_elements()
+        self.dictionary[self.url] = self.chosen_elms
+        # while self.curr_elem < len(self.dictionary[self.url]):
+        #     try:
+        #         xpath = self.generate_xpath(self.dictionary[self.url][self.curr_elem])
+        #         elm = self.get_correct_elem(xpath, self.initial_outer_html)
+        #         elm.click()
+        #         sleep(1)
+        #         self.load_site(self.url)
+        #     except Exception:
+        #         pass
+        #     self.curr_elem += 1
+        all_windows = self.driver.window_handles
+        if len(all_windows) > 1:
+            for window in all_windows[1:]:
+                self.driver.switch_to.window(window)
+                self.driver.close()
+            self.driver.switch_to.window(all_windows[0])
+        self.curr_elem = 0
+        self.curr_site += 1
+
+        storeDictionary(self.dictionary)
+
+
+
+    def PSAL_scan_page(self):
+        self.load_site(self.url)  # extra refresh helps get rid of some false findings
+        self.get_elements()
         self.dictionary[self.adBlocker_name][self.html_obj][self.url_key] = self.chosen_elms
 
         print("*" * 50)
@@ -755,7 +834,7 @@ class Driver:
         # storeDictionary(self.dictionary[self.adBlocker_name][self.html_obj], self.html_obj, self.adBlocker_name)
 
     def write_num_elem_found(self, numb):
-        file_path = f"json/{self.html_obj}_{self.adBlocker_name}_ammt.txt"
+        file_path = f"replay_0/{self.html_obj}_{self.adBlocker_name}_ammt.txt"
         with open(file_path, 'a+') as file:
             file.write(self.url_key + " " + str(numb) + "\n")
 
@@ -775,27 +854,27 @@ class Driver:
 
         if self.html_obj == "login":
             final_lst = []
-            for i in range(len(ret)):
+            for index in range(len(ret)):
                 try:
-                    if self.filter(ret[i]):
-                        final_lst.append(ret[i])
+                    if self.filter(ret[index]):
+                        final_lst.append(ret[index])
                 except Exception as e:
                     continue
         else:
             # random.shuffle(ret)   No random shuffle so that the slideshows are better to click on
             unique = []
             limit = min(15, len(ret))
-            i = 0
-            while len(unique) < limit and i < len(ret):
-                # print(i, len(unique), ret[i].get_attribute("outerHTML"))
-                if self.filter(ret[i]) and ret[i].get_attribute("outerHTML") not in unique:
+            total_valid_elems = 0
+            for elem in ret:
+                print(len(unique), elem.get_attribute("outerHTML"))
+                if self.filter(elem) and elem.get_attribute("outerHTML") not in unique:
                     if len(unique) < limit:
-                        unique.append(ret[i].get_attribute("outerHTML"))
+                        unique.append(elem.get_attribute("outerHTML"))
+                    total_valid_elems += 1
 
-                i += 1
             self.chosen_elms = [[elem, 1] for elem in unique]
 
-        self.write_num_elem_found(i)  # unique by looking at the outerHTML
+        self.write_num_elem_found(total_valid_elems)  # unique by looking at the outerHTML
 
         # the chosen_elms will be the unique outerHTML
         # if len(self.chosen_elms) <= self.no_elms:
@@ -949,7 +1028,7 @@ class Driver:
             '.aac', '.aif', '.aifc', '.aiff', '.au', '.avi', '.bat', '.bin', '.bmp', '.bz2',
             '.c', '.class', '.com', '.cpp', '.css', '.csv', '.dat', '.dmg', '.doc', '.docx',
             '.dot', '.dotx', '.eps', '.exe', '.flac', '.flv', '.gif', '.gzip', '.h', '.htm',
-            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.json', '.log', '.m4a',
+            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.replay_0', '.log', '.m4a',
             '.m4v', '.mid', '.midi', '.mov', '.mp3', '.mp4', '.mpa', '.mpeg', '.mpg', '.odp',
             '.ods', '.odt', '.ogg', '.otf', '.pdf', '.php', '.pl', '.png', '.ppt', '.pptx',
             '.ps', '.psd', '.py', '.qt', '.rar', '.rb', '.rtf', '.s', '.sh', '.svg', '.swf',
@@ -987,6 +1066,7 @@ class Driver:
         return tag_name, attributes
 
     # def write_results_DOM(self, hierarchy_dict):
-    #     with open(f"hierarchy/final_hierarchy_results.json", 'w') as json_file:
-    #         json.dump(hierarchy_dict, json_file)
+    #     with open(f"hierarchy/final_hierarchy_results.replay_0", 'w') as json_file:
+    #         replay_0.dump(hierarchy_dict, json_file)
     #     json_file.close()
+

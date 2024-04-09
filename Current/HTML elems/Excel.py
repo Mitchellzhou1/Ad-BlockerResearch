@@ -2,6 +2,7 @@
 
 import openpyxl
 import csv
+import json
 from base_code import *
 
 wb = openpyxl.Workbook()
@@ -123,7 +124,7 @@ def write_results(data):
 
 
 def storeDictionary(dictionary):
-    filename = f"{HTML_obj}.json"
+    filename = f"current/{HTML_obj}.json"
     with open(filename, "w") as json_file:
         json.dump(dictionary, json_file, indent=4)
 

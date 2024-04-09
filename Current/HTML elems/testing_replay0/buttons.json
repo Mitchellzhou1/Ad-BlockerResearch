@@ -1,0 +1,208 @@
+{
+    "http://www.asianmobilenews.com": [],
+    "http://www.niost.org": [
+        [
+            "<a href=\"#\" wk-slidenav-previous=\"\" wk-slideshow-item=\"previous\" class=\"wk-icon wk-slidenav-previous wk-slidenav\" role=\"button\"><svg width=\"14\" height=\"24\" viewBox=\"0 0 14 24\"><polyline fill=\"none\" stroke=\"#000\" stroke-width=\"1.4\" points=\"12.775,1 1.225,12 12.775,23\"></polyline></svg></a>",
+            1
+        ],
+        [
+            "<a href=\"#\" wk-slidenav-next=\"\" wk-slideshow-item=\"next\" class=\"wk-icon wk-slidenav-next wk-slidenav\" role=\"button\"><svg width=\"14\" height=\"24\" viewBox=\"0 0 14 24\"><polyline fill=\"none\" stroke=\"#000\" stroke-width=\"1.4\" points=\"1.225,23 12.775,12 1.225,1\"></polyline></svg></a>",
+            1
+        ]
+    ],
+    "http://www.theoceanpaper.com": [
+        [
+            "<button type=\"submit\" class=\"btn newsletter__submit\" name=\"commit\" id=\"Subscribe\">\n                <span class=\"newsletter__submit-text--large\">Join</span>\n              </button>",
+            1
+        ],
+        [
+            "<input type=\"submit\" id=\"footer-subscribe\" value=\"Join\">",
+            1
+        ]
+    ],
+    "http://www.ecbeing.net": [],
+    "http://www.w3.org": [],
+    "http://www.geocinema.ge": [
+        [
+            "<button type=\"submit\" class=\"form-control sb\">&gt;\n\t\t\t\t\t\t\t\t\n\t\t\t                </button>",
+            1
+        ]
+    ],
+    "http://www.goldtip.com": [
+        [
+            "<button class=\"navbar-toggler\" type=\"button\" aria-controls=\"sg-navbar-collapse\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"></button>",
+            1
+        ],
+        [
+            "<button class=\"slick-prev slick-arrow\" aria-label=\"Previous\" type=\"button\" style=\"\">Previous</button>",
+            1
+        ],
+        [
+            "<button class=\"slick-next slick-arrow\" aria-label=\"Next\" type=\"button\" style=\"\">Next</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" role=\"tab\" id=\"slick-slide-control00\" aria-controls=\"slick-slide00\" aria-label=\"1 of 2\" tabindex=\"0\" aria-selected=\"true\">1</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" role=\"tab\" id=\"slick-slide-control01\" aria-controls=\"slick-slide01\" aria-label=\"2 of 2\" tabindex=\"0\" aria-selected=\"true\">2</button>",
+            1
+        ]
+    ],
+    "http://www.molekula-polzy.ru": [
+        [
+            "<a data-snid=\"vk\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"fb\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"ok\" class=\"sn-icon\"></a>",
+            1
+        ],
+        [
+            "<a data-snid=\"tw\" class=\"sn-icon\"></a>",
+            1
+        ]
+    ],
+    "http://www.aevm.pt": [],
+    "http://www.dazn.com": [
+        [
+            "<button id=\"HEADER_SIGN_UP\" class=\"css-1bpjs9g\"><span>SIGN UP NOW</span></button>",
+            1
+        ],
+        [
+            "<button id=\"HEADER_SIGN_IN\" class=\"css-1ly319g\"><span>SIGN IN</span></button>",
+            1
+        ],
+        [
+            "<button class=\"css-54q19o\">SIGN UP NOW</button>",
+            1
+        ],
+        [
+            "<button class=\"css-21dvod\">Watch For Free </button>",
+            1
+        ],
+        [
+            "<button aria-label=\"Go to previous item\" cursor=\"pointer\" class=\"sc-bqiRlB gBLxyW css-sx4ymz\"><span class=\"sc-ksdxgE bNwVPD\"><svg width=\"18\" height=\"10\" viewBox=\"0 0 18 10\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 9.91003L0.590004 1.50003L2 0.0900269L9 7.09003L16 0.0900269L17.41 1.50003L9 9.91003Z\" fill=\"#F9FAFA\"></path></svg></span></button>",
+            1
+        ],
+        [
+            "<button aria-label=\"Go to next item\" cursor=\"pointer\" class=\"sc-bqiRlB gBLxyW css-1lqb9h0\"><span class=\"sc-ksdxgE iGSIvz\"><svg width=\"18\" height=\"10\" viewBox=\"0 0 18 10\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 9.91003L0.590004 1.50003L2 0.0900269L9 7.09003L16 0.0900269L17.41 1.50003L9 9.91003Z\" fill=\"#F9FAFA\"></path></svg></span></button>",
+            1
+        ]
+    ],
+    "http://www.hyperallergic.com": [
+        [
+            "<button type=\"button\" class=\"wp-block-button__link\" data-next=\"https://hyperallergic.com/wp-json/newspack-blocks/v1/articles?className&amp;showDate=0&amp;moreButton=1&amp;showAvatar=0&amp;showCategory=1&amp;postsToShow=5&amp;mediaPosition=left&amp;categoryExclusions%5B0%5D=54&amp;typeScale=3&amp;imageScale=2&amp;mobileStack=1&amp;showExcerpt=1&amp;excerptLength=55&amp;showReadMore=0&amp;readMoreLabel=Keep%20reading&amp;showImage=1&amp;showCaption=0&amp;showCredit=0&amp;disableImageLazyLoad=0&amp;fetchPriority&amp;imageShape=landscape&amp;minHeight=0&amp;moreButtonText&amp;showAuthor=1&amp;postLayout=list&amp;columns=3&amp;colGap=3&amp;&amp;&amp;includeSubcategories=1&amp;&amp;&amp;&amp;&amp;sectionHeader&amp;specificMode=0&amp;textColor&amp;customTextColor&amp;singleMode=0&amp;showSubtitle=0&amp;postType%5B0%5D=post&amp;textAlign=left&amp;includedPostStatuses%5B0%5D=publish&amp;deduplicate=1&amp;page=2\">\n\t\t\tLoad more posts\t\t\t</button>",
+            1
+        ],
+        [
+            "<button class=\"jetpack-instant-search__overlay-close\" tabindex=\"0\" aria-label=\"Close search results\"><svg class=\"gridicon gridicons-cross \" focusable=\"false\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" style=\"height: 24px; width: 24px;\"><title>Close search results</title><g><path d=\"M18.36 19.78L12 13.41l-6.36 6.37-1.42-1.42L10.59 12 4.22 5.64l1.42-1.42L12 10.59l6.36-6.36 1.41 1.41L13.41 12l6.36 6.36z\"></path></g></svg></button>",
+            1
+        ],
+        [
+            "<button aria-current=\"false\" class=\"jetpack-instant-search__search-sort-option \" data-value=\"relevance\">Relevance</button>",
+            1
+        ],
+        [
+            "<button aria-current=\"true\" class=\"jetpack-instant-search__search-sort-option is-selected\" data-value=\"newest\">Newest</button>",
+            1
+        ],
+        [
+            "<button aria-current=\"false\" class=\"jetpack-instant-search__search-sort-option \" data-value=\"oldest\">Oldest</button>",
+            1
+        ]
+    ],
+    "http://www.job-interview.net": [],
+    "http://www.eurocredit.ge": [],
+    "http://www.pictoa.com": [
+        [
+            "<button class=\"disclaimer\">I am 18 years or older - Enter</button>",
+            1
+        ],
+        [
+            "<input id=\"submit\" name=\"submit\" type=\"submit\" value=\"Search\">",
+            1
+        ]
+    ],
+    "http://www.sports-star.co.uk": [
+        [
+            "<a id=\"td-header-search-button\" href=\"#\" aria-label=\"Search\" role=\"button\" class=\"dropdown-toggle \" data-toggle=\"dropdown\"><i class=\"td-icon-search\"></i></a>",
+            1
+        ],
+        [
+            "<input class=\"wpb_button wpb_btn-inverse btn\" type=\"submit\" id=\"td-header-search-top\" value=\"Search\">",
+            1
+        ]
+    ],
+    "http://www.episode-publishers.nl": [],
+    "http://www.panamarealtor.com": [
+        [
+            "<button class=\"btn btn-success\" id=\"wasap\"><a href=\"https://wa.me/50763412000\"><i class=\"fa fa-whatsapp\" aria-hidden=\"true\"></i> WhatsApp</a></button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"btn dropdown-toggle selectpicker btn-default\" data-toggle=\"dropdown\" title=\"Property Type\"><span class=\"filter-option pull-left\">Property Type</span>&nbsp;<span class=\"caret\"></span></button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"btn dropdown-toggle selectpicker btn-default\" data-toggle=\"dropdown\" title=\"Location Type\"><span class=\"filter-option pull-left\">Location Type</span>&nbsp;<span class=\"caret\"></span></button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"btn dropdown-toggle selectpicker btn-default\" data-toggle=\"dropdown\" title=\"Price\"><span class=\"filter-option pull-left\">Price</span>&nbsp;<span class=\"caret\"></span></button>",
+            1
+        ],
+        [
+            "<button type=\"submit\" class=\"btn btn-default\" id=\"sale-submit-btn\">Search <img alt=\"Loading\" src=\"/assets/img/ajax-loader.gif\" id=\"loader\" style=\"display: none;\"></button>",
+            1
+        ],
+        [
+            "<a id=\"search-site\"><i class=\"fa fa-search\"></i></a>",
+            1
+        ]
+    ],
+    "http://c212.net": [
+        [
+            "<button role=\"button\" class=\"growl-close-btn\" aria-label=\"Close\">\n<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M12.364 10.95L17.314 6L18.728 7.414L13.778 12.364L18.728 17.314L17.314 18.728L12.364 13.778L7.414 18.728L6 17.314L10.95 12.364L6 7.414L7.414 6L12.364 10.95Z\" fill=\"#031F41\"></path>\n</svg>\n</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"hamburger-closebtn\" role=\"dialog\" aria-modal=\"true\" aria-label=\"mobile-menu-close\">\n<span class=\"icon is-open\">\n<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M2.92871 2.92902L17.0708 17.0712\" stroke=\"currentColor\" stroke-width=\"1.5\"></path>\n<path d=\"M17.0723 2.92896L2.93013 17.0711\" stroke=\"currentColor\" stroke-width=\"1.5\"></path>\n</svg>\n</span>\n</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"lang-selector__btn\" aria-label=\"Globe Icon\">\n<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M11.9982 0C5.38308 0 0 5.38388 0 12C0 13.4436 0.257872 14.8263 0.727056 16.1122C0.730637 16.1194 0.734219 16.1301 0.7378 16.1373C2.42471 20.7224 6.83719 24 11.9982 24C17.1592 24 21.5717 20.7224 23.2622 16.1373C23.2658 16.1301 23.2694 16.1194 23.2729 16.1122C23.7421 14.8299 24 13.4436 24 12C23.9964 5.38388 18.6133 0 11.9982 0ZM8.54201 1.6406C7.25623 2.97313 6.2534 5.04358 5.70542 7.54746H2.02716C3.26996 4.77493 5.63379 2.61134 8.54201 1.6406ZM1.07447 12C1.07447 10.8215 1.26429 9.68597 1.6117 8.61851H5.49769C5.32577 9.68597 5.23265 10.8179 5.23265 12C5.23265 13.1785 5.32577 14.314 5.49769 15.3851H1.6117C1.26429 14.3176 1.07447 13.1821 1.07447 12ZM2.03074 16.4597H5.70542C6.2534 18.96 7.25623 21.0304 8.54201 22.363C5.63737 21.3887 3.27354 19.2287 2.03074 16.4597ZM11.461 22.8716C9.42307 22.4848 7.66095 19.9272 6.82644 16.4561H11.461V22.8716ZM11.461 15.3851H6.60439C6.41456 14.314 6.3107 13.1749 6.3107 12C6.3107 10.8251 6.41457 9.68955 6.60081 8.61851H11.461V15.3851ZM11.461 7.54388H6.82644C7.66095 4.06925 9.42307 1.51164 11.461 1.12478V7.54388ZM12.5354 1.12836C14.5733 1.51522 16.3355 4.07284 17.17 7.54746H12.5354V1.12836ZM12.5354 8.61851H17.3956C17.5854 9.68955 17.6857 10.8251 17.6857 12C17.6857 13.1749 17.5819 14.314 17.392 15.3851H12.5354V8.61851ZM12.5354 22.8716V16.4597H17.17C16.3355 19.9307 14.5733 22.4848 12.5354 22.8716ZM15.4544 22.3594C16.7402 21.0269 17.743 18.96 18.291 16.4561H21.9657C20.7229 19.2287 18.3591 21.3887 15.4544 22.3594ZM22.922 12C22.922 13.1821 22.7321 14.3176 22.3847 15.3851H18.4951C18.6671 14.314 18.7602 13.1821 18.7602 12C18.7602 10.8215 18.6671 9.68955 18.4951 8.61851H22.3847C22.7321 9.68597 22.922 10.8215 22.922 12ZM18.2946 7.54388C17.7466 5.04 16.7438 2.96955 15.458 1.63701C18.3626 2.61134 20.7265 4.77134 21.9728 7.54388H18.2946Z\" fill=\"white\"></path>\n</svg>\n<svg width=\"9\" height=\"9\" viewBox=\"0 0 9 9\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" class=\"arrow-globe\">\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 0.5L4.5 8.5L9 0.5C6 0.5 3 0.5 0 0.5Z\" fill=\"white\"></path>\n</svg>\n</button>",
+            1
+        ],
+        [
+            "<button type=\"button\" class=\"js-toggle-mobile-menu first-focusable-element\" role=\"dialog\" aria-modal=\"true\" aria-label=\"mobile-menu-open\">\n<span class=\"icon is-closed\">\n<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<g clip-path=\"url(#clip0_747_1562)\">\n<path d=\"M8.5 7H22.5\" stroke=\"white\" stroke-width=\"1.5\"></path>\n<path d=\"M1.5 12H22.5\" stroke=\"white\" stroke-width=\"1.5\"></path>\n<path d=\"M1.5 17H22.5\" stroke=\"white\" stroke-width=\"1.5\"></path>\n</g>\n<defs>\n<clipPath id=\"clip0_747_1562\">\n<rect width=\"21\" height=\"12\" fill=\"white\" transform=\"translate(1.5 6)\"></rect>\n</clipPath>\n</defs>\n</svg>\n</span>\n</button>",
+            1
+        ]
+    ],
+    "http://www.vwcable.com": [
+        [
+            "<button class=\"submit btn\" type=\"submit\" value=\"GO\"> <span class=\"glyphicon glyphicon-search\"></span></button>",
+            1
+        ],
+        [
+            "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"true\">English <span class=\"caret\"></span></a>",
+            1
+        ],
+        [
+            "<input type=\"submit\" value=\"Send\" class=\"wpcf7-form-control wpcf7-submit btn btn-primary\">",
+            1
+        ]
+    ],
+    "http://www.joliecarte.com": [
+        [
+            "<button class=\"d-block d-xl-none\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\" style=\"width:100%; border:0;background-color:#f8fafb;padding:0;margin:0;\">\n    <picture>\n        <source type=\"image/webp\" media=\"(max-width: 360px)\" srcset=\"/images/logo/logo-mobile-1x.webp\">\n        <source media=\"(max-width: 360px)\" srcset=\"/images/logo/logo-mobile-1x.jpg\">\n\n        <source type=\"image/webp\" media=\"(min-width: 361px) and (max-width: 720px)\" srcset=\"/images/logo/logo-mobile-2x.webp\">\n        <source media=\"(min-width: 361px) and (max-width: 720px)\" srcset=\"/images/logo/logo-mobile-2x.jpg\">\n\n        <source type=\"image/webp\" media=\"(min-width: 721px)\" srcset=\"/images/logo/logo-mobile-3x.webp\">\n        <source media=\"(min-width: 721px)\" srcset=\"/images/logo/logo-mobile-3x.jpg\">\n\n        <img src=\"/images/logo/logo-mobile-3x.jpg\" alt=\"logo\" id=\"mobile-logo\" style=\"width: 100%; height: auto;\">\n    </picture>\n</button>",
+            1
+        ]
+    ],
+    "http://www.asianmobilenews.com/": []
+}
