@@ -80,6 +80,8 @@ def scan_website(sites):
     curr_site = 0
     while curr_site < len(sites):
         url = sites[curr_site]
+        if url == "http://www.goldtip.com":
+            1
 
         if shared_driver.load_site(url):
             shared_driver.scan_page()
@@ -93,8 +95,6 @@ def main():
     # vdisplay = Display(visible=False, size=(1920, 1080))
     # vdisplay.start()
 
-    options = Options()
-    num_tries = 3
     initialize_xlsx()
     shared_driver.initialize()
     tries = 1
@@ -108,19 +108,20 @@ def main():
         write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
 
 
-    # while shared_driver.curr_site > -1:
-    #     try:
-    #         shared_driver.click_on_elms(tries)
-    #     except Exception as e:
-    #         result = error_catcher(e, tries, shared_driver.url)
-    #         if type(result) is int:
-    #             tries = result
-    #         else:
-    #             print(shared_driver.url, "\t", result, shared_driver.initial_outer_html)
-    #             write_results([result, "N/A", "N/A", shared_driver.initial_outer_html, tries])
-    #             tries = 1
-    #             shared_driver.tries = 1
-    #             shared_driver.curr_elem += 1
+    while shared_driver.curr_site > -1:
+        try:
+            shared_driver.click_on_elms(tries)
+        except Exception as e:
+            result = error_catcher(e, tries, shared_driver.url)
+            if type(result) is int:
+                tries = result
+            else:
+                # need to write it to the JSON
+                print(shared_driver.url, "\t", result, shared_driver.initial_outer_html)
+                write_results([result, "N/A", "N/A", shared_driver.initial_outer_html, tries])
+                tries = 1
+                shared_driver.tries = 1
+                shared_driver.curr_elem += 1
 
 
 

@@ -556,6 +556,7 @@ class PSALDriver:
     # @timeout(300)
     def test_button(self, tries):
         site = self.all_sites[self.curr_site]
+        self.load_site(site)
         try:
             # outerHTML, refresh = self.dictionary[self.adBlocker_name][self.html_obj][site][self.curr_elem]
             outerHTML, refresh = self.dictionary[site][self.curr_elem]
