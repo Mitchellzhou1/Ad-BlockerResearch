@@ -479,7 +479,7 @@ class PSALDriver:
                     return f"""[@{attr}="{value}"]"""
                 return f"""[@{attr}='{value}']"""
 
-        parsed_info = parse_html_string(html_string)
+        parsed_info = parse_html_string(str(html_string))
         if parsed_info:
             tag_name = parsed_info['tag_name']
             attributes = parsed_info['attributes']
