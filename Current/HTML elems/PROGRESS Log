@@ -10,4 +10,7 @@
     1) need to create a catcher for if the URL is blocked
     2) need to add the errors into the JSON (WILL HAVE TO DO THIS WITH PSAL server is back up)
     3) need to write the parser for writing into the forms.
+           Almost work will need to try pyatogui
+
+
     <input style="float:left;" type="email" name="EMAIL" placeholder="Your email address" required="">
