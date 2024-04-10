@@ -43,7 +43,7 @@ hierarchy_dict = {}
 set_HTML_obj(HTML_TEST)
 shared_driver = PSALDriver(attributes_dict[HTML_TEST]["attributes"], attributes_dict[HTML_TEST]["xpaths"], ad_blocker,
                        replay, data_dict, excel_dict, hierarchy_dict)
-# shared_driver.dictionary = dictionary
+shared_driver.dictionary = dictionary
 shared_driver.html_obj = HTML_TEST
 shared_driver.all_sites = list(dictionary.keys())
 def error_catcher(e, tries, url):
@@ -99,14 +99,14 @@ def main():
     shared_driver.initialize()
     tries = 1
 
-    try:
-        scan_website(sites)
-    except TimeoutException:
-        write_noscan_row(shared_driver.url)
-    except Exception as e:
-        error = str(e).split("\n")[0]
-        write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
-
+    # try:
+    #     scan_website(sites)
+    # except TimeoutException:
+    #     write_noscan_row(shared_driver.url)
+    # except Exception as e:
+    #     error = str(e).split("\n")[0]
+    #     write_results([error, "N/A", "N/A", shared_driver.initial_outer_html, tries])
+    #
 
     while shared_driver.curr_site > -1:
         try:
