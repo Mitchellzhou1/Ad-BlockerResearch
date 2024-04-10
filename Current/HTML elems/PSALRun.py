@@ -80,8 +80,6 @@ def scan_website(sites):
     curr_site = 0
     while curr_site < len(sites):
         url = sites[curr_site]
-        if url == "http://www.goldtip.com":
-            1
 
         if shared_driver.load_site(url):
             shared_driver.scan_page()
