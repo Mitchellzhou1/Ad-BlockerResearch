@@ -850,6 +850,8 @@ class PSALDriver:
             ret = self.find_links()
         elif self.html_obj == "login":
             ret = self.find_login()
+        elif self.html_obj == "input":
+            ret = self.find_forms()
         else:
             print("Invalid Element type to retrieve")
 
@@ -867,15 +869,17 @@ class PSALDriver:
             limit = min(15, len(ret))
             total_valid_elems = 0
             for elem in ret:
-                print(len(unique), elem.get_attribute("outerHTML"))
-                if self.filter(elem) and elem.get_attribute("outerHTML") not in unique:
-                    if len(unique) < limit:
-                        unique.append(elem.get_attribute("outerHTML"))
+                # print(len(unique), elem.get_attribute("outerHTML"))
+                if len(unique) < limit and elem.get_attribute("outerHTML") not in unique:
+                    if self.html_obj != "input":
+                        if not self.filter(elem):
+                            continue
+                    unique.append(elem.get_attribute("outerHTML"))
                     total_valid_elems += 1
 
             self.chosen_elms = [[elem, 1] for elem in unique]
 
-        self.write_num_elem_found(total_valid_elems)  # unique by looking at the outerHTML
+            self.write_num_elem_found(total_valid_elems)  # unique by looking at the outerHTML
 
         # the chosen_elms will be the unique outerHTML
         # if len(self.chosen_elms) <= self.no_elms:
@@ -986,6 +990,20 @@ class PSALDriver:
             try:
                 sleep(5)
                 return collect()
+            except Exception as e:
+                error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
+                self.excel_errors_list.append(error_message)
+
+
+    def find_forms(self):
+        try:
+            ret = self.driver.find_elements(By.TAG_NAME, 'form')
+            # ret += self.specific_element_finder()
+            return ret
+        except Exception as e:
+            try:
+                sleep(5)
+                return self.specific_element_finder()
             except Exception as e:
                 error_message = [str(e).split('\n')[0], "Failed to scrape Site", "", "", ""]
                 self.excel_errors_list.append(error_message)
