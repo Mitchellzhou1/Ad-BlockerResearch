@@ -525,8 +525,8 @@ class PSALDriver:
     def check_opened(self, url, button, initial_tag):
         def check_HTML(initial, after):
             if initial != after:
-                return True
-            return False
+                return "True"
+            return "False"
 
         redirect, new_url = self.check_redirect(url)
         if redirect:

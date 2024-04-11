@@ -1,16 +1,14 @@
 4/9
     1) Move action chains into the click_button() function
     2) indent the i += 1 into the if check in get_elements()
-
     3) Click button also needs extra refresh to get rid of some of the popups
+    3) the input works in zzzzzTesting.
 
 
     NEED TO DO
 
     1) need to create a catcher for if the URL is blocked
     2) need to add the errors into the JSON (WILL HAVE TO DO THIS WITH PSAL server is back up)
-    3) need to write the parser for writing into the forms.
-           Almost work will need to try pyatogui
+    4) the input works in zzzzzTesting. Need to integrate into PSAL
+    5) need to write check to see if the input actually worked or not.
 
-
-    <input style="float:left;" type="email" name="EMAIL" placeholder="Your email address" required="">
