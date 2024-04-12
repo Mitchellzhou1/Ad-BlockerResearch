@@ -2,8 +2,8 @@ from PSAL_base_code import *
 from selenium.webdriver.common.keys import Keys
 
 sites = [
-    'https://www.hidraulicart.pt/',
     'https://www.rosaperez.pt/en/',
+    'https://www.hidraulicart.pt/',
     'https://marijuanaretailreport.com/',
     'http://www.bidtheatre.com/',           # blocked by Ublock
     'https://juantorreslopez.com/',
@@ -50,8 +50,11 @@ def check_opened(url, tag, local_dom, entire_dom, element):
     if url != shared_driver.driver.current_url:
         return "True - url Change"
 
-    if local_dom != shared_driver.get_local_DOM(element):
-        return "True - local DOM Change"
+    try:
+        if local_dom != shared_driver.get_local_DOM(element):
+            return "True - local DOM Change"
+    except Exception:
+        return "True - Stale Element"
 
     if entire_dom != shared_driver.driver.page_source:
         return "True - Entire DOM Change"
@@ -62,16 +65,15 @@ def check_opened(url, tag, local_dom, entire_dom, element):
     return "False"
 
 
-
-
-
-
 for url in sites:
     shared_driver.load_site(url)
     shared_driver.get_elements()
     output_dict[url] = []
     for form_html, refresh in shared_driver.chosen_elms:
-        shared_driver.load_site(url)
+
+        if form_html not in shared_driver.driver.page_source:
+            continue
+
         input_flag = False
         #####  Collect data for checking if it worked
         initial_dom = shared_driver.driver.page_source
@@ -86,8 +88,11 @@ for url in sites:
 
         soup = BeautifulSoup(form_html, "html.parser")
         text_inputs = soup.find_all("input", {"type": "text"})
+        text_inputs += soup.find_all('textarea')
+
         email_inputs = soup.find_all("input", {"type": "email"})
-        number_inputs = soup.find_all("input", {"type": "number"})
+
+        number_inputs = soup.find_all("input", {"type": "tel"})
 
         for input in text_inputs:
             xpath = shared_driver.generate_xpath(input)
@@ -97,13 +102,18 @@ for url in sites:
             # Just in case we can't find the submit button
             final_element = element
 
+            try:
+                shared_driver.click_button(element)
+            except Exception as e:
+                # this is not that important ... just needs to send the inputs
+                error_flag = True
 
             try:
-                element.click()
                 element.send_keys("testing")
                 input_flag = True
             except Exception as e:
-                print(e)
+                error = str(e).split("\n")[0]
+                print(error, element.get_attribute("outerHTML"))
                 continue
 
         for input in email_inputs:
@@ -114,11 +124,17 @@ for url in sites:
             final_element = element
 
             try:
-                element.click()
+                shared_driver.click_button(element)
+            except Exception as e:
+                # this is not that important ... just needs to send the inputs
+                error_flag = True
+
+            try:
                 element.send_keys("testing@gmail.com")
                 input_flag = True
             except Exception as e:
-                print(e)
+                error = str(e).split("\n")[0]
+                print(error, element.get_attribute("outerHTML"))
                 continue
 
         for input in number_inputs:
@@ -129,13 +145,22 @@ for url in sites:
             final_element = element
 
             try:
-                element.send_keys("1231111111")
+                shared_driver.click_button(element)
+            except Exception as e:
+                # this is not that important ... just needs to send the inputs
+                error_flag = True
+
+            try:
+                element.send_keys("111111111")
                 input_flag = True
             except Exception as e:
-                print(e)
+                error = str(e).split("\n")[0]
+                print(error, element.get_attribute("outerHTML"))
                 continue
 
         if input_flag:  # if we inputted data, now we submit it
+            html = shared_driver.get_local_DOM(form_elem, 2)
+            soup = BeautifulSoup(html, "html.parser")
             submit_elements = soup.find_all(lambda tag: tag.get("type") == "submit")
 
             if not submit_elements:     # if I cannot find the enter button, just hit enter
@@ -146,16 +171,20 @@ for url in sites:
             for submit in submit_elements:
                 xpath = shared_driver.generate_xpath(submit)
                 element = shared_driver.get_correct_elem(xpath, submit)
-                shared_driver.click_button(element)
+                try:
+                    shared_driver.click_button(element)
+                except Exception as e:
+                    error = str(e).split("\n")[0]
+                    print(error, element.get_attribute("outerHTML"))
                 final_element = element
 
             res = check_opened(initial_url, initial_tag_count, initial_local_dom, initial_dom, final_element)
-            output_dict[url].append([initial_url, res, initial_dom])
+            output_dict[url].append([initial_url, res, form_html])
+            shared_driver.load_site(url)
 
+with open("short_test_input.json", 'w') as json_file:
+    json.dump(output_dict, json_file, indent=4)
 
+print("DONE")
 
-
-
-
-# Close the browser window
 shared_driver.close()

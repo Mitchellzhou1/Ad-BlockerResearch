@@ -447,8 +447,11 @@ class PSALDriver:
         tags = soup.find_all()
         return len(tags)
 
-    def get_local_DOM(self, elem):
-        for i in range(self.DOM_traversal_amt):
+    def get_local_DOM(self, elem, level=None):
+        amt = self.DOM_traversal_amt
+        if level:
+            amt = level
+        for i in range(amt):
             elem = elem.find_element(By.XPATH, '..')
         return elem.get_attribute('outerHTML')
 
