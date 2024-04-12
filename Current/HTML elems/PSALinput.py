@@ -40,14 +40,47 @@ set_HTML_obj(HTML_TEST)
 shared_driver = PSALDriver(attributes_dict[HTML_TEST]["attributes"], attributes_dict[HTML_TEST]["xpaths"], ad_blocker,
                        replay, data_dict, excel_dict, hierarchy_dict)
 
+output_dict = {}
+
 shared_driver.initialize()
 shared_driver.html_obj = "input"
+
+
+def check_opened(url, tag, local_dom, entire_dom, element):
+    if url != shared_driver.driver.current_url:
+        return "True - url Change"
+
+    if local_dom != shared_driver.get_local_DOM(element):
+        return "True - local DOM Change"
+
+    if entire_dom != shared_driver.driver.page_source:
+        return "True - Entire DOM Change"
+
+    if tag != shared_driver.count_tags():
+        return "True - tag count change"
+
+    return "False"
+
+
+
+
+
 
 for url in sites:
     shared_driver.load_site(url)
     shared_driver.get_elements()
+    output_dict[url] = []
     for form_html, refresh in shared_driver.chosen_elms:
+        shared_driver.load_site(url)
         input_flag = False
+        #####  Collect data for checking if it worked
+        initial_dom = shared_driver.driver.page_source
+        initial_url = shared_driver.driver.current_url
+        initial_local_dom = ''
+        initial_tag_count = shared_driver.count_tags()
+        final_element = None
+        #####
+
         xpath = shared_driver.generate_xpath(form_html)
         form_elem = shared_driver.get_correct_elem(xpath, form_html)
 
@@ -60,7 +93,11 @@ for url in sites:
             xpath = shared_driver.generate_xpath(input)
             element = shared_driver.get_correct_elem(xpath, input)
             shared_driver.filter(element)
-            print(element.get_attribute("outerHTML"))
+
+            # Just in case we can't find the submit button
+            final_element = element
+
+
             try:
                 element.click()
                 element.send_keys("testing")
@@ -72,6 +109,10 @@ for url in sites:
         for input in email_inputs:
             xpath = shared_driver.generate_xpath(input)
             element = shared_driver.get_correct_elem(xpath, input)
+
+            # Just in case we can't find the submit button
+            final_element = element
+
             try:
                 element.click()
                 element.send_keys("testing@gmail.com")
@@ -83,8 +124,10 @@ for url in sites:
         for input in number_inputs:
             xpath = shared_driver.generate_xpath(input)
             element = shared_driver.get_correct_elem(xpath, input)
-            if "required" not in str(input):
-                continue
+
+            # Just in case we can't find the submit button
+            final_element = element
+
             try:
                 element.send_keys("1231111111")
                 input_flag = True
@@ -100,24 +143,16 @@ for url in sites:
                 actions.send_keys(Keys.RETURN)
                 actions.perform()
 
-                # initial_dom = ''
-                # initial_tag = shared_driver.count_tags()
-                # res = shared_driver.check_opened(shared_driver.driver.current_url, initial_dom, initial_tag)
-                # if res[0] == "T":
-                #     print("WORKED")
-                #     break
-
             for submit in submit_elements:
                 xpath = shared_driver.generate_xpath(submit)
                 element = shared_driver.get_correct_elem(xpath, submit)
                 shared_driver.click_button(element)
+                final_element = element
 
-                # initial_dom = shared_driver.get_local_DOM(element)
-                # initial_tag = shared_driver.count_tags()
-                # res = shared_driver.check_opened(shared_driver.driver.current_url, initial_dom, initial_tag)
-                # if res[0] == "T":
-                #     print("WORKED")
-                #     break
+            res = check_opened(initial_url, initial_tag_count, initial_local_dom, initial_dom, final_element)
+            output_dict[url].append([initial_url, res, initial_dom])
+
+
 
 
 
