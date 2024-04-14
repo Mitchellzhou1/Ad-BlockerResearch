@@ -10,5 +10,3 @@
     1) need to create a catcher for if the URL is blocked
     2) need to add the errors into the JSON (WILL HAVE TO DO THIS WITH PSAL server is back up)
     4) the input works in zzzzzTesting. Need to integrate into PSAL
-    5) need to write check to see if the input actually worked or not.
-

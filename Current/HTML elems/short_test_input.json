@@ -1,0 +1,9 @@
+{
+    "https://www.ehab.com/": [
+        [
+            "https://www.ehab.com/",
+            "True - local DOM Change",
+            "<form action=\"https://www.ehab.com/location-results/\" method=\"post\">\n                <div class=\"form_fields\">\n                    <div class=\"form_field\">\n                        <label class=\"d-none\" id=\"locationListLabel\" for=\"locationList\">Enter full address or zip code</label>\n                        <input required=\"\" id=\"locationList\" name=\"zipCode\" type=\"text\" value=\"\" placeholder=\"Enter full address or zip code\" class=\"pac-target-input\" autocomplete=\"off\">\n                    </div>\n                    <input type=\"submit\" value=\"Find a location\" class=\"btn btn-primary\" id=\"submitBtn\" disabled=\"\">\n                    <div id=\"resultNotFound\" class=\"display-name\">\n                        <img decoding=\"async\" src=\"https://www.ehab.com/wp-content/plugins/sbx-genesis-collections//images/warning.svg\" alt=\"Warning\">\n                        <div>No address found. Please try another address or call <a href=\"tel:1-214-239-6500\">1-214-239-6500</a>\n                            for more information on service areas.                        </div>\n                    </div>\n                </div>\n            </form>"
+        ]
+    ]
+}
