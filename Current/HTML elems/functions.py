@@ -28,6 +28,13 @@ from base_code import *
 import functools
 
 
+def write_JSON(name, my_dict):
+    json_file_path = 'json/' + name + ".json"
+    with open(json_file_path, "w") as json_file:
+        json.dump(my_dict, json_file)
+    json_file.close()
+
+
 def cleanup_tmp():
     files_to_delete = []
 
@@ -520,3 +527,39 @@ def run(site, extn, replay, temp_port1, temp_port2, driver_dict, display_num, ht
         f.close()
 
     driver_dict.close()
+
+
+def compare_resources(extension, control_url_dict, extension_url_dict):
+    results = {}
+    errors = {}
+    for website in control_url_dict.keys():
+        results[website] = {"missing_resources": [],
+                            "additional_resources": []}
+
+        # control_url_dict = {url: control[website][ind] for ind, (url, _, _, _, _) in enumerate(control[website])}
+        # extension_url_dict = {url: extension_resources[website][ind] for ind, (url, _, _, _, _) in enumerate(extension_resources[website])}
+
+        try:
+            total_urls = set(list(control_url_dict[website].keys()) + list(extension_url_dict[website].keys()))
+            for url in total_urls:
+                try:
+                    if url not in extension_url_dict[website]:
+                        results[website]["missing_resources"].append(control_url_dict[website][url])
+                    elif url not in control_url_dict[website]:
+                        results[website]["additional_resources"].append(extension_url_dict[website][url])
+                except KeyError as k:
+                    print(3, url, "KeyError")
+                    errors[url] = k
+                    continue
+                except Exception as e:
+                    errors[url] = e
+                    continue
+        except KeyError as k:
+            print(4, extension, k)
+            continue
+        except Exception as e:
+            print(e)
+
+        write_JSON(extension + "missing", results)
+    write_JSON(extension + "_errors", errors)
+
