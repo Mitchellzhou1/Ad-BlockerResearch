@@ -241,14 +241,14 @@ if __name__ == '__main__':
     print(f'data --- {websites}')
 
     # Initialize BrowserMob Proxy
-    server = Server("/home/ritik/work/pes/browsermob-proxy/bin/browsermob-proxy")
+    server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
     server.start()
     # proxy = server.create_proxy()
 
     data_dict = {}
     # extensions_path = pathlib.Path("/home/seluser/measure/extensions/extn_crx")
     # extensions_path = pathlib.Path("/home/mitch/work/pes/measurements/extensions/extn_crx")
-    extensions_path = "/home/ritik/work/pes/measurements/extensions/extn_crx/"
+    extensions_path = "/home/mitch/work/pes/measurements/extensions/extn_crx/"
 
     extension = 0
 
