@@ -172,6 +172,12 @@ def ends_with_file_extension(string):
     return False
 
 
+def get_parent_elem(elem, DOM_traversal_amt):
+    for i in range(DOM_traversal_amt):
+        elem = elem.find_element(By.XPATH, '..')
+    return elem
+
+
 def file_exists(filename):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     filepath = os.path.join(current_dir, filename)

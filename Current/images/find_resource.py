@@ -119,6 +119,12 @@ def main(num_tries, args_lst, display_num, extn, url_data):
                             print(screenshot_filename)
                             index = index + 1
                             print(f"Screenshot of element {index} saved as '{screenshot_filename}'.")
+
+                            parent = get_parent_elem(element, 4)
+                            screenshot_filename = os.path.join(path_site, f"element_screenshot_{index}.png")
+                            parent.screenshot(screenshot_filename)
+                            index = index + 1
+
                         except Exception as e:
                             print(e)
 

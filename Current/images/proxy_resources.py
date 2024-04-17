@@ -182,7 +182,7 @@ def main(num_tries, args_lst, display_num, server, port, all_resources, blacklis
     # return data_usage
 
 
-SIZE = 1
+SIZE = 10
 if __name__ == '__main__':
     # Parse the command line arguments
     parser = argparse.ArgumentParser()
@@ -200,33 +200,33 @@ if __name__ == '__main__':
 
     websites = [
         "uxmatters.com",
-        # "mrdonn.org",
-        # "velocityhub.com",
-        # 'amazon.com/',
-        # 'en.wikipedia.org/wiki/Main_Page',
-        # 'microsoft.com/en-us',
-        # 'office.com',
-        # 'weather.com',
-        # 'openai.com',
-        # 'bing.com',
-        # 'duckgo.com',
-        # 'nytimes.com',
-        # 'twitch.tv',
-        # 'imdb.com',
-        # 'qq.com',
-        # 'globo.com',
-        # 'ebay.com',
-        # 'foxnews.com',
-        # 'instructure.com',
-        # 'walmart.com',
-        # 'indeed.com',
-        # 'paypal.com/us/home',
-        # 'accuweather.com',
-        # 'pinterest.com',
-        # 'bbc.com',
-        # 'homedepot.com',
-        # 'breitbart.com',
-        # 'github.com'
+        "mrdonn.org",
+        "velocityhub.com",
+        'amazon.com/',
+        'en.wikipedia.org/wiki/Main_Page',
+        'microsoft.com/en-us',
+        'office.com',
+        'weather.com',
+        'openai.com',
+        'bing.com',
+        'duckgo.com',
+        'nytimes.com',
+        'twitch.tv',
+        'imdb.com',
+        'qq.com',
+        'globo.com',
+        'ebay.com',
+        'foxnews.com',
+        'instructure.com',
+        'walmart.com',
+        'indeed.com',
+        'paypal.com/us/home',
+        'accuweather.com',
+        'pinterest.com',
+        'bbc.com',
+        'homedepot.com',
+        'breitbart.com',
+        'github.com'
     ]
 
     # website_dict = json.load(open('../../adblock_detect/inner_pages_custom_break.json', 'r'))
@@ -286,12 +286,12 @@ if __name__ == '__main__':
             all_resources = manager.dict()
             # if the json data already exits, just load it.
             # USED FOR TESTING!!!!!!
-            if file_exists(f"json/{extension}.json"):
-                with open(f"json/{extension}.json", 'r') as file:
-                    json_data = file.read()
-                extensions_dictionary[extension] = json.loads(json_data)
-                file.close()
-                continue
+            # if file_exists(f"json/{extension}.json"):
+            #     with open(f"json/{extension}.json", 'r') as file:
+            #         json_data = file.read()
+            #     extensions_dictionary[extension] = json.loads(json_data)
+            #     file.close()
+            #     continue
 
             if extension != "control":
                 name = extensions_path + extension + ".crx"
@@ -300,7 +300,7 @@ if __name__ == '__main__':
             for chunk in website_chunks:
                 # website = "http://" + website
                 jobs = []
-                vdisplay = Display(visible=True, size=(1920, 1280))
+                vdisplay = Display(visible=False, size=(1920, 1280))
                 vdisplay.start()
                 display = vdisplay.display
 
