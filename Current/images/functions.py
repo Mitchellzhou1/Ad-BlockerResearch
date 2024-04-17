@@ -274,10 +274,12 @@ def initialize_blacklists(inverse_lookup, regular_lookup):
             regular_lookup.insert(rule)
 
     # THIS IS JUST TO HELP ME DEBUG AND SEE THE CONTENTS OF THE COMBINED BLACKLISTS
+    print("\nBuilding Blacklist tree...")
     with open('strippeddownblacklist.txt', 'w') as file:
         for item in sorted(combined):
             file.write(str(item) + '\n')
     file.close()
+    print("Finished Building Blacklist tree!")
     return sorted(combined), inverse_lookup, regular_lookup
 
 
@@ -418,7 +420,8 @@ def filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
             content_size = packet["response"]["content"]["size"]
             # Black List Parser
 
-            in_blacklist = blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url)
+            in_blacklist = (blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url) or
+                            blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
 
             ret[request_url] = [request_url, status_code, status_text, content_size, content_type, referer,
                                 in_blacklist]
@@ -461,6 +464,10 @@ def compare_resources(extension, control_url_dict, extension_url_dict):
 
         write_JSON(extension + "missing", results)
     write_JSON(extension + "_errors", errors)
+
+
+def take_ss(extension, control_url_dict, extension_url_dict):
+
 
 
 """             Mitchell's Functions            """

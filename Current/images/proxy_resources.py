@@ -65,14 +65,16 @@ def main(num_tries, args_lst, display_num, server, port, all_resources, blacklis
     options.add_argument(
         "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
-    # options.add_extension("/home/ritik/work/pes/measurements/extensions/extn_crx/adblock.crx")
+    # options.add_extension("/home/mitch/work/pes/measurements/extensions/extn_crx/adblock.crx")
     # options.binary_location = "/home/ritik/work/pes/chrome_113/chrome"
     # options.binary_location = "/usr/bin/google-chrome"
     # options.binary_location = "/home/ritik/work/pes/chrome_113/chrome"
     if args_lst[-1] != "":
         # always adding the path of the extension at the end
-        options.add_extension(args_lst[-1])
-
+        try:
+            options.add_extension(args_lst[-1])
+        except Exception as e:
+            print(str(e).split("\n")[0])
     # Initialize service
     # service = Service(executable_path='/usr/local/bin/chromedriver')
 
@@ -90,8 +92,6 @@ def main(num_tries, args_lst, display_num, server, port, all_resources, blacklis
 
             driver.set_page_load_timeout(args_lst[1])
             time.sleep(4)
-
-            # print('11111111111111111111111')
 
             if extn == 'adblock':
                 time.sleep(15)
@@ -132,8 +132,6 @@ def main(num_tries, args_lst, display_num, server, port, all_resources, blacklis
             wait_until_loaded(driver, args_lst[1])
             time.sleep(2)
 
-            # print(33333333333333333333333)
-
             curr_scroll_position = -1
             curr_time = time.time()
             while True:
@@ -156,7 +154,6 @@ def main(num_tries, args_lst, display_num, server, port, all_resources, blacklis
                     break
             # valid += 1
 
-            # print(44444444444444444444444)
             time.sleep(5)
             # Collect HAR data
             result = proxy.har
@@ -202,16 +199,16 @@ if __name__ == '__main__':
     # websites = ['https://www.geeksforgeeks.org/graph-and-its-representations/']
 
     websites = [
-        "uxmatters.com",
+        # "uxmatters.com",
         "mrdonn.org",
-        "velocityhub.com",
-        'amazon.com/',
-        'en.wikipedia.org/wiki/Main_Page',
-        'microsoft.com/en-us',
-        'office.com',
-        'weather.com',
-        'openai.com',
-        'bing.com',
+        # "velocityhub.com",
+        # 'amazon.com/',
+        # 'en.wikipedia.org/wiki/Main_Page',
+        # 'microsoft.com/en-us',
+        # 'office.com',
+        # 'weather.com',
+        # 'openai.com',
+        # 'bing.com',
         # 'duckgo.com',
         # 'nytimes.com',
         # 'twitch.tv',
@@ -255,6 +252,7 @@ if __name__ == '__main__':
     name = str(extension)
 
     blacklist, inverse_lookup, regular_lookup = initialize_blacklists(Trie(), Trie())
+
     if extension:
         for extn in extensions_configurations:
             new_args = args_lst
@@ -276,10 +274,11 @@ if __name__ == '__main__':
                 data_dict[extn] = [ret, contacted_urls]
 
     else:
-        extensions = ["control", "ublock", "privacy-badger", "adblock"]
+        extensions = ["control", "ublock", "adblock", "privacy-badger"]
         extensions_dictionary = {}
 
         # generates extensions dictionary with just the ad blocker extension names
+        # intializing the dictionary
         for extension in extensions:
             extensions_dictionary[extension] = None
 
@@ -287,12 +286,12 @@ if __name__ == '__main__':
             all_resources = manager.dict()
             # if the json data already exits, just load it.
             # USED FOR TESTING!!!!!!
-            # if file_exists(f"{extension}.json"):
-            #     with open(f"{extension}.json", 'r') as file:
-            #         json_data = file.read()
-            #     extensions_dictionary[extension] = json.loads(json_data)
-            #     file.close()
-            #     continue
+            if file_exists(f"json/{extension}.json"):
+                with open(f"json/{extension}.json", 'r') as file:
+                    json_data = file.read()
+                extensions_dictionary[extension] = json.loads(json_data)
+                file.close()
+                continue
 
             if extension != "control":
                 name = extensions_path + extension + ".crx"
@@ -301,11 +300,12 @@ if __name__ == '__main__':
             for chunk in website_chunks:
                 # website = "http://" + website
                 jobs = []
-                vdisplay = Display(visible=False, size=(1920, 1280))
+                vdisplay = Display(visible=True, size=(1920, 1280))
                 vdisplay.start()
                 display = vdisplay.display
 
                 for i, website in enumerate(chunk):
+                    website = "http://" + website
                     try:
                         fname = './data/' + website.split('//')[1].split('/')[0]
                         extn = fname
