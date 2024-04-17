@@ -199,8 +199,8 @@ if __name__ == '__main__':
     # websites = ['https://www.geeksforgeeks.org/graph-and-its-representations/']
 
     websites = [
-        # "uxmatters.com",
-        "mrdonn.org",
+        "uxmatters.com",
+        # "mrdonn.org",
         # "velocityhub.com",
         # 'amazon.com/',
         # 'en.wikipedia.org/wiki/Main_Page',

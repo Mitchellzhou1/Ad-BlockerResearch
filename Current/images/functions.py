@@ -350,6 +350,10 @@ def url_parser(full_url):
 
     return subdomain, domain, suffix
 
+def extract_path_from_url(url):
+    parsed_url = urlparse(url)
+    return parsed_url.path
+
 
 def scheme_extractor(url):
     parsed_url = urlparse(url)
@@ -447,6 +451,13 @@ def compare_resources(extension, control_url_dict, extension_url_dict):
                 try:
                     if url not in extension_url_dict[website]:
                         results[website]["missing_resources"].append(control_url_dict[website][url])
+                        # Format: request_url, status_code, status_text, content_size, content_type, referer,
+                        # in_blacklist
+                        # request_url, _, _, _, content_type, _, in_blacklist = control_url_dict[website][url]
+                        # if content_type == "images" or "image" in content_type:
+                        #     if not in_blacklist:
+                        #         screenshot(website, request_url)
+
                     elif url not in control_url_dict[website]:
                         results[website]["additional_resources"].append(extension_url_dict[website][url])
                 except KeyError as k:
@@ -462,11 +473,45 @@ def compare_resources(extension, control_url_dict, extension_url_dict):
         except Exception as e:
             print(e)
 
-        write_JSON(extension + "missing", results)
+        write_JSON(extension + "_missing", results)
     write_JSON(extension + "_errors", errors)
 
 
-def take_ss(extension, control_url_dict, extension_url_dict):
+
+from selenium.webdriver.chrome.options import Options
+def launch_browser(website):
+    """
+    This function takes the resource_url, locates it (if possible) and then screenshot!
+    """
+    options = Options()
+    options.add_argument("start-maximized")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument('--ignore-certificate-errors')
+    # options.add_argument("--proxy-server={0}".format(proxy.proxy))
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-animations")
+    options.add_argument("--disable-web-animations")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-features=IsolateOrigins,site-per-process")
+    options.add_argument("--disable-features=AudioServiceOutOfProcess")
+
+    # options.add_argument("auto-open-devtools-for-tabs")
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+
+    driver = webdriver.Chrome(options=options)
+    driver.get(website)
+    wait_until_loaded(driver)
+
+#
+# def screenshot(website, resource_url):
+#
+#     if resource_url in driver.page_source:
+#         print("found:", resource_url)
+
+
+
+
 
 
 
