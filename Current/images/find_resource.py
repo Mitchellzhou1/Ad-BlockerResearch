@@ -4,7 +4,7 @@ import requests
 from browsermobproxy import Server
 import tldextract
 import time
-from adblockparser import *
+# from adblockparser import *
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.by import By
