@@ -53,7 +53,7 @@ def main(num_tries, args_lst, display_num, extn, url_data):
     options.add_argument(
         "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
-    options.binary_location = "/home/mitch/work/pes/chrome_113/chrome"
+    # options.binary_location = "/home/mitch/work/pes/chrome_113/chrome"
     # if args_lst[-1] != "":
     #     options.add_extension(args_lst[-1])
 
@@ -84,13 +84,22 @@ def main(num_tries, args_lst, display_num, extn, url_data):
                     print('ghostery', 1, e)
                     return 0
 
+
+        website = args_lst[0]
+        print("website: ", website)
+        driver.get(website)
+        wait_until_loaded(driver, args_lst[1])
+        time.sleep(2)
+
+        # Json[website_url] = [resource_url, success]
+        # log_json = {website: []}
         for resource_url, _, _, _, content_type, _, in_blacklist in url_data:
             try:
-                website = args_lst[0]
-                print("website: ", website)
-                driver.get(website)
-                wait_until_loaded(driver, args_lst[1])
-                time.sleep(2)
+                # website = args_lst[0]
+                # print("website: ", website)
+                # driver.get(website)
+                # wait_until_loaded(driver, args_lst[1])
+                # time.sleep(2)
 
                 # if in_blacklist:
                 #     continue
@@ -99,6 +108,7 @@ def main(num_tries, args_lst, display_num, extn, url_data):
                 # Find any element that contains the resource URL in any of its attributes
                 elements = driver.find_elements(By.XPATH, f"//*[@*='{resource_url}']")
                 elements += driver.find_elements(By.XPATH, f"//*[@*='{path}']")
+                
 
                 if elements:
                     print(f"Found {len(elements)} element(s) containing the resource URL.")
@@ -121,7 +131,7 @@ def main(num_tries, args_lst, display_num, extn, url_data):
                             print(f"Screenshot of element {index} saved as '{screenshot_filename}'.")
 
                             parent = get_parent_elem(element, 4)
-                            screenshot_filename = os.path.join(path_site, f"element_screenshot_{index}.png")
+                            screenshot_filename = os.path.join(path_site, f"element_background_{index}.png")
                             parent.screenshot(screenshot_filename)
                             index = index + 1
 

@@ -199,34 +199,34 @@ if __name__ == '__main__':
     # websites = ['https://www.geeksforgeeks.org/graph-and-its-representations/']
 
     websites = [
-        "uxmatters.com",
-        "mrdonn.org",
-        "velocityhub.com",
-        'amazon.com/',
-        'en.wikipedia.org/wiki/Main_Page',
-        'microsoft.com/en-us',
-        'office.com',
-        'weather.com',
-        'openai.com',
-        'bing.com',
-        'duckgo.com',
-        'nytimes.com',
-        'twitch.tv',
-        'imdb.com',
-        'qq.com',
-        'globo.com',
-        'ebay.com',
-        'foxnews.com',
-        'instructure.com',
-        'walmart.com',
-        'indeed.com',
-        'paypal.com/us/home',
+        # "uxmatters.com",
+        # "mrdonn.org",
+        # "velocityhub.com",
+        # 'amazon.com/',
+        # 'en.wikipedia.org/wiki/Main_Page',
+        # 'microsoft.com/en-us',
+        # 'office.com',
+        # 'weather.com',
+        # 'openai.com',
+        # 'bing.com',
+        # 'duckgo.com',
+        # 'nytimes.com',
+        # 'twitch.tv',
+        # 'imdb.com',
+        # 'qq.com',
+        # 'globo.com',
+        # 'ebay.com',
+        # 'foxnews.com',
+        # 'instructure.com',
+        # 'walmart.com',
+        # 'indeed.com',
+        # 'paypal.com/us/home',
         'accuweather.com',
-        'pinterest.com',
-        'bbc.com',
-        'homedepot.com',
-        'breitbart.com',
-        'github.com'
+        # 'pinterest.com',
+        # 'bbc.com',
+        # 'homedepot.com',
+        # 'breitbart.com',
+        # 'github.com'
     ]
 
     # website_dict = json.load(open('../../adblock_detect/inner_pages_custom_break.json', 'r'))
@@ -274,7 +274,8 @@ if __name__ == '__main__':
                 data_dict[extn] = [ret, contacted_urls]
 
     else:
-        extensions = ["control", "ublock", "adblock", "privacy-badger"]
+        # extensions = ["control", "ublock", "adblock", "privacy-badger"]
+        extensions = ["control", "ublock"]
         extensions_dictionary = {}
 
         # generates extensions dictionary with just the ad blocker extension names

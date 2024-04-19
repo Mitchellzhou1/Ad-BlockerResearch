@@ -105,7 +105,7 @@ class Trie:
             if node.is_end_of_word:
                 if char == '.':
                     # there is a subdomain identified, but the domain matched.
-                    print("found rev-search item:", rule[::-1])
+                    # print("found rev-search item:", rule[::-1])
                     return True
                 else:
                     # doesn't match
@@ -427,6 +427,12 @@ def filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
                     referer = header['value']
 
             content_type = content_eval(content_type)
+
+            # FILTER FOR JUST IMAGES IN THE JSON
+            if "image" not in content_type:
+                continue
+
+
             content_size = packet["response"]["content"]["size"]
             # Black List Parser
 

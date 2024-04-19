@@ -7,3 +7,14 @@ completed
 todo:
     1) disable v-display
     2) make JSON file of the screenshot logs
+    3) the blacklist parser needs to be fixed. Ebay.com is completely blocked.
+        https://hb.yahoo.net/cksync.php?cs=1&type=58160&ovsid=LV64HREN-Y-4KRA&us_privacy=1YNN    ||hb.yahoo.net^
+        https://sb.scorecardresearch.com/p2?cs_f    ||scorecardresearch.com^
+        
+
+
+Doesn't make sense:
+    1) why are we taking screenshots of the image with the extension? We need to take:
+        1) screen shot of element on Control
+        2) screen shot of element + 4 DOM up on Control
+        3) screen shot of element + 4 DOM up in Extension
