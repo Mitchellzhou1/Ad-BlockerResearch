@@ -1,23 +1,22 @@
-import re
-
 def check_match(url, rule):
-    # Escape special characters in the rule to avoid regex errors
-    rule_escaped = re.escape(rule)
-    
-    # Replace ^ with \S* to match any characters except whitespace
-    rule_regex = rule_escaped.replace('^', r'\S*')
-    
-    # Create a regex pattern to match the rule in the URL
-    pattern = re.compile(rule_regex)
-    
-    # Check if the pattern matches the URL
-    if pattern.search(url):
-        return True
-    else:
-        return False
+    # Remove any leading or trailing whitespace characters from the rule
+    rule = rule.strip()
+
+    # Check if the rule is a valid filter rule
+    if rule.startswith("||") and rule.endswith("^"):
+        # Extract the domain from the rule
+        domain = rule[2:-1]
+
+        # Check if the domain is present in the URL
+        if domain in url:
+            return True
+
+    return False
+
 
 # Example usage
-url = "https://sb.scorecardresearch.com/p2?cs_f"
-rule = "||scorecardresearch.com^"
+url = "https://ib.adnxs.com/prebid/setuid?bidder=rubicon&uid=LV64HREN-Y-4KRA&us_privacy=1YNN"
+rule = "||adnxs.com^"
 result = check_match(url, rule)
-print(result)  # Output: True
+print(result)
+print("DONE1")

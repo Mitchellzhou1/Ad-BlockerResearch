@@ -3,7 +3,7 @@ import re
 import time
 import signal
 import functools
-import replay_0
+import json
 from time import sleep
 
 import pyautogui
@@ -157,9 +157,9 @@ class Driver:
             pyautogui.hotkey('ctrl', 'w')
 
         if self.html_obj:
-            file_path = f'{self.html_obj}.replay_0'
+            file_path = f'{self.html_obj}.json'
             with open(file_path, 'r') as json_file:
-                self.dictionary = replay_0.load(json_file)
+                self.dictionary = json.load(json_file)
             self.all_sites = list(self.dictionary.keys())
 
     def is_loaded(self):
@@ -681,7 +681,7 @@ class Driver:
             '.aac', '.aif', '.aifc', '.aiff', '.au', '.avi', '.bat', '.bin', '.bmp', '.bz2',
             '.c', '.class', '.com', '.cpp', '.css', '.csv', '.dat', '.dmg', '.doc', '.docx',
             '.dot', '.dotx', '.eps', '.exe', '.flac', '.flv', '.gif', '.gzip', '.h', '.htm',
-            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.replay_0', '.log', '.m4a',
+            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.json', '.log', '.m4a',
             '.m4v', '.mid', '.midi', '.mov', '.mp3', '.mp4', '.mpa', '.mpeg', '.mpg', '.odp',
             '.ods', '.odt', '.ogg', '.otf', '.pdf', '.php', '.pl', '.png', '.ppt', '.pptx',
             '.ps', '.psd', '.py', '.qt', '.rar', '.rb', '.rtf', '.s', '.sh', '.svg', '.swf',

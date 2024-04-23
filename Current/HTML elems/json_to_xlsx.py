@@ -1,11 +1,11 @@
 import pandas as pd
-import replay_0
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import os
 
 # Path to your JSON file
-# json_file_path = 'buttons_control.replay_0'
+# json_file_path = 'buttons_control.json'
 # Path to your Excel file
 # excel_file_path = 'buttons_control.xlsx'
 
@@ -22,10 +22,10 @@ extn_lst = [
 ]
 
 with open(f"xlsx/buttons_control.json", 'r') as file:
-    control = replay_0.load(file)
+    control = json.load(file)
 
 with open(f"xlsx/buttons_adblock.json", 'r') as file:
-    curr_data = replay_0.load(file)
+    curr_data = json.load(file)
 
 
 HTML_TEST = {'buttons', "drop downs", "links", "login"}
@@ -44,10 +44,10 @@ for extn in extn_lst:
     for html_obj in HTML_TEST:
 
         with open(f"xlsx/{html_obj}_control.json", 'r') as file:
-            control = replay_0.load(file)
+            control = json.load(file)
 
         with open(f"xlsx/{html_obj}_{extn}.json", 'r') as file:
-            curr_data = replay_0.load(file)
+            curr_data = json.load(file)
 
         rows = []
         for url_key, inner_data in curr_data.items():

@@ -236,9 +236,9 @@ class PSALDriver:
         self.actions = ActionChains(self.driver)
 
         # if self.html_obj:
-        #     file_path = f'{self.html_obj}.replay_0'
+        #     file_path = f'{self.html_obj}.json'
         #     with open(file_path, 'r') as json_file:
-        #         self.dictionary = replay_0.load(json_file)
+        #         self.dictionary = json.load(json_file)
         #     self.all_sites = list(self.dictionary.keys())
 
     def replay_initialize(self):
@@ -254,7 +254,7 @@ class PSALDriver:
         self.outer_HTML_changed = False
         # during replay phase
         # if self.replay:
-        file_path = f"replay_0/{self.html_obj}_control.replay_0"
+        file_path = f"json/{self.html_obj}_control.json"
         # self.excel[self.adBlocker_name][self.html_obj][self.url_key] = []
         # self.excel['errors'][self.adBlocker_name][self.html_obj][self.url_key] = []
 
@@ -264,9 +264,9 @@ class PSALDriver:
                     self.dictionary = {}
                     self.dictionary[self.adBlocker_name] = {}
                     self.dictionary[self.adBlocker_name][self.html_obj] = {}
-                    self.dictionary[self.adBlocker_name][self.html_obj][self.url_key] = replay_0.load(json_file)[
+                    self.dictionary[self.adBlocker_name][self.html_obj][self.url_key] = json.load(json_file)[
                         self.url_key]
-                    # self.dictionary[self.url_key] = replay_0.load(json_file)[self.url_key]
+                    # self.dictionary[self.url_key] = json.load(json_file)[self.url_key]
                 json_file.close()
 
             elems = self.dictionary[self.adBlocker_name][self.html_obj][self.url_key]
@@ -274,7 +274,7 @@ class PSALDriver:
 
             # print('self.dictionary', self.dictionary)
         except KeyError as k:
-            print(f"site not found in replay_0 --- site:{self.url_key}, extn:{self.adBlocker_name}, html: {self.html_obj}")
+            print(f"site not found in json --- site:{self.url_key}, extn:{self.adBlocker_name}, html: {self.html_obj}")
             return 0
         except Exception as e:
             error(self.url_key, self.html_obj, inspect.currentframe().f_code.co_name, e)
@@ -838,7 +838,7 @@ class PSALDriver:
         # storeDictionary(self.dictionary[self.adBlocker_name][self.html_obj], self.html_obj, self.adBlocker_name)
 
     def write_num_elem_found(self, numb):
-        file_path = f"replay_0/{self.html_obj}_{self.adBlocker_name}_ammt.txt"
+        file_path = f"json/{self.html_obj}_{self.adBlocker_name}_ammt.txt"
         with open(file_path, 'a+') as file:
             file.write(self.url_key + " " + str(numb) + "\n")
 
@@ -1050,7 +1050,7 @@ class PSALDriver:
             '.aac', '.aif', '.aifc', '.aiff', '.au', '.avi', '.bat', '.bin', '.bmp', '.bz2',
             '.c', '.class', '.com', '.cpp', '.css', '.csv', '.dat', '.dmg', '.doc', '.docx',
             '.dot', '.dotx', '.eps', '.exe', '.flac', '.flv', '.gif', '.gzip', '.h', '.htm',
-            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.replay_0', '.log', '.m4a',
+            '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.json', '.log', '.m4a',
             '.m4v', '.mid', '.midi', '.mov', '.mp3', '.mp4', '.mpa', '.mpeg', '.mpg', '.odp',
             '.ods', '.odt', '.ogg', '.otf', '.pdf', '.php', '.pl', '.png', '.ppt', '.pptx',
             '.ps', '.psd', '.py', '.qt', '.rar', '.rb', '.rtf', '.s', '.sh', '.svg', '.swf',
@@ -1088,7 +1088,7 @@ class PSALDriver:
         return tag_name, attributes
 
     # def write_results_DOM(self, hierarchy_dict):
-    #     with open(f"hierarchy/final_hierarchy_results.replay_0", 'w') as json_file:
-    #         replay_0.dump(hierarchy_dict, json_file)
+    #     with open(f"hierarchy/final_hierarchy_results.json", 'w') as json_file:
+    #         json.dump(hierarchy_dict, json_file)
     #     json_file.close()
 
