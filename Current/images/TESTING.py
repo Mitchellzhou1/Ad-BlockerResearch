@@ -20,3 +20,38 @@ rule = "||adnxs.com^"
 result = check_match(url, rule)
 print(result)
 print("DONE1")
+
+a = [['bob', 1, 'failed'], ["tye", 1, 'worked'], ["jez", 1, 'worked'], ['sdd', 1, 'worked']]
+
+curr_elem = 0
+lst = a
+excel = []
+
+
+def test_elems():
+    global curr_elem
+    while 1:
+        if curr_elem >= len(a):
+            print("DONE")
+            return "DONE"
+        else:
+            test()
+            curr_elem += 1
+
+
+def test():
+    global curr_elem
+    if a[curr_elem][2] == "worked":
+        1
+
+    else:
+        if a[curr_elem][1] >= 0:
+            a[curr_elem][1] -= 1
+            if curr_elem + 1 < len(lst):
+                lst[curr_elem], lst[curr_elem + 1] = lst[curr_elem + 1], lst[curr_elem]
+                curr_elem -= 1
+                return
+        excel.append(lst[curr_elem])
+
+
+test_elems()
