@@ -35,11 +35,7 @@ start_time = time.time()
 from functions import *
 
 
-def main(num_tries, args_lst, display_num, extn, url_data):
-    # display number
-    os.environ['DISPLAY'] = f":{display_num}"
-
-    # Initialize Selenium
+def initialize(extn, num_tries=3):
     options = Options()
     options.add_argument("start-maximized")
     options.add_argument("--disable-dev-shm-usage")
@@ -53,106 +49,109 @@ def main(num_tries, args_lst, display_num, extn, url_data):
     options.add_argument(
         "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
-    # options.binary_location = "/home/mitch/work/pes/chrome_113/chrome"
-    # if args_lst[-1] != "":
-    #     options.add_extension(args_lst[-1])
+    # options.add_extension(f'/home/mitch/work/pes/measurements/extensions/extn_crx/')
+    if extn != 'control':
+        options.add_extension(f'/home/character/Desktop/Ad-BlockerResearch/Extensions/extn_crx/{extn}.crx')
 
-    # path_ss = '/home/ritik/work/pes/measurements/break/record_replay/proxy/ss'
-    index = 0
-
-    driver = ''
     for i in range(num_tries):
         # Launch Chrome and install our extension for getting HARs
         driver = webdriver.Chrome(options=options)
-        driver.set_page_load_timeout(args_lst[1])
-        time.sleep(2)
+        driver.set_page_load_timeout(45)
 
-        if extn == 'adblock':
-            time.sleep(15)
-        elif extn == 'ghostery':
-            windows = driver.window_handles
-            for window in windows:
-                try:
-                    driver.switch_to.window(window)
-                    url_start = driver.current_url[:16]
-                    if url_start == 'chrome-extension':
-                        element = driver.find_element(By.XPATH, "//ui-button[@type='success']")
-                        element.click()
-                        time.sleep(2)
-                        break
-                except Exception as e:
-                    print('ghostery', 1, e)
-                    return 0
+        time.sleep(15)
 
-
-        website = args_lst[0]
-        print("website: ", website)
-        driver.get(website)
-        wait_until_loaded(driver, args_lst[1])
-        time.sleep(2)
-
-        # Json[website_url] = [resource_url, success]
-        # log_json = {website: []}
-        for resource_url, _, _, _, content_type, _, in_blacklist in url_data:
+        windows = driver.window_handles
+        for window in windows[::-1]:
             try:
-                # website = args_lst[0]
-                # print("website: ", website)
-                # driver.get(website)
-                # wait_until_loaded(driver, args_lst[1])
-                # time.sleep(2)
-
-                # if in_blacklist:
-                #     continue
-
-                path = extract_path_from_url(resource_url)
-                # Find any element that contains the resource URL in any of its attributes
-                elements = driver.find_elements(By.XPATH, f"//*[@*='{resource_url}']")
-                elements += driver.find_elements(By.XPATH, f"//*[@*='{path}']")
-                
-
-                if elements:
-                    print(f"Found {len(elements)} element(s) containing the resource URL.")
-                    for element in elements:
-                        # Take a screenshot of each element
-                        # Create the directory if it does not exist
-                        if 'http' in website:
-                            website = website.split('http://')[1]
-                        if 'www' in website:
-                            website = website.split('www.')[1]
-
-                        path_site = f'path_ss/{extn}/{website}'
-                        if not os.path.exists(path_site):
-                            os.makedirs(path_site)
-                        screenshot_filename = os.path.join(path_site, f"element_screenshot_{index}.png")
-                        try:
-                            element.screenshot(screenshot_filename)
-                            print(screenshot_filename)
-                            index = index + 1
-                            print(f"Screenshot of element {index} saved as '{screenshot_filename}'.")
-
-                            parent = get_parent_elem(element, 4)
-                            screenshot_filename = os.path.join(path_site, f"element_background_{index}.png")
-                            parent.screenshot(screenshot_filename)
-                            index = index + 1
-
-                        except Exception as e:
-                            print(e)
-
-                else:
-                    print("No elements containing the specified resource URL were found.")
-
+                driver.switch_to.window(window)
+                if len(driver.window_handles) == 1:
+                    continue
+                driver.close()
             except Exception as e:
-                print(1, e, args_lst[0])
+                print("SOMETHING WENT WRONG")
+                print(e)
+                continue
 
-            time.sleep(2)
+        return driver
 
-        # Stop Selenium and BrowserMob Proxy
-        if driver != '':
-            driver.quit()
-            time.sleep(2)
+
+
+def main(num_tries, args_lst, display_num, extn, url_data):
+    # display number
+    os.environ['DISPLAY'] = f":{display_num}"
+
+    # Initialize Selenium
+    driver = initialize(extn)
+    website = args_lst[0]
+    print("website: ", website)
+    driver.get(website)
+    wait_until_loaded(driver, args_lst[1])
+    time.sleep(2)
+
+    # Json[website_url] = [resource_url, success]
+    # log_json = {website: []}
+    for resource_url, _, _, _, content_type, _, in_blacklist in url_data:
+        try:
+            # website = args_lst[0]
+            # print("website: ", website)
+            # driver.get(website)
+            # wait_until_loaded(driver, args_lst[1])
+            # time.sleep(2)
+
+            # if in_blacklist:
+            #     continue
+
+            path = extract_path_from_url(resource_url)
+            # Find any element that contains the resource URL in any of its attributes
+            elements = driver.find_elements(By.XPATH, f"//*[@*='{resource_url}']")
+            elements += driver.find_elements(By.XPATH, f"//*[@*='{path}']")
+
+
+            if elements:
+                print(f"Found {len(elements)} element(s) containing the resource URL.")
+                for element in elements:
+                    # Take a screenshot of each element
+                    # Create the directory if it does not exist
+                    if 'http' in website:
+                        website = website.split('http://')[1]
+                    if 'www' in website:
+                        website = website.split('www.')[1]
+
+                    path_site = f'path_ss/{extn}/{website}'
+                    if not os.path.exists(path_site):
+                        os.makedirs(path_site)
+                    screenshot_filename = os.path.join(path_site, f"element_screenshot_{index}.png")
+                    try:
+                        element.screenshot(screenshot_filename)
+                        print(screenshot_filename)
+                        index = index + 1
+                        print(f"Screenshot of element {index} saved as '{screenshot_filename}'.")
+
+                        parent = get_parent_elem(element, 4)
+                        screenshot_filename = os.path.join(path_site, f"element_background_{index}.png")
+                        parent.screenshot(screenshot_filename)
+                        index = index + 1
+
+                    except Exception as e:
+                        print(e)
+
+            else:
+                print("No elements containing the specified resource URL were found.")
+
+        except Exception as e:
+            print(1, e, args_lst[0])
+
+        time.sleep(2)
+
+    # Stop Selenium and BrowserMob Proxy
+    if driver != '':
+        driver.quit()
+        time.sleep(2)
 
 
 SIZE = 10
+extensions = ["control", "ublock"]
+SIZE = (SIZE % len(extensions)) * len(extensions)
 if __name__ == '__main__':
     # Parse the command line arguments
     parser = argparse.ArgumentParser()
@@ -165,11 +164,40 @@ if __name__ == '__main__':
     manager = multiprocessing.Manager()
 
     data_dict = {}
+    driver_dict = {}
+    for extn in extensions:
+        driver_dict[extn] =
+
     extensions_path = "/home/mitch/work/pes/measurements/extensions/extn_crx/"
 
-    extension = 0
+    websites = [
+    'http://www.thawte.com',
+    'https://www.microsoft.com/',
+    'https://www.instagram.com/#',
+    'http://www.feimaoyun.com',
+    'https://naver.com']
 
-    name = str(extension)
+    # with open("/home/mitch/work/pes/measurements/break/adblock_detect/inner_pages_custom_break.json", "r") as f:
+    #     allsite_dict = json.load(f)
+    # f.close()
+    # # filtering the landing pages
+    # for key in allsite_dict:
+    #     websites.append(allsite_dict[key][0])
+    #
+    # websites = random.sample(websites, 30)
+    # with open('/home/mitch/work/pes/measurements/break/html_elements/websites.json', 'w') as f:
+    #     json.dump(websites, f)
+    # f.close()
+
+
+
+
+
+
+
+
+
+
 
     if extension:
         for extn in extensions_configurations:

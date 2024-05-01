@@ -14,22 +14,22 @@ import os
 extn_lst = [
     # 'manual'
     'control',
-    # 'adblock',
-    'ublock'
-    # , 'privacy-badger'
+    'adblock',
+    'ublock',
+    'privacy-badger',
     #     "ghostery",
     #     "adguard"
 ]
+#
+# with open(f"/home/character/Desktop/Ad-BlockerResearch/xlsx/buttons_control.json", 'r') as file:
+#     control = json.load(file)
+#
+# with open(f"/home/character/Desktop/Ad-BlockerResearch/xlsx/buttons_adblock.json", 'r') as file:
+#     curr_data = json.load(file)
 
-with open(f"xlsx/buttons_control.json", 'r') as file:
-    control = json.load(file)
 
-with open(f"xlsx/buttons_adblock.json", 'r') as file:
-    curr_data = json.load(file)
-
-
-HTML_TEST = {'buttons', "drop downs", "links", "login"}
-HTML_TEST = {'buttons'}
+HTML_TEST = {'buttons', "drop downs", "links", "login", "input"}
+# HTML_TEST = {'buttons'}
 
 # Your specified headers
 # headers = ["URL_KEY", "HTML_obj Opened?", "Outer HTML Change", "DOM structure Change", "Initial Outer HTML",
@@ -43,16 +43,17 @@ for extn in extn_lst:
     # Iterate through each HTML object and its data
     for html_obj in HTML_TEST:
 
-        with open(f"xlsx/{html_obj}_control.json", 'r') as file:
+        with open(f"/home/character/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_control.json", 'r') as file:
             control = json.load(file)
 
-        with open(f"xlsx/{html_obj}_{extn}.json", 'r') as file:
+        with open(f"/home/character/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_{extn}.json", 'r') as file:
             curr_data = json.load(file)
 
         rows = []
         for url_key, inner_data in curr_data.items():
-            if url_key == 'http://www.dazn.com':
+            if url_key == 'http://www.kbb.com':
                 1
+
             if curr_data[url_key] == []:
                 continue
             if url_key not in control.keys():
@@ -76,6 +77,7 @@ for extn in extn_lst:
                             if control_unit_data[0][0] == extn_unit_data[0][0]:
                                 pass
                             else:
+                                # different results
                                 pass_all = False
                                 same_result = "False"
                                 row_data = [None] + [same_result] + [extn_unit_data[0]] + [control_unit_data[0]] + [control_unit_data[3]]
@@ -84,7 +86,9 @@ for extn in extn_lst:
                             break
 
                     if not found:
-                        row_data = ["elem not in control"] + control_unit_data
+                        # Not found in the Control Value
+                        pass_all = False
+                        row_data = ["elem not in control"] + extn_unit_data
                         rows.append(row_data[:len(headers)])
                 if pass_all:
                     rows.pop()

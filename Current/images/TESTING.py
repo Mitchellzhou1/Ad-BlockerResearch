@@ -1,57 +1,78 @@
-def check_match(url, rule):
-    # Remove any leading or trailing whitespace characters from the rule
-    rule = rule.strip()
+from urllib.parse import urlparse
 
-    # Check if the rule is a valid filter rule
-    if rule.startswith("||") and rule.endswith("^"):
-        # Extract the domain from the rule
-        domain = rule[2:-1]
+import requests
+import time
+# from adblockparser import *
+from pyvirtualdisplay import Display
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
 
-        # Check if the domain is present in the URL
-        if domain in url:
-            return True
+import argparse
+import json
+import pathlib
+import shutil
+import subprocess
+import sys
+import time
+# import threading
+import os
+from datetime import datetime
+import ast
+import multiprocessing
+import random
+import signal
 
-    return False
+from pyvirtualdisplay import Display
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
+start_time = time.time()
 
-# Example usage
-url = "https://ib.adnxs.com/prebid/setuid?bidder=rubicon&uid=LV64HREN-Y-4KRA&us_privacy=1YNN"
-rule = "||adnxs.com^"
-result = check_match(url, rule)
-print(result)
-print("DONE1")
-
-a = [['bob', 1, 'failed'], ["tye", 1, 'worked'], ["jez", 1, 'worked'], ['sdd', 1, 'worked']]
-
-curr_elem = 0
-lst = a
-excel = []
-
-
-def test_elems():
-    global curr_elem
-    while 1:
-        if curr_elem >= len(a):
-            print("DONE")
-            return "DONE"
-        else:
-            test()
-            curr_elem += 1
+# from functions import *
 
 
-def test():
-    global curr_elem
-    if a[curr_elem][2] == "worked":
-        1
+def initialize(extn, num_tries=3):
+    options = Options()
+    options.add_argument("start-maximized")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-animations")
+    options.add_argument("--disable-web-animations")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-features=IsolateOrigins,site-per-process")
+    options.add_argument("--disable-features=AudioServiceOutOfProcess")
 
-    else:
-        if a[curr_elem][1] >= 0:
-            a[curr_elem][1] -= 1
-            if curr_elem + 1 < len(lst):
-                lst[curr_elem], lst[curr_elem + 1] = lst[curr_elem + 1], lst[curr_elem]
-                curr_elem -= 1
-                return
-        excel.append(lst[curr_elem])
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+
+    # options.add_extension(f'/home/mitch/work/pes/measurements/extensions/extn_crx/')
+    if extn != 'control':
+        options.add_extension(f'/home/character/Desktop/Ad-BlockerResearch/Extensions/extn_crx/{extn}.crx')
+
+    for i in range(num_tries):
+        # Launch Chrome and install our extension for getting HARs
+        driver = webdriver.Chrome(options=options)
+        driver.set_page_load_timeout(45)
+
+        time.sleep(15)
+
+        windows = driver.window_handles
+        for window in windows[::-1]:
+            try:
+                driver.switch_to.window(window)
+                if len(driver.window_handles) == 1:
+                    continue
+                driver.close()
+            except Exception as e:
+                print("SOMETHING WENT WRONG")
+                print(e)
+                continue
+        return driver
 
 
-test_elems()
+driver = initialize('ublock')
+driver.get("https://mrdonn.org/")
+while 1:
+    1
