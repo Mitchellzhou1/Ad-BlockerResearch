@@ -23,6 +23,7 @@ import ast
 import multiprocessing
 import random
 import signal
+import threading
 
 from pyvirtualdisplay import Display
 from selenium import webdriver
@@ -33,8 +34,13 @@ start_time = time.time()
 
 from functions import *
 
+def initialize_proxy():
+    server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
+    server.start()
+    proxy = server.create_proxy()
+    return proxy
 
-def initialize(extn, num_tries=3):
+def initialize_selenium(extn, proxy, num_tries=3):
     options = Options()
     options.add_argument("start-maximized")
     options.add_argument("--disable-dev-shm-usage")
@@ -44,6 +50,7 @@ def initialize(extn, num_tries=3):
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-features=IsolateOrigins,site-per-process")
     options.add_argument("--disable-features=AudioServiceOutOfProcess")
+    options.add_argument("--proxy-server={}".format(proxy.proxy))
 
     options.add_argument(
         "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
@@ -74,19 +81,8 @@ def initialize(extn, num_tries=3):
         return driver
 
 
-# def initialize(args_lst, display_num, server, port):
-#     print("port with url", port, args_lst[0])
-#
-#     # Start X
-#     data_usage = {}
-#     contacted_urls = []
-#     # display number
-#     os.environ['DISPLAY'] = f":{display_num}"
-#     # proxy
-#     proxy = server.create_proxy(params={'port': port})
-#     proxy.new_har("example", options={'captureHeaders': True, 'captureContent': True})
-#     driver = initialize(extn)
-#     return driver
+def main():
+    ...
 
 
 SIZE = 10
@@ -113,7 +109,29 @@ if __name__ == '__main__':
 
     website_chunks = list(divide_chunks(websites, SIZE))
 
+    # keeps track of all the drivers and their associated proxies
+    driver_dictionary = {}
+    # stores all the missing images
+    data_dictionary = {}
+
+
     print(f'data --- {websites}')
+
+    threads = []
+    for website in websites:
+        for extn in extensions:
+            driver_dictionary[extn] = {}
+            driver_dictionary[extn][website] = {'driver': None,
+                                                'proxy': None,
+                                                'loaded': False
+                                                }
+        for _ in range(SIZE):
+            thread = threading.Thread(target=main, args=website)
+            threads.append(thread)
+            thread.start()
+
+
+
 
     # Initialize BrowserMob Proxy
     server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
