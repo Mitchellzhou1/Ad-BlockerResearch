@@ -1,24 +1,38 @@
-from selenium import webdriver
+import multiprocessing
+import sys
 import time
 
-# Assuming you have already initialized your WebDriver instance
-driver = webdriver.Chrome()
-driver.get("https://picoctf.org/")  # Replace with your URL
+from selenium import webdriver
 
-# Scroll to the middle of the page
-driver.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
-time.sleep(1)
+class testing:
+    def __init__(self):
+        self.driver = None
+        self.testing = False
 
-prev_position = -1
-scroll_position = driver.execute_script("return window.scrollY;")
-while prev_position != scroll_position:
-    print(prev_position, scroll_position)
-    prev_position = scroll_position
-    scroll_position = driver.execute_script("return window.scrollY;")
+    def initialize(self):
+        self.driver = webdriver.Chrome()
+        self.driver.get("https://brightspace.nyu.edu/d2l/le/lessons/315188/units/9142859")
+        self.testing = True
+        return "Done"
 
 
-print("Scroll position after scrolling to the middle:", scroll_position)
+def run(obj):
+    ret = obj.initialize()
+    print(ret)
+    print(obj.testing)
 
 
-while 1:
-    1
+dict = {}
+for i in range(3):
+    dict[i] = testing()
+
+
+process_list = []
+for i in range(3):
+    process_list.append(multiprocessing.Process(target=run, args=(dict[i],)))
+    process_list[i].start()
+for i in range(3):
+    process_list[i].join()
+
+
+print("DONE")

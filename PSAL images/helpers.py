@@ -449,3 +449,25 @@ def initialize_blacklists(inverse_lookup, regular_lookup):
             file.write(str(item) + '\n')
     file.close()
     return sorted(combined), inverse_lookup, regular_lookup
+
+
+
+"""
+
+Load Page Stuff
+
+"""
+def is_loaded(driver):
+    return driver.execute_script("return document.readyState") == "complete"
+
+
+def wait_until_loaded(driver, timeout=60, period=0.25, min_time=0):
+    start_time = time.time()
+    must_end = time.time() + timeout
+    while time.time() < must_end:
+        if is_loaded(driver):
+            if time.time() - start_time < min_time:
+                time.sleep(min_time + start_time - time.time())
+            return True
+        time.sleep(period)
+    return False
