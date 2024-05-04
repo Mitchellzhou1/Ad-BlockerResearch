@@ -1,31 +1,23 @@
 from selenium import webdriver
-from urllib.parse import urlparse
+import time
+
+# Assuming you have already initialized your WebDriver instance
+driver = webdriver.Chrome()
+driver.get("https://picoctf.org/")  # Replace with your URL
+
+# Scroll to the middle of the page
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
+time.sleep(1)
+
+prev_position = -1
+scroll_position = driver.execute_script("return window.scrollY;")
+while prev_position != scroll_position:
+    print(prev_position, scroll_position)
+    prev_position = scroll_position
+    scroll_position = driver.execute_script("return window.scrollY;")
 
 
-def get_path(url):
-# Parse the URL and extract the path
-    parsed_url = urlparse(url)
-    path = parsed_url.path
-    return path
-def initialize():
-    browser = webdriver.Chrome()
-    url = 'https://portswigger.net/web-security/all-labs'
-    browser.get(url)
-    return browser
-
-
-url_to_find = "https://portswigger.net/content/images/logos/burp-suite-icon.svghttps://portswigger.net/content/images/logos/portswigger-logo.svg"
-driver = initialize()
-path = get_path(url_to_find)
-if url_to_find in driver.page_source:
-    print("IN PAGE SOURCE")
-
-elif path in driver.page_source:
-    print("Path in the PAGE SOURCE")
-
-else:
-    print("CSS")
-
+print("Scroll position after scrolling to the middle:", scroll_position)
 
 
 while 1:

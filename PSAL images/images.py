@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 # from browsermobproxy import Server
 import os, requests
+import multiprocessing
 from helpers import *
 
 # Function to initialize Chrome instances
@@ -63,13 +64,13 @@ def initialize_chrome(extn, url):
 
 
 def run_same_time(target, args):
-    thread_list = []
+    process_list = []
     target = getattr(sys.modules[__name__], target)
     for i, arg in enumerate(args):
-        thread_list.append(threading.Thread(target=target, args=arg))
-        thread_list[i].start()
+        process_list.append(multiprocessing.Process(target=target, args=arg))
+        process_list[i].start()
     for i in range(len(args)):
-        thread_list[i].join()
+        process_list[i].join()
 
 
 def get_url(driver, url):
@@ -106,14 +107,13 @@ def filter_site(url):
     return len(images1 - images2) == 0
 
 
-def run(url):
+def run(url, website_drivers, json_data):
     """
     creates two control browsers. These will check to see if the page is actually measurable
     some websites are too difficult to measure for missing pictures because the images are changing too much.
     if both controls browsers have no missing images between them, then if I launch the browsers with the extensions
     and I find that there are missing images, then the missing images are caused by the extensions and not the website.
     """
-    global data_dict
     # opening two control browsers and testing to see if we can measure it
     if filter_site(url):
         args = []
@@ -130,14 +130,16 @@ def run(url):
             args.append((website_drivers[url][extn][0], url))
         run_same_time('get_url', args)
 
-        control = get_image_resources(website_drivers[url]['control'][1].har['control'])
+        control_data = get_image_resources(website_drivers[url]['control'][1].har)
         control_driver = website_drivers[url]['control'][0]
         for extn in extensions:
             extn_driver = website_drivers[url][extn][0]
             if extn == 'control':
                 continue
             network_data = website_drivers[url][extn][1].har
-            compare_resources(url, control, network_data, extn, control_driver, extn_driver)
+            compare_resources(url, control_data, network_data, extn, control_driver, extn_driver)
+
+
             # website_drivers[url][extn][0].quit()
             # website_drivers[url][extn][1].close()
             # website_drivers[url][extn][2].stop()
@@ -145,7 +147,6 @@ def run(url):
 
         website_drivers.pop(url)
 
-        compare_resources(network_data)
 
 
 
@@ -162,33 +163,38 @@ extensions = [
     # "adblock",
     # "privacy-badger",
 ]
-SIZE = 1
-website_drivers = {}
-website_threads = []
-control_scanners = {}
-data_dict = {}
 
-for website in websites:
-    website_drivers[website] = {}
-    for extn in extensions:
-        website_drivers[website][extn] = {'driver': None,
-                                          'proxy': None,
-                                          'server': None}
-    website_threads.append(threading.Thread(target=run, args=(website,)))
+SIZE = 4
+chunks = list(divide_chunks(websites, SIZE))
+manager = multiprocessing.Manager()
 
+""" 
+website_drivers structure:
+website_drivers[website][extn] = {'driver': None,
+                                  'proxy': None,
+                                  'server': None}
+                                  
+website_drivers structure:
+website_drivers[website][extn] = {screen_shot_name: url}
+"""
+website_drivers_dict = manager.dict()
+json_data_dict = manager.dict()
 
-for i in range(0, len(website_threads), SIZE):
-    group = website_threads[i:i + SIZE]
-    print_batch(group)
-    for thread in group:
-        thread.start()
+for chunk in chunks:
+    jobs = []
+    for website in chunk:
+        for extn in extensions:
+            website_drivers_dict[website][extn] = {'driver': None,
+                                                   'proxy': None,
+                                                   'server': None}
+        p = multiprocessing.Process(target=run, args=(website, website_drivers_dict, json_data_dict))
+        jobs.append(p)
 
-    for thread in group:
-        thread.join()
+    for job in jobs:
+        job.start()
 
-
-
-
+    for job in jobs:
+        job.join()
 
 
 """

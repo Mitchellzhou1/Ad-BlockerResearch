@@ -1,12 +1,18 @@
 import threading
 import time
 from time import sleep
+from urllib.parse import urlparse
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 # from browsermobproxy import Server
+from selenium.webdriver.common.by import By
 import os, requests, sys
 from bs4 import BeautifulSoup
 import tldextract
+import re
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 file_extensions = [
     ".js",  # JavaScript
@@ -40,10 +46,23 @@ Simply code functions
 
 """
 
+
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 def print_batch(lst):
     print("Group:")
     for i in lst:
         print("\t", i._args[0])
+
+
+def get_path(url):
+# Parse the URL and extract the path
+    parsed_url = urlparse(url)
+    path = parsed_url.path
+    return path
 
 
 def generate_xpath(html_string):
@@ -93,14 +112,164 @@ def generate_xpath(html_string):
     return None
 
 
-def find_element_with_src(html_code, src_url):
+def find_element_in_html(driver, src_url):
     # Parse the HTML code using BeautifulSoup
+    html_code = driver.source
     soup = BeautifulSoup(html_code, 'html.parser')
 
     # Find the first element with the specified src URL
     element = soup.find(lambda tag: tag.has_attr('src') and tag['src'] == src_url)
 
     return element
+
+
+def find_element_in_css(driver, url_to_find):
+    js_script = f"""
+    function findElementWithBackgroundImage(selector, imageUrl) {{
+        var elements = document.querySelectorAll(selector);
+        for (var i = 0; i < elements.length; i++) {{
+            var style = window.getComputedStyle(elements[i]);
+            var backgroundImage = style.getPropertyValue('background-image');
+            if (backgroundImage.includes(imageUrl)) {{
+                return elements[i];
+            }}
+        }}
+        return null;
+    }}
+
+    return findElementWithBackgroundImage('.logo', '{url_to_find}');
+    """
+
+    # Execute the JavaScript function and get the element
+    logo_element = driver.execute_script(js_script)
+
+    # Print the outerHTML of the found element
+    if logo_element:
+        return logo_element.get_attribute("outerHTML")
+    else:
+        return None
+
+
+def generate_xpath(html_string):
+    def parse_html_string(string):
+        soup = BeautifulSoup(string, 'html.parser')
+        if soup:
+            tag = soup.find()
+            if tag:
+                tag_info = {
+                    'tag_name': tag.name,
+                    'attributes': tag.attrs
+                }
+                return tag_info
+        return None
+
+    def format_attribute(attr, value):
+        # if "'" in value:
+        #     value_lst = value.split("'")
+        #     return "[contains(@" + attr + ", " + "concat(" + value_lst[0] + ", \"'\", " + value_lst[1] + ", \"'\", " + value_lst[2] + "))]"
+
+        if isinstance(value, list):
+            return f'[contains(@{attr}, "{value[0]}")]'
+        else:
+            if "'" and '"' in value:
+                return ''  # this case is too weird. will just skip it.
+            elif "'" in value:
+                return f"""[@{attr}="{value}"]"""
+            return f"""[@{attr}='{value}']"""
+
+    parsed_info = parse_html_string(html_string)
+    if parsed_info:
+        tag_name = parsed_info['tag_name']
+        attributes = parsed_info['attributes']
+
+        xpath = f'//{tag_name}'
+        for attr, value in attributes.items():
+            if attr == 'class':
+                if isinstance(value, list):
+                    for class_value in value:
+                        xpath += f'[contains(@{attr}, "{class_value}")]'
+                else:
+                    xpath += f'[contains(@{attr}, "{value}")]'
+            else:
+                xpath += format_attribute(attr, value)
+
+        return xpath
+    return None
+
+
+def get_correct_elem(driver, initial_html, xpath):
+    counter = 3
+    while "[" in xpath and counter:
+        elements = driver.find_elements(By.XPATH, xpath)  # will return [] if none are found
+        for i in elements:
+            if i.get_attribute("outerHTML") == initial_html:
+                return i
+        try:  # sometimes the structure is the same.
+            return driver.find_element(By.XPATH, xpath)
+        except Exception:
+            button_part = xpath.split("[")[0]
+            xpath_list = re.findall(r'\[@.*?\]', xpath)
+            rem_candidate = max(xpath_list, key=len)
+            if "aria-label" in rem_candidate:
+                rem_candidate = min(xpath_list, key=len)
+            xpath_list.remove(rem_candidate)
+            xpath = ''.join([button_part] + xpath_list)
+        counter -= 1
+    try:
+        return driver.find_element(By.XPATH, xpath)  # will error if none are found
+    except Exception as e:
+        print("Didn't find element")
+    return None
+
+
+def scroll_to_elem(element, driver):
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
+
+    # Optional: Center the element on the screen
+    driver.execute_script("window.scrollTo(0, arguments[0]);",
+                          element.location['y'] - (driver.get_window_size()['height'] / 2))
+    sleep(1)
+    return driver.execute_script("return window.scrollY;")
+
+
+def scroll_to_position(driver, y=0):
+    driver.execute_script(f"window.scrollTo(0, {y});")
+    start_time = time.time()
+
+    while True:
+        scroll_position = driver.execute_script("return window.scrollY;")
+        if scroll_position == y:
+            break
+
+        current_time = time.time()
+        if current_time - start_time >= 10:
+            print("Timeout reached. Scroll position not stabilized.")
+            break
+
+        time.sleep(0.5)
+
+    return driver.execute_script("return [window.scrollX, window.scrollY];")
+
+
+def take_ss(extn, url, control_driver, extn_driver, element):
+    try:
+        root_dir = os.getcwd()
+        full_path = root_dir + '/screenshots/' + url + '/' + extn
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
+        if element:
+            # element.save_screenshot(f'{full_path}/control')
+            ...
+        if control_driver:
+            y_amount = scroll_to_elem(element, control_driver)
+            control_driver.save_screenshot(f'{full_path}/control')
+        if extn_driver:
+            scroll_to_position(extn_driver, y_amount)
+            extn_driver.save_screenshot(f'{full_path}/{extn}')
+    except Exception as e:
+        print(e)
+
 
 """
 
@@ -119,14 +288,22 @@ def compare_resources(key, control, network_logs, extn, control_driver, extn_dri
     if not difference:
         return
 
-    new_path = 'screenshots/'+ extn + '/' + key
-    if not os.path.exists(new_path):
-        os.makedirs(new_path)
-    os.chdir(new_path)
     for url in difference:
+        path = get_path(url)
+        html_string = None
         if url in control_driver.source:
-            element = find_element(control_driver, url)
+            html_string = find_element_in_html(control_driver, url)
+        elif path in control_driver.source:
+            html_string = find_element_in_html(control_driver, path)
+        elif url in control_driver.source:
+            html_string = find_element_in_css(control_driver, url)
+        elif path in control_driver.source:
+            html_string = find_element_in_css(control_driver, path)
 
+        if html_string:
+            xpath = generate_xpath(html_string)
+            elem = get_correct_elem(control_driver, html_string, xpath)
+            elem.take_ss()
 
 
 
