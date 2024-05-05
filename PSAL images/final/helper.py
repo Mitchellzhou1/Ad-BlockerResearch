@@ -65,7 +65,7 @@ class Driver:
         self.server = server
         self.proxy = proxy
 
-    def filter(self, website, key, storage):
+    def get_images(self, website, key, storage):
         self.initialize(key)
         self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
         self.driver.get(website)
