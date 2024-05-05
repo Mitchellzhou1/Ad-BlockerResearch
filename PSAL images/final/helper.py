@@ -65,11 +65,78 @@ class Driver:
         self.server = server
         self.proxy = proxy
 
+    def filter(self, website, key, storage):
+        self.initialize(key)
+        self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
+        self.driver.get(website)
+        wait_until_loaded(self.driver)
+        sleep(3)
 
-
-
+        images = get_image_resources(self.proxy.har)
+        storage[website][key] = images
 
 def divide_chunks(l, n):
     # looping till length l
     for i in range(0, len(l), n):
         yield l[i:i + n]
+
+
+
+
+
+"""
+
+Load Page Stuff
+
+"""
+def is_loaded(driver):
+    return driver.execute_script("return document.readyState") == "complete"
+
+
+def wait_until_loaded(driver, timeout=60, period=0.25, min_time=0):
+    start_time = time.time()
+    must_end = time.time() + timeout
+    while time.time() < must_end:
+        if is_loaded(driver):
+            if time.time() - start_time < min_time:
+                time.sleep(min_time + start_time - time.time())
+            return True
+        time.sleep(period)
+    return False
+
+
+def get_image_resources(logs):
+    ret = set()
+    resources = logs['log']['entries']
+    for packet in resources:
+        status_code = packet["response"]['status']
+
+        if status_code not in [200, 204]:
+            continue
+
+        content_type = ''
+        for header in packet['response']['headers']:
+            if header['name'].lower() == 'content-type':
+                content_type = content_eval(header['value'])
+                break
+        if content_type != 'images':
+            continue
+
+        ret.add(packet["request"]["url"])
+    return ret
+
+def content_eval(content_header):
+    stylesheet = ['text/css', 'application/css', 'application/x-css', 'text/plain',
+                  'text/html']
+    script = ['application/javascript', 'application/x-javascript', 'text/javascript', 'text/ecmascript',
+              'application/ecmascript']
+    images = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml', 'image/x-icon']
+    if content_header:
+        if any(elem in content_header for elem in stylesheet):
+            return "stylesheet"
+        if any(elem in content_header for elem in script):
+            return "script"
+        if any(elem in content_header for elem in images):
+            return "images"
+    return content_header
+

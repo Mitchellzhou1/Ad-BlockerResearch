@@ -1,11 +1,19 @@
-from selenium import webdriver
+import multiprocessing
 
-# Path to the WebDriver executable (change this to the path where you downloaded the driver)
-# Create a WebDriver instance (for Chrome in this example)
-driver = webdriver.Chrome()
+# Function to be executed by the processes
+def process_func(packet_dict):
+    nested_dict = packet_dict["nested_dict"]
+    nested_dict["key"] = "value"
 
-# Open a website
-driver.get('https://www.example.com')
+if __name__ == "__main__":
+    manager = multiprocessing.Manager()
+    packet_dict = manager.dict()
+    packet_dict["nested_dict"] = manager.dict()
 
-# Close the WebDriver instance
-driver.quit()
+    # Create and start the process
+    process = multiprocessing.Process(target=process_func, args=(packet_dict,))
+    process.start()
+    process.join()
+
+    # Print the modified packet_dict after the process
+    print(packet_dict["nested_dict"].values())
