@@ -1,34 +1,33 @@
-from selenium import webdriver
-import time
+from multiprocessing import Process, Event, Value
 
-# Global dictionary to store browser instances
-browser_dict = {}
+# Function to yield a value after waiting
+def waiter(event, value):
+    print("Waiter is waiting...")
+    event.wait()  # Wait for the event to be set
+    print("Waiter received value:", value.value)
 
-def initialize_browser():
-    options = webdriver.ChromeOptions()
-    # Add any options you need
-    browser = webdriver.Chrome(options=options)
-    session_id = browser.session_id
-    browser_dict[session_id] = browser
-    return session_id
-
-def get_browser_from_session(session_id):
-    return browser_dict.get(session_id)
+# Function to set the event and yield a value
+def notifier(event, value):
+    print("Notifier is notifying...")
+    value_to_yield = "Hello, waiter!"
+    value.value = value_to_yield  # Update the shared value object
+    event.set()  # Set the event to notify the waiter
 
 if __name__ == "__main__":
-    # Initialize a browser and keep it running in the background
-    session_id = initialize_browser()
+    # Create an Event for synchronization
+    event = Event()
 
-    # Wait for a while to simulate keeping the browser alive
-    time.sleep(3)
+    # Create a shared Value object for passing values between processes
+    shared_value = Value('i', 0)
 
-    # Retrieve the browser using the session ID
-    retrieved_browser = get_browser_from_session(session_id)
-    if retrieved_browser:
-        retrieved_browser.get("https://www.example.com")
-        # Perform actions with the retrieved browser as needed
-        # Don't forget to close the retrieved browser when done
-        time.sleep(19)
-        retrieved_browser.quit()
-    else:
-        print("Browser session not found.")
+    # Create two processes - waiter and notifier
+    waiter_process = Process(target=waiter, args=(event, shared_value))
+    notifier_process = Process(target=notifier, args=(event, shared_value))
+
+    # Start the notifier process
+    notifier_process.start()
+    notifier_process.join()
+
+    # Start the waiter process
+    waiter_process.start()
+    waiter_process.join()

@@ -9,10 +9,10 @@ from browsermobproxy import Server
 from selenium.webdriver.common.by import By
 import os, requests, sys
 from bs4 import BeautifulSoup
+from blacklist import *
 import tldextract
 import re
 from selenium.webdriver.common.action_chains import ActionChains
-
 
 
 class Driver:
@@ -24,7 +24,6 @@ class Driver:
         self.image_urls = []
 
     def initialize(self, extn):
-        print("initializing", extn)
         server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
         server.start()
         proxy = server.create_proxy()
@@ -65,15 +64,110 @@ class Driver:
         self.server = server
         self.proxy = proxy
 
-    def get_images(self, website, key, storage):
+    def get_images(self, website, key, storage, blacklist_, inverse_lookup, regular_lookup):
+        self.initialize(key)
+        self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
+        self.driver.get(website)
+        wait_until_loaded(self.driver)
+        sleep(10)
+
+        packets = self.proxy.har['log']['entries']
+        images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+
+        storage[website][key] = images
+
+        self.driver.close()
+        self.server.stop()
+        self.proxy.close()
+
+    def find_missing(self, website, key, results, control, blacklist_, inverse_lookup, regular_lookup):
         self.initialize(key)
         self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
         self.driver.get(website)
         wait_until_loaded(self.driver)
         sleep(3)
 
-        images = get_image_resources(self.proxy.har)
-        storage[website][key] = images
+        control = control[website]['control-scanner1']
+        packets = self.proxy.har['log']['entries']
+        images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+
+        if site_filter(control, images):
+            results[website] = 'No Missing Images'
+        else:
+            for url in (control - images):
+                path = get_path(url)
+                html_string = None
+                if url in self.driver.source:
+                    html_string = find_element_in_html(self.driver, url)
+                elif path in self.driver.source:
+                    html_string = find_element_in_html(self.driver, path)
+                elif url in self.driver.source:
+                    html_string = find_element_in_css(self.driver, url)
+                elif path in self.driver.source:
+                    html_string = find_element_in_css(self.driver, path)
+
+                if html_string:
+                    if 'control' in key:
+                        take_ss_control(self.driver, html_string, key, website)
+                        results[website] = 'Inconsistent Site'
+                    else:
+                        take_ss_entire(self.driver, website, key)
+
+                else:
+                    ...
+                    # the image was not in the HTML:
+
+
+    def filter_packets(self, website, packets, blacklist_, inverse_lookup, regular_lookup):
+        ret = {}
+        driver_domain = url_parser(website)[1]
+        for packet in packets:
+            try:
+                request_url = packet["request"]["url"]
+                status_code = packet["response"]["status"]
+                resource_domain = url_parser(request_url)[1]
+                # gets rid of duplicates! very important!!!
+                if ((request_url in ret.keys()) or
+                        (status_code not in [200, 204])):
+                    continue
+
+                try:
+                    status_text = packet["response"]["statusText"]
+                except KeyError:
+                    status_text = "none"
+                    if status_code != 200:
+                        print("No Status Text")
+                content_type = ''
+                referer = ''
+                for header in packet['response']['headers']:
+                    if header['name'].lower() == 'content-type':
+                        content_type = header['value']
+                        break
+
+                for header in packet['request']['headers']:
+                    if header['name'].lower() == 'referer':
+                        referer = header['value']
+                        break
+
+                content_type = content_eval(content_type)
+
+                # FILTER FOR JUST IMAGES IN THE JSON
+                if "image" not in content_type:
+                    continue
+
+                content_size = packet["response"]["content"]["size"]
+                # Black List Parser
+
+                in_blacklist = (blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url) or
+                                blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
+
+                ret[request_url] = [request_url, status_code, status_text, content_size, content_type, referer,
+                                    in_blacklist]
+            except Exception as e:
+                print(e)
+                print("Error! Could not decode packet.")
+        return ret
+
 
 def divide_chunks(l, n):
     # looping till length l
@@ -81,7 +175,139 @@ def divide_chunks(l, n):
         yield l[i:i + n]
 
 
+"""
 
+Image Locator Stuff
+
+"""
+
+def take_ss_entire(driver, website, extn):
+    full_page_height = driver.execute_script("return document.body.scrollHeight")
+
+    # Set the window size of the WebDriver to the full page height
+    driver.set_window_size(1920, full_page_height)
+
+    # Take a screenshot of the entire page
+    screenshot = driver.get_screenshot_as_png()
+
+    current_directory = os.getcwd() + 'PSAL_images/final/RESULTS'
+    destination = current_directory + '/' + website + '/' + extn
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+        with open(destination + '/full_page.png', 'wb') as file:
+            file.write(screenshot)
+
+
+def take_ss_control(driver, html_string, extn, website):
+    current_directory = os.getcwd() + 'PSAL_images/final/RESULTS'
+
+    xpath = generate_xpath(html_string)
+    element = driver.find_element(By.XPATH, xpath)
+    element_dir = current_directory + '/' + website + '/' + extn
+    if not os.path.exists(element_dir):
+        os.makedirs(element_dir)
+        element.screenshot(element_dir + f'/{html_string}.png')
+        element.get_local_DOM()
+        element.screenshot(element_dir + f'/CONTEXT_{html_string}.png')
+    else:
+        return
+
+
+def get_path(url):
+    # Parse the URL and extract the path
+    parsed_url = urlparse(url)
+    path = parsed_url.path
+    return path
+
+
+def find_element_in_html(driver, src_url):
+    # Parse the HTML code using BeautifulSoup
+    html_code = driver.source
+    soup = BeautifulSoup(html_code, 'html.parser')
+
+    # Find the first element with the specified src URL
+    element = soup.find(lambda tag: tag.has_attr('src') and tag['src'] == src_url)
+
+    return element
+
+
+def find_element_in_css(driver, url_to_find):
+    js_script = f"""
+    function findElementWithBackgroundImage(selector, imageUrl) {{
+        var elements = document.querySelectorAll(selector);
+        for (var i = 0; i < elements.length; i++) {{
+            var style = window.getComputedStyle(elements[i]);
+            var backgroundImage = style.getPropertyValue('background-image');
+            if (backgroundImage.includes(imageUrl)) {{
+                return elements[i];
+            }}
+        }}
+        return null;
+    }}
+
+    return findElementWithBackgroundImage('.logo', '{url_to_find}');
+    """
+
+    # Execute the JavaScript function and get the element
+    logo_element = driver.execute_script(js_script)
+
+    # Print the outerHTML of the found element
+    if logo_element:
+        return logo_element.get_attribute("outerHTML")
+    else:
+        return None
+
+
+def generate_xpath(html_string):
+    def parse_html_string(string):
+        soup = BeautifulSoup(string, 'html.parser')
+        if soup:
+            tag = soup.find()
+            if tag:
+                tag_info = {
+                    'tag_name': tag.name,
+                    'attributes': tag.attrs
+                }
+                return tag_info
+        return None
+
+    def format_attribute(attr, value):
+        # if "'" in value:
+        #     value_lst = value.split("'")
+        #     return "[contains(@" + attr + ", " + "concat(" + value_lst[0] + ", \"'\", " + value_lst[1] + ", \"'\", " + value_lst[2] + "))]"
+
+        if isinstance(value, list):
+            return f'[contains(@{attr}, "{value[0]}")]'
+        else:
+            if "'" and '"' in value:
+                return ''  # this case is too weird. will just skip it.
+            elif "'" in value:
+                return f"""[@{attr}="{value}"]"""
+            return f"""[@{attr}='{value}']"""
+
+    parsed_info = parse_html_string(str(html_string))
+    if parsed_info:
+        tag_name = parsed_info['tag_name']
+        attributes = parsed_info['attributes']
+
+        xpath = f'//{tag_name}'
+        for attr, value in attributes.items():
+            if attr == 'class':
+                if isinstance(value, list):
+                    for class_value in value:
+                        xpath += f'[contains(@{attr}, "{class_value}")]'
+                else:
+                    xpath += f'[contains(@{attr}, "{value}")]'
+            else:
+                xpath += format_attribute(attr, value)
+
+        return xpath
+    return None
+
+
+def go_to_elem(driver, element):
+    driver.execute_script(
+        "arguments[0].scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });", element)
 
 
 """
@@ -89,6 +315,8 @@ def divide_chunks(l, n):
 Load Page Stuff
 
 """
+
+
 def is_loaded(driver):
     return driver.execute_script("return document.readyState") == "complete"
 
@@ -125,6 +353,7 @@ def get_image_resources(logs):
         ret.add(packet["request"]["url"])
     return ret
 
+
 def content_eval(content_header):
     stylesheet = ['text/css', 'application/css', 'application/x-css', 'text/plain',
                   'text/html']
@@ -140,3 +369,20 @@ def content_eval(content_header):
             return "images"
     return content_header
 
+
+"""
+
+HTML Stuff
+
+"""
+
+
+def get_local_DOM(self, elem):
+    amt = 4
+    try:
+        for i in range(amt):
+            elem = elem.find_element(By.XPATH, '..')
+        return elem
+    except Exception as e:
+        # No more parent node to go up. Nothing Serious
+        return elem

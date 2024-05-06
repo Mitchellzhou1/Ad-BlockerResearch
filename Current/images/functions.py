@@ -432,7 +432,6 @@ def filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
             if "image" not in content_type:
                 continue
 
-
             content_size = packet["response"]["content"]["size"]
             # Black List Parser
 

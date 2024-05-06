@@ -20,50 +20,27 @@ extn_lst = [
     #     "ghostery",
     #     "adguard"
 ]
-#
-# with open(f"/home/character/Desktop/Ad-BlockerResearch/xlsx/buttons_control.json", 'r') as file:
-#     control = json.load(file)
-#
-# with open(f"/home/character/Desktop/Ad-BlockerResearch/xlsx/buttons_adblock.json", 'r') as file:
-#     curr_data = json.load(file)
-
-
 HTML_TEST = {'buttons', "drop downs", "links", "login", "input"}
-# HTML_TEST = {'buttons'}
-
-# Your specified headers
-# headers = ["URL_KEY", "HTML_obj Opened?", "Outer HTML Change", "DOM structure Change", "Initial Outer HTML",
-#            "After Click Outer HTML", "Initial DOM Structure", "After Click DOM Structure", "Initial Link",
-#            "After Click Link", "Tries"]
-
 headers = ["URL_KEY", "Result", "Extn Result", "Control Result", "Initial Outer HTML"]
 
-# Process the JSON data
 for extn in extn_lst:
-    # Iterate through each HTML object and its data
+
     for html_obj in HTML_TEST:
 
-        with open(f"/home/character/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_control.json", 'r') as file:
+        with open(f"/home/mitch/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_control.json", 'r') as file:
             control = json.load(file)
 
-        with open(f"/home/character/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_{extn}.json", 'r') as file:
-            curr_data = json.load(file)
+        with open(f"/home/mitch/Desktop/Ad-BlockerResearch/Current/HTML_elems/xlsx/{html_obj}_{extn}.json", 'r') as file:
+            extn_data = json.load(file)
 
         rows = []
-        for url_key, inner_data in curr_data.items():
-            if url_key == 'http://www.kbb.com':
-                1
-
-            if curr_data[url_key] == []:
+        for url_key, inner_data in extn_data.items():
+            if extn_data[url_key] == []:
                 continue
-            if url_key not in control.keys():
-                # Check everything if the site was not found in the control!!!
-                rows.append([url_key] + ["Site not found in Control"] + [None] * (len(headers) - 2))  # URL row
-                for unit_data in inner_data:
-                    row_data = [None] + unit_data
-                    rows.append(row_data[:len(headers)])
+            if url_key in control.keys():
+                if 'thawte' in url_key:
+                    print(1)
 
-            else:
                 # if the site was not found in the control!!!
                 rows.append([url_key] + [None] * (len(headers) - 1))  # URL row
                 pass_all = True
@@ -76,7 +53,7 @@ for extn in extn_lst:
                         if control_unit_data[3] == extn_unit_data[3]:
                             if control_unit_data[0][0] == extn_unit_data[0][0]:
                                 pass
-                            else:
+                            elif 'true' in control_unit_data[0].lower() and 'false' in extn_unit_data[0].lower():
                                 # different results
                                 pass_all = False
                                 same_result = "False"
@@ -87,9 +64,10 @@ for extn in extn_lst:
 
                     if not found:
                         # Not found in the Control Value
-                        pass_all = False
-                        row_data = ["elem not in control"] + extn_unit_data
-                        rows.append(row_data[:len(headers)])
+                        if 'false' in extn_data[0].lower():
+                            pass_all = False
+                            row_data = ["elem not in control"] + extn_unit_data
+                            rows.append(row_data[:len(headers)])
                 if pass_all:
                     rows.pop()
 
