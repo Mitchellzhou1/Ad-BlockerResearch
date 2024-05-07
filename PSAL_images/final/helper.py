@@ -7,6 +7,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from browsermobproxy import Server
 from selenium.webdriver.common.by import By
+
+from pyvirtualdisplay import Display
+from xvfbwrapper import Xvfb
+
 import os, requests, sys
 from bs4 import BeautifulSoup
 from blacklist import *
@@ -22,10 +26,17 @@ class Driver:
         self.driver = None
         self.proxy = None
         self.server = None
+        self.vdisplay = None
 
         self.image_urls = []
 
     def initialize(self, extn):
+        xvfb_args = [
+            '-maxclients', '1024'
+        ]
+        self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
+        self.vdisplay.start()
+
         server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
         server.start()
         proxy = server.create_proxy()
@@ -82,6 +93,7 @@ class Driver:
             self.driver.close()
             self.server.stop()
             self.proxy.close()
+            self.vdisplay.stop()
             return False
 
     def get_images(self, website, key, storage, blacklist_, inverse_lookup, regular_lookup):
@@ -100,9 +112,11 @@ class Driver:
         self.driver.close()
         self.server.stop()
         self.proxy.close()
+        self.vdisplay.stop()
 
     def find_missing(self, website, key, results, control, blacklist_, inverse_lookup, regular_lookup):
         self.initialize(key)
+        print("Successfully create:", website)
         self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
         if not self.load_site(website):
             return
@@ -141,6 +155,7 @@ class Driver:
         self.driver.close()
         self.server.stop()
         self.proxy.close()
+        self.vdisplay.stop()
 
     def filter_packets(self, website, packets, blacklist_, inverse_lookup, regular_lookup):
         ret = {}
@@ -194,7 +209,6 @@ class Driver:
                 print(e)
                 print("Error! Could not decode packet.")
         return ret
-
 
     def image_packets(self, website, packets, blacklist_, inverse_lookup, regular_lookup):
         ret = {}

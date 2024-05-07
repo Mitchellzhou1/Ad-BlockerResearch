@@ -1,18 +1,20 @@
 from helper import *
 import multiprocessing
+import pickle
 
 current_path = '/home/mitch/Desktop/Ad-BlockerResearch/PSAL_images/final/RESULTS/'
 
 
 websites = [
     "https://www.mrdonn.org/",
-    # "https://canyoublockit.com/testing/",
-    # "https://www.wikipedia.org",
-    # "https://www.github.com"
+    "https://canyoublockit.com/testing/",
+    "https://www.wikipedia.org",
+    "https://www.github.com",
+    "https://www.uxmatters.com/"
 ]
 
 extensions = [
-    # "control",
+    "control",
     "ublock",
     # "adblock",
     # "privacy-badger",
@@ -26,6 +28,7 @@ manager = multiprocessing.Manager()
 control_dict = manager.dict()
 final_data_dict = manager.dict()
 packet_dict = manager.dict()
+filtered_websites = []
 
 blacklist, inverse_lookup, regular_lookup = initialize_blacklists(Trie(), Trie())
 
@@ -70,16 +73,21 @@ for chunk in chunks:
             for extn in extensions:
                 all_processes[website][extn].join()
 
-            print("NEED TO CHECK THE DATA AND FILTER OUT THE CONTROL")
             if final_data_dict[website]['control'] == 'Inconsistent Site':
                 key = scheme_extractor(website)
                 os.system(f'rm -rf {current_path}/{key}')
                 final_data_dict.pop(website)
 
-
-
         else:
-            ...
-            #write to the json, site was filtered out
+            filtered_websites.append(website)
 
-print(final_data_dict.values())
+    with open(current_path+"data.json", 'wb') as file:
+        pickle.dump(final_data_dict, file)
+    file.close()
+
+with open(current_path+"filtered.txt", "w") as file:
+    for i in filtered_websites:
+        file.write(i)
+
+print("EVERTHING IS DONE!!\n" * 10)
+
