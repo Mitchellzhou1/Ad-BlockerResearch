@@ -128,6 +128,7 @@ class Driver:
 
         if site_filter(control, images):
             results[website][key] = 'No Missing Images'
+            take_ss(self.driver, '', key, website, '', '')
         else:
             index = 0
             for url in (set(control.keys()) - set(images.keys())):
@@ -201,10 +202,10 @@ class Driver:
                                 blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
 
                 """ FOR TESTING ONLY """
+                # setting these strings to False to see if I can take picture of them.
 
                 if request_url == "https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png":
                     in_blacklist = False
-
 
                 """ DONE TESTING """
 
@@ -333,8 +334,8 @@ def take_ss_entire(driver, screenshot_path, url, extn):
         current_height += viewport_height
 
     full_screenshot.save(screenshot_path+f'{extn}_entire.png')
-    print("Took full screenshot of", url)
-    print("Path was:", screenshot_path+f'{extn}_entire.png')
+    # print("Took full screenshot of", url)
+    # print("Path was:", screenshot_path+f'{extn}_entire.png')
 
 
 def take_ss(driver, html_string, extn, website, img_url, index):
@@ -355,29 +356,30 @@ def take_ss(driver, html_string, extn, website, img_url, index):
     # take image of entire site:
     take_ss_entire(driver, element_dir, website, extn)
 
-    element_dir += extn + "/"
-    if not os.path.exists(element_dir):
-        os.makedirs(element_dir)
-
-    if element:
-        element_dir += '/IN_DOM'
+    if extn != "control":
+        element_dir += extn + "/"
         if not os.path.exists(element_dir):
             os.makedirs(element_dir)
-        try:
-            element.screenshot(element_dir + f'/img_{index}.png')
-        except:
+
+        if element:
+            element_dir += '/IN_DOM'
+            if not os.path.exists(element_dir):
+                os.makedirs(element_dir)
+            try:
+                element.screenshot(element_dir + f'/img_{index}.png')
+            except:
+                download_image(img_url, element_dir + f'/img_{index}.png')
+
+            try:
+                element = get_parent(element, 4)
+                element.screenshot(element_dir + f'/img_{index}_CONTEXT.png')
+            except Exception as e:
+                return
+        else:
+            element_dir += '/NOT_IN_DOM'
+            if not os.path.exists(element_dir):
+                os.makedirs(element_dir)
             download_image(img_url, element_dir + f'/img_{index}.png')
-
-        try:
-            element = get_parent(element, 4)
-            element.screenshot(element_dir + f'/img_{index}_CONTEXT.png')
-        except Exception as e:
-            return
-    else:
-        element_dir += '/NOT_IN_DOM'
-        if not os.path.exists(element_dir):
-            os.makedirs(element_dir)
-        download_image(img_url, element_dir + f'/img_{index}.png')
 
 
 def get_path(url):

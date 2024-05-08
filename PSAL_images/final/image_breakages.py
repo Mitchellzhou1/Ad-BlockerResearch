@@ -78,6 +78,7 @@ for chunk in chunks:
                 all_processes[website][extn].join()
 
             if final_data_dict[website]['control'] == 'Inconsistent Site':
+                # remove the bad data... the site is too 'volatile'
                 key = scheme_extractor(website)
                 os.system(f'rm -rf {current_path}/{key}')
                 final_data_dict.pop(website)
@@ -101,6 +102,7 @@ for chunk in chunks:
         json.dump(dict(store_to_file_dict), file)
     file.close()
 
+# writing all the filtered sites
 file_path = os.path.join(current_path, 'filtered.txt')
 with open(file_path, "w") as file:
     for i in filtered_websites:
