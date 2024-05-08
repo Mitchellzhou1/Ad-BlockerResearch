@@ -149,7 +149,7 @@ class Driver:
                 take_ss(self.driver, html_string, key, website, url, str(index))
 
                 # the html_string tells if the url was found in the page or not
-                results[website][key]['img_' + str(index)] = [control[url], html_string]
+                results[website][key]['img_' + str(index)] = control[url]
                 index += 1
 
         self.driver.close()
@@ -199,6 +199,14 @@ class Driver:
 
                 in_blacklist = (blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url) or
                                 blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
+
+                """ FOR TESTING ONLY """
+
+                if request_url == "https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png":
+                    in_blacklist = False
+
+
+                """ DONE TESTING """
 
                 if in_blacklist:
                     continue
@@ -355,10 +363,16 @@ def take_ss(driver, html_string, extn, website, img_url, index):
         element_dir += '/IN_DOM'
         if not os.path.exists(element_dir):
             os.makedirs(element_dir)
-        element.screenshot(element_dir + f'/img_{index}.png')
+        try:
+            element.screenshot(element_dir + f'/img_{index}.png')
+        except:
+            download_image(img_url, element_dir + f'/img_{index}.png')
 
-        element = get_parent(element, 4)
-        element.screenshot(element_dir + f'/img_{index}_CONTEXT.png')
+        try:
+            element = get_parent(element, 4)
+            element.screenshot(element_dir + f'/img_{index}_CONTEXT.png')
+        except Exception as e:
+            return
     else:
         element_dir += '/NOT_IN_DOM'
         if not os.path.exists(element_dir):
@@ -375,7 +389,7 @@ def get_path(url):
 
 def find_element_in_html(driver, src_url):
     # Parse the HTML code using BeautifulSoup
-    html_code = driver.source
+    html_code = driver.page_source
     soup = BeautifulSoup(html_code, 'html.parser')
 
     # Find the first element with the specified src URL
@@ -553,3 +567,9 @@ def download_image(url, file_path):
             print(f"Failed to download image: {response.status_code} - {response.reason}")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+def manager_dict_serializer(obj):
+    if isinstance(obj, dict):
+        return {k: v for k, v in obj.items()}
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")

@@ -1,16 +1,16 @@
 from helper import *
 import multiprocessing
-import pickle
+import json
 
 current_path = '/home/mitch/Desktop/Ad-BlockerResearch/PSAL_images/final/RESULTS/'
-
+os.makedirs(current_path, exist_ok=True)
 
 websites = [
     "https://www.mrdonn.org/",
-    "https://canyoublockit.com/testing/",
-    "https://www.wikipedia.org",
-    "https://www.github.com",
-    "https://www.uxmatters.com/"
+    # "https://canyoublockit.com/testing/",
+    # "https://www.wikipedia.org",
+    # "https://www.github.com",
+    # "https://www.uxmatters.com/"
 ]
 
 extensions = [
@@ -29,6 +29,7 @@ control_dict = manager.dict()
 final_data_dict = manager.dict()
 packet_dict = manager.dict()
 filtered_websites = []
+store_to_file_dict = {}
 
 blacklist, inverse_lookup, regular_lookup = initialize_blacklists(Trie(), Trie())
 
@@ -44,14 +45,17 @@ for chunk in chunks:
             final_data_dict[website][extn] = manager.dict()
         all_processes[website] = {
             'control-scanner1': multiprocessing.Process(target=driver_dictionary[i].get_images,
-                                                        args=(website, 'control-scanner1', packet_dict, blacklist, inverse_lookup, regular_lookup)),
+                                                        args=(website, 'control-scanner1', packet_dict, blacklist,
+                                                              inverse_lookup, regular_lookup)),
             'control-scanner2': multiprocessing.Process(target=driver_dictionary[i].get_images,
-                                                        args=(website, 'control-scanner2', packet_dict, blacklist, inverse_lookup, regular_lookup)),
+                                                        args=(website, 'control-scanner2', packet_dict, blacklist,
+                                                              inverse_lookup, regular_lookup)),
         }
         for extn in extensions:
             all_processes[website][extn] = multiprocessing.Process(target=driver_dictionary[i].find_missing,
                                                                    args=(website, extn, final_data_dict,
-                                                                         packet_dict, blacklist, inverse_lookup, regular_lookup))
+                                                                         packet_dict, blacklist, inverse_lookup,
+                                                                         regular_lookup))
 
     print("Stage 1: Finished Initializing all Processes")
     # open two control browsers and collect the images and test if they are the same.
@@ -79,15 +83,28 @@ for chunk in chunks:
                 final_data_dict.pop(website)
 
         else:
+            print("Filtered:", website)
             filtered_websites.append(website)
 
-    with open(current_path+"data.json", 'wb') as file:
-        pickle.dump(final_data_dict, file)
+    file_path = os.path.join(current_path, 'data.json')
+    with open(file_path, 'w') as file:
+        for website in final_data_dict.keys():
+            store_to_file_dict[website] = {}
+            for extn in final_data_dict[website].keys():
+                store_to_file_dict[website][extn] = {}
+                if type(final_data_dict[website][extn]) == str:
+                    # this means that the site is 'Inconsistent Site'
+                    continue
+                for i in final_data_dict[website][extn].keys():
+                    store_to_file_dict[website][extn][i] = final_data_dict[website][extn][i]
+
+        json.dump(dict(store_to_file_dict), file)
     file.close()
 
-with open(current_path+"filtered.txt", "w") as file:
+file_path = os.path.join(current_path, 'filtered.txt')
+with open(file_path, "w") as file:
     for i in filtered_websites:
         file.write(i)
+file.close()
 
 print("EVERTHING IS DONE!!\n" * 10)
-

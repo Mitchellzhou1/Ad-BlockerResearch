@@ -1,19 +1,27 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-options = Options()
-extension_path = '/home/mitch/Desktop/Ad-BlockerResearch/Extensions/extn_crx/ublock.crx'
 
-# Create a ChromeOptions object
-chrome_options = Options()
+# Initialize the Chrome web driver
+options = webdriver.ChromeOptions()
+options.headless = True  # Run Chrome in headless mode (no GUI)
+driver = webdriver.Chrome(options=options)
 
-# Add the extension to ChromeOptions
-chrome_options.add_argument(extension_path)
+# Navigate to the website
+url = 'https://www.uxmatters.com/'  # Replace with the URL of the website you want to analyze
+driver.get(url)
 
-# Create a WebDriver instance with the ChromeOptions
-driver = webdriver.Chrome(options=chrome_options)
+# Use JavaScript to scroll to the top of the page
+driver.execute_script("window.scrollTo(0, 0);")
 
-# Now you can use the WebDriver instance to navigate to a webpage, etc.
-driver.get('https://www.example.com')
+# Use JavaScript to get the parent node (e.g., <html> or <body> tag)
+parent_node = driver.execute_script("return document.documentElement")  # This gets the <html> tag
+# Alternatively, you can get the <body> tag as the parent node:
+# parent_node = driver.execute_script("return document.body")
 
+# Click on the parent node (assuming it's clickable)
+print(parent_node.get_attribute('outerHTML'))
+
+print(parent_node.get_attribute('outerHTML') == driver.page_source)
+
+parent_node.screenshot("AAAAAAAAAAAAAAAAAAAaa.png")
 while 1:
     1
