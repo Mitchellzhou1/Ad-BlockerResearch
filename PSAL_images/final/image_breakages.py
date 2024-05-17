@@ -95,13 +95,17 @@ for chunk in chunks:
     with open(file_path, 'w') as file:
         for website in final_data_dict.keys():
             store_to_file_dict[website] = {}
+            flag = True
             for extn in final_data_dict[website].keys():
                 store_to_file_dict[website][extn] = {}
                 if type(final_data_dict[website][extn]) == str:
-                    # this means that the site is 'Inconsistent Site'
                     continue
                 for i in final_data_dict[website][extn].keys():
+                    flag = False
                     store_to_file_dict[website][extn][i] = final_data_dict[website][extn][i]
+            if flag:
+                key = scheme_extractor(website)
+                os.system(f'rm -rf {current_path}/{key}')
 
         json.dump(dict(store_to_file_dict), file)
     file.close()
