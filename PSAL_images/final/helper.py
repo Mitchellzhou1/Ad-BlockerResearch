@@ -20,6 +20,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from PIL import Image
 import io
 
+user = 'character'
 
 class Driver:
     def __init__(self):
@@ -37,14 +38,17 @@ class Driver:
         self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
         self.vdisplay.start()
 
-        server = Server("/home/mitch/work/pes/browsermob-proxy/bin/browsermob-proxy")
+        if user != 'character':
+            server = Server(f"/home/{user}/work/pes/browsermob-proxy/bin/browsermob-proxy")
+        else:
+            server = Server(f"/home/{user}/Desktop/Ad-BlockerResearch/browsermob-proxy/bin/browsermob-proxy")
         server.start()
         proxy = server.create_proxy()
         # proxy = server.create_proxy(params={'port': port})
 
         options = Options()
         if 'control' not in extn:
-            options.add_extension(f"/home/mitch/Desktop/Ad-BlockerResearch/Extensions/extn_crx/{extn}.crx")
+            options.add_extension(f"/home/{user}/Desktop/Ad-BlockerResearch/Extensions/extn_crx/{extn}.crx")
 
         options.add_argument("start-maximized")
         options.add_argument("--disable-dev-shm-usage")
@@ -127,6 +131,7 @@ class Driver:
         images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
 
         if site_filter(control, images):
+            print(key, "---", "no missing")
             results[website][key] = 'No Missing Images'
             take_ss(self.driver, '', key, website, '', '')
         else:
@@ -361,7 +366,7 @@ def take_ss(driver, html_string, extn, website, img_url, index):
         if not os.path.exists(element_dir):
             os.makedirs(element_dir)
 
-        if element:
+        if element:     # element in DOM
             element_dir += '/IN_DOM'
             if not os.path.exists(element_dir):
                 os.makedirs(element_dir)
@@ -375,11 +380,14 @@ def take_ss(driver, html_string, extn, website, img_url, index):
                 element.screenshot(element_dir + f'/img_{index}_CONTEXT.png')
             except Exception as e:
                 return
-        else:
+        elif img_url:           # element in DOM
             element_dir += '/NOT_IN_DOM'
             if not os.path.exists(element_dir):
                 os.makedirs(element_dir)
             download_image(img_url, element_dir + f'/img_{index}.png')
+
+       # else: No missing Images
+
 
 
 def get_path(url):

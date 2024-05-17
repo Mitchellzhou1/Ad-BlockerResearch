@@ -2,15 +2,16 @@ from helper import *
 import multiprocessing
 import json
 
-current_path = '/home/mitch/Desktop/Ad-BlockerResearch/PSAL_images/final/RESULTS/'
+user = 'character'
+current_path = f'/home/{user}/Desktop/Ad-BlockerResearch/PSAL_images/final/RESULTS/'
 os.makedirs(current_path, exist_ok=True)
 
 websites = [
-    "https://www.mrdonn.org/",
-    # "https://canyoublockit.com/testing/",
-    # "https://www.wikipedia.org",
-    # "https://www.github.com",
-    # "https://www.uxmatters.com/"
+        "https://www.mrdonn.org/",
+        "https://canyoublockit.com/testing/",
+    "https://www.wikipedia.org",
+    "https://www.github.com",
+    "https://www.uxmatters.com/"
 ]
 
 extensions = [
@@ -61,6 +62,7 @@ for chunk in chunks:
     # open two control browsers and collect the images and test if they are the same.
     # if the images are the same then the site is considered "stable" to continue the scan
     for website in chunk:
+        print(f"Starting Filter: {website}")
         all_processes[website]['control-scanner1'].start()
         all_processes[website]['control-scanner2'].start()
 
@@ -69,6 +71,7 @@ for chunk in chunks:
         all_processes[website]['control-scanner2'].join()
 
     for website in chunk:
+        print("Passed Filter:", website)
         if site_filter(packet_dict[website]['control-scanner1'], packet_dict[website]['control-scanner2']):
 
             for extn in extensions:
@@ -84,7 +87,7 @@ for chunk in chunks:
                 final_data_dict.pop(website)
 
         else:
-            print("Filtered:", website)
+            print("Failed Filtered:", website)
             filtered_websites.append(website)
 
     file_path = os.path.join(current_path, 'data.json')
