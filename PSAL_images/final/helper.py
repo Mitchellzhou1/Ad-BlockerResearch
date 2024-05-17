@@ -21,6 +21,9 @@ from PIL import Image
 import io
 
 user = 'character'
+current_dir = os.getcwd()
+base_dir = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
+current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
 
 class Driver:
     def __init__(self):
@@ -41,14 +44,14 @@ class Driver:
         if user != 'character':
             server = Server(f"/home/{user}/work/pes/browsermob-proxy/bin/browsermob-proxy")
         else:
-            server = Server(f"/home/{user}/Desktop/Ad-BlockerResearch/browsermob-proxy/bin/browsermob-proxy")
+            server = Server(f"{base_dir}/browsermob-proxy/bin/browsermob-proxy")
         server.start()
         proxy = server.create_proxy()
         # proxy = server.create_proxy(params={'port': port})
 
         options = Options()
         if 'control' not in extn:
-            options.add_extension(f"/home/{user}/Desktop/Ad-BlockerResearch/Extensions/extn_crx/{extn}.crx")
+            options.add_extension(f"{base_dir}/Extensions/extn_crx/{extn}.crx")
 
         options.add_argument("start-maximized")
         options.add_argument("--disable-dev-shm-usage")

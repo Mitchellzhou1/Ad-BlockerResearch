@@ -3,12 +3,13 @@ import multiprocessing
 import json
 
 user = 'character'
-current_path = f'/home/{user}/Desktop/Ad-BlockerResearch/PSAL_images/final/RESULTS/'
+base_dir = os.getcwd()
+current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
 os.makedirs(current_path, exist_ok=True)
 
 websites = [
-        "https://www.mrdonn.org/",
-        "https://canyoublockit.com/testing/",
+    "https://www.mrdonn.org/",
+    "https://canyoublockit.com/testing/",
     "https://www.wikipedia.org",
     "https://www.github.com",
     "https://www.uxmatters.com/"
