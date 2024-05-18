@@ -110,6 +110,11 @@ for chunk in chunks:
         json.dump(dict(store_to_file_dict), file)
     file.close()
 
+    cleanup_X()
+    cleanup_tmp()
+    cleanup_chrome()
+
+
 # writing all the filtered sites
 file_path = os.path.join(current_path, 'filtered.txt')
 with open(file_path, "w") as file:

@@ -2,6 +2,7 @@ import threading
 import time
 from time import sleep
 from urllib.parse import urlparse
+import subprocess
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -24,6 +25,40 @@ user = 'character'
 current_dir = os.getcwd()
 base_dir = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
 current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
+
+
+def cleanup_tmp():
+    files_to_delete = []
+
+    # List all files in the temporary directory
+    all_files = os.listdir('/tmp')
+
+    # Filter out files that start with the specified characters
+    for file_name in all_files:
+        if '.org.chromium' in file_name or '.com.google.Chrome' in file_name or '.X11' in file_name:
+            #  or 'go-build' in file_name:
+            files_to_delete.append(os.path.join('/tmp', file_name))
+
+    # Delete the files
+    for file_path in files_to_delete:
+        try:
+            subprocess.run(["sudo", "rm", "-rf", file_path], check=True)
+            # shutil.rmtree(file_path)
+            print(f"Deleted: {file_path}")
+        except Exception as e:
+            print(f"Error deleting {file_path}: {e}")
+
+
+def cleanup_chrome():
+    os.system('pkill chrome')
+    time.sleep(3)
+
+
+def cleanup_X():
+    os.system('pkill Xvfb')
+    time.sleep(3)
+
+
 
 class Driver:
     def __init__(self):

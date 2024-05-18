@@ -2,3 +2,8 @@ selenium
 webdriver_manager
 selenium-wire
 browsermob-proxy
+xvfbwrapper
+pyvirtualdisplay
+bs4
+tldextract
+Pillow
