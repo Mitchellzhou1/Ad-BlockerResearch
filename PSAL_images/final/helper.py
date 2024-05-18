@@ -70,59 +70,62 @@ class Driver:
         self.image_urls = []
 
     def initialize(self, extn):
-        xvfb_args = [
-            '-maxclients', '1024'
-        ]
-        self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
-        self.vdisplay.start()
+        try:
+            xvfb_args = [
+                '-maxclients', '1024'
+            ]
+            self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
+            self.vdisplay.start()
 
-        if user != 'character':
-            server = Server(f"/home/{user}/work/pes/browsermob-proxy/bin/browsermob-proxy")
-        else:
-            server = Server(f"{base_dir}/browsermob-proxy/bin/browsermob-proxy")
-        server.start()
-        proxy = server.create_proxy()
-        # proxy = server.create_proxy(params={'port': port})
+            if user != 'character':
+                server = Server(f"/home/{user}/work/pes/browsermob-proxy/bin/browsermob-proxy")
+            else:
+                server = Server(f"{base_dir}/browsermob-proxy/bin/browsermob-proxy")
+            server.start()
+            proxy = server.create_proxy()
+            # proxy = server.create_proxy(params={'port': port})
 
-        options = Options()
-        if 'control' not in extn:
-            options.add_extension(f"{base_dir}/Extensions/extn_crx/{extn}.crx")
+            options = Options()
+            if 'control' not in extn:
+                options.add_extension(f"{base_dir}/Extensions/extn_crx/{extn}.crx")
 
-        options.add_argument("start-maximized")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-animations")
-        options.add_argument("--disable-web-animations")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-features=IsolateOrigins,site-per-process")
-        options.add_argument("--disable-features=AudioServiceOutOfProcess")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+            options.add_argument("start-maximized")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument('--ignore-certificate-errors')
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-animations")
+            options.add_argument("--disable-web-animations")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--disable-features=IsolateOrigins,site-per-process")
+            options.add_argument("--disable-features=AudioServiceOutOfProcess")
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
-        options.add_argument(f'--proxy-server={proxy.proxy}')
+            options.add_argument(f'--proxy-server={proxy.proxy}')
 
-        driver = webdriver.Chrome(options=options)
-        if 'control-scanner' not in extn:
-            sleep(12)
-        else:
-            sleep(2)
-        windows = driver.window_handles[::-1]
-        for window in windows:
-            if len(driver.window_handles) <= 1:
-                driver.switch_to.window(window)
-                break
-            try:
-                driver.switch_to.window(window)
-                driver.close()
-            except Exception as e:
-                print(e)
-                return 0
+            driver = webdriver.Chrome(options=options)
+            if 'control-scanner' not in extn:
+                sleep(12)
+            else:
+                sleep(2)
+            windows = driver.window_handles[::-1]
+            for window in windows:
+                if len(driver.window_handles) <= 1:
+                    driver.switch_to.window(window)
+                    break
+                try:
+                    driver.switch_to.window(window)
+                    driver.close()
+                except Exception as e:
+                    print(e)
+                    return 0
 
-        self.driver = driver
-        self.server = server
-        self.proxy = proxy
-        self.driver.set_page_load_timeout(60)
+            self.driver = driver
+            self.server = server
+            self.proxy = proxy
+            self.driver.set_page_load_timeout(60)
+        except Exception as e:
+            print(e)
 
     def load_site(self, site):
         try:
@@ -149,7 +152,6 @@ class Driver:
                     return
                 wait_until_loaded(self.driver)
                 sleep(5)
-
                 packets = self.proxy.har['log']['entries']
                 images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
                 # debug_images = self.image_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
@@ -160,6 +162,7 @@ class Driver:
                 self.vdisplay.stop()
                 return
             except Exception as e:
+                print(e)
                 if i == 1:
                     storage[website][key] = 'Failed Control Filters'
                 continue

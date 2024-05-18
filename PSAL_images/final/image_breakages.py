@@ -25,8 +25,8 @@ extensions = [
     "privacy-badger",
 ]
 
-SIZE = 40
-TIMEOUT = 600
+SIZE = 1
+TIMEOUT = 1800
 
 all_processes = {}
 driver_dictionary = {}
