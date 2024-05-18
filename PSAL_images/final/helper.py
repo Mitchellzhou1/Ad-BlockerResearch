@@ -247,8 +247,8 @@ class Driver:
                 """ FOR TESTING ONLY """
                 # setting these strings to False to see if I can take picture of them.
 
-                if request_url == "https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png":
-                    in_blacklist = False
+                # if request_url == "https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png":
+                #     in_blacklist = False
 
                 """ DONE TESTING """
 
