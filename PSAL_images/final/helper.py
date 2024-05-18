@@ -154,16 +154,16 @@ class Driver:
                 images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
                 # debug_images = self.image_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
                 storage[website][key] = images
+                self.driver.close()
+                self.server.stop()
+                self.proxy.close()
+                self.vdisplay.stop()
                 return
             except Exception as e:
                 if i == 1:
                     storage[website][key] = 'Failed Control Filters'
                 continue
 
-        self.driver.close()
-        self.server.stop()
-        self.proxy.close()
-        self.vdisplay.stop()
 
     def find_missing(self, website, key, results, control, blacklist_, inverse_lookup, regular_lookup):
         try:

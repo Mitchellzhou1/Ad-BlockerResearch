@@ -1,0 +1,6 @@
+wget https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.60/linux64/chrome-linux64.zip &&
+unzip chrome-linux64.zip &&
+rm -rf chrome-linux64.zip &&
+python3 -m venv gcp
+source gcp/bin/activate
+pip3 install -r requirements.txt

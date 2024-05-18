@@ -25,7 +25,8 @@ extensions = [
     "privacy-badger",
 ]
 
-SIZE = 4
+SIZE = 40
+TIMEOUT = 600
 
 all_processes = {}
 driver_dictionary = {}
@@ -71,8 +72,13 @@ for chunk in chunks:
         all_processes[website]['control-scanner2'].start()
 
     for website in chunk:
-        all_processes[website]['control-scanner1'].join()
-        all_processes[website]['control-scanner2'].join()
+        packet_dict[website]['control-scanner1'] = 'Inconsistent Site'
+        packet_dict[website]['control-scanner2'] = 'Inconsistent Site'
+        try:
+            all_processes[website]['control-scanner1'].join(timeout=TIMEOUT)
+            all_processes[website]['control-scanner2'].join(timeout=TIMEOUT)
+        except Exception as e:
+            print(e)
 
     for website in chunk:
         print("Checking Control Scanner:", website)
@@ -82,7 +88,11 @@ for chunk in chunks:
                 all_processes[website][extn].start()
 
             for extn in extensions:
-                all_processes[website][extn].join()
+                try:
+                    all_processes[website][extn].join(timeout=TIMEOUT)
+                except Exception as e:
+                    packet_dict[website][extn] = 'Inconsistent Site'
+                    print(e)
 
             if final_data_dict[website]['control'] == 'Inconsistent Site':
                 # remove the bad data... the site is too 'volatile'
@@ -114,7 +124,7 @@ for chunk in chunks:
     file.close()
 
     cleanup_X()
-    # cleanup_tmp()
+    cleanup_tmp()
     cleanup_chrome()
 
 
