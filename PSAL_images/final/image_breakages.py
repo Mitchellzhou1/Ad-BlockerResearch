@@ -7,19 +7,22 @@ base_dir = os.getcwd()
 current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
 os.makedirs(current_path, exist_ok=True)
 
-websites = [
-    "https://www.mrdonn.org/",
-    "https://canyoublockit.com/testing/",
-    "https://www.wikipedia.org",
-    "https://www.github.com",
-    "https://www.uxmatters.com/"
-]
+# websites = [
+    # "https://www.mrdonn.org/",
+    # "https://canyoublockit.com/testing/",
+    # "https://www.wikipedia.org",
+    # "https://www.github.com",
+    # "http://www.guit.edu.cn/en/info/1008/1050.htm"
+# ]
+
+with open('websites.json', 'r') as f:
+    websites = json.load(f)
 
 extensions = [
     "control",
     "ublock",
-    # "adblock",
-    # "privacy-badger",
+    "adblock",
+    "privacy-badger",
 ]
 
 SIZE = 4
@@ -72,9 +75,9 @@ for chunk in chunks:
         all_processes[website]['control-scanner2'].join()
 
     for website in chunk:
-        print("Passed Filter:", website)
+        print("Checking Control Scanner:", website)
         if site_filter(packet_dict[website]['control-scanner1'], packet_dict[website]['control-scanner2']):
-
+            print("Passed Control filter:", website)
             for extn in extensions:
                 all_processes[website][extn].start()
 
@@ -111,7 +114,7 @@ for chunk in chunks:
     file.close()
 
     cleanup_X()
-    cleanup_tmp()
+    # cleanup_tmp()
     cleanup_chrome()
 
 

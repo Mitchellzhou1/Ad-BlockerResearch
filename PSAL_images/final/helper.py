@@ -103,13 +103,14 @@ class Driver:
         options.add_argument(f'--proxy-server={proxy.proxy}')
 
         driver = webdriver.Chrome(options=options)
-        if 'control' not in extn:
+        if 'control-scanner' not in extn:
             sleep(12)
         else:
             sleep(2)
         windows = driver.window_handles[::-1]
         for window in windows:
             if len(driver.window_handles) <= 1:
+                driver.switch_to.window(window)
                 break
             try:
                 driver.switch_to.window(window)
@@ -139,17 +140,25 @@ class Driver:
             return False
 
     def get_images(self, website, key, storage, blacklist_, inverse_lookup, regular_lookup):
-        self.initialize(key)
-        self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
-        if not self.load_site(website):
-            return
-        wait_until_loaded(self.driver)
-        sleep(5)
+        for i in range(2):
+            try:
+                self.initialize(key)
+                self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
+                if not self.load_site(website):
+                    storage[website][key] = 'Failed Control Filters'
+                    return
+                wait_until_loaded(self.driver)
+                sleep(5)
 
-        packets = self.proxy.har['log']['entries']
-        images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
-        debug_images = self.image_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
-        storage[website][key] = images
+                packets = self.proxy.har['log']['entries']
+                images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+                # debug_images = self.image_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+                storage[website][key] = images
+                return
+            except Exception as e:
+                if i == 1:
+                    storage[website][key] = 'Failed Control Filters'
+                continue
 
         self.driver.close()
         self.server.stop()
@@ -157,44 +166,49 @@ class Driver:
         self.vdisplay.stop()
 
     def find_missing(self, website, key, results, control, blacklist_, inverse_lookup, regular_lookup):
-        self.initialize(key)
-        print("Successfully create:", website)
-        self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
-        if not self.load_site(website):
-            return
-        wait_until_loaded(self.driver)
+        try:
+            self.initialize(key)
+            print("Successfully create:", website, key)
+            self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
+            if not self.load_site(website):
+                return
+            wait_until_loaded(self.driver)
 
-        control = control[website]['control-scanner1']
-        packets = self.proxy.har['log']['entries']
-        images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+            control = control[website]['control-scanner1']
+            packets = self.proxy.har['log']['entries']
+            images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
 
-        if site_filter(control, images):
-            print(key, "---", "no missing")
-            results[website][key] = 'No Missing Images'
-            take_ss(self.driver, '', key, website, '', '')
-        else:
-            index = 0
-            for url in (set(control.keys()) - set(images.keys())):
-                if 'control' in key:
-                    results[website][key] = 'Inconsistent Site'
-                    return
+            if site_filter(control, images):
+                print(key, "---", "no missing")
+                results[website][key] = 'No Missing Images'
+                take_ss(self.driver, '', key, website, '', '')
+            else:
+                index = 0
+                for url in (set(control.keys()) - set(images.keys())):
+                    if 'control' in key:
+                        results[website][key] = 'Inconsistent Site'
+                        return
 
-                path = get_path(url)
-                html_string = False
-                if url in self.driver.page_source:
-                    html_string = find_element_in_html(self.driver, url)
-                elif path in self.driver.page_source:
-                    html_string = find_element_in_html(self.driver, path)
-                elif url in self.driver.page_source:
-                    html_string = find_element_in_css(self.driver, url)
-                elif path in self.driver.page_source:
-                    html_string = find_element_in_css(self.driver, path)
+                    path = get_path(url)
+                    html_string = False
+                    if url in self.driver.page_source:
+                        html_string = find_element_in_html(self.driver, url)
+                    elif path in self.driver.page_source:
+                        html_string = find_element_in_html(self.driver, path)
+                    elif url in self.driver.page_source:
+                        html_string = find_element_in_css(self.driver, url)
+                    elif path in self.driver.page_source:
+                        html_string = find_element_in_css(self.driver, path)
 
-                take_ss(self.driver, html_string, key, website, url, str(index))
+                    take_ss(self.driver, html_string, key, website, url, str(index))
 
-                # the html_string tells if the url was found in the page or not
-                results[website][key]['img_' + str(index)] = control[url]
-                index += 1
+                    # the html_string tells if the url was found in the page or not
+                    results[website][key]['img_' + str(index)] = control[url]
+                    index += 1
+
+        except Exception as e:
+            print(e)
+            results[website][key] = 'Inconsistent Site'
 
         self.driver.close()
         self.server.stop()

@@ -260,5 +260,7 @@ def site_filter(control_log_1, control_log_2):
                 return False
         return True
     except Exception as e:
-        print("Site_Filter() failed... this is really strange")
+        print("Something Strange happened with this site during Control Scanner: Error below...")
         print(e)
+        print()
+        print()
