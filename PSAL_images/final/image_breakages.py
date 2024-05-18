@@ -118,11 +118,11 @@ for chunk in chunks:
     cleanup_chrome()
 
 
-# writing all the filtered sites
-file_path = os.path.join(current_path, 'filtered.txt')
-with open(file_path, "w") as file:
-    for i in filtered_websites:
-        file.write(i)
-file.close()
+    # writing all the filtered sites
+    file_path = os.path.join(current_path, 'filtered.txt')
+    with open(file_path, "w") as file:
+        for i in filtered_websites:
+            file.write(i)
+    file.close()
 
 print("EVERTHING IS DONE!!\n" * 10)
