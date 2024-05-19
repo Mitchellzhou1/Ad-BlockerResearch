@@ -249,7 +249,7 @@ def blacklist_parser(blacklist, inverse_lookup, regular_lookup, url):
     # return False
 
 
-def site_filter(control_log_1, control_log_2):
+def site_filter(control_log_1, control_log_2, website):
     try:
         for control_url1 in control_log_1.keys():
             if control_url1 not in control_log_2.keys():
@@ -260,7 +260,8 @@ def site_filter(control_log_1, control_log_2):
                 return False
         return True
     except Exception as e:
-        print("Something Strange happened with this site during Control Scanner: Error below...")
-        print(e)
-        print()
-        print()
+        print(str(e).split("\n"[0]))
+        print("*" * 10)
+        print(f"{control_log_1}", website)
+        print(f"{control_log_2}", website)
+        print("*" * 10)

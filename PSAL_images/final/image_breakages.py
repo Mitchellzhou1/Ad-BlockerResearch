@@ -17,6 +17,7 @@ os.makedirs(current_path, exist_ok=True)
 
 with open('websites.json', 'r') as f:
     websites = json.load(f)
+websites.pop(0)
 
 extensions = [
     "control",
@@ -25,7 +26,7 @@ extensions = [
     "privacy-badger",
 ]
 
-SIZE = 1
+SIZE = 4
 TIMEOUT = 1800
 
 all_processes = {}
@@ -67,7 +68,6 @@ for chunk in chunks:
     # open two control browsers and collect the images and test if they are the same.
     # if the images are the same then the site is considered "stable" to continue the scan
     for website in chunk:
-        print(f"Starting Filter: {website}")
         all_processes[website]['control-scanner1'].start()
         all_processes[website]['control-scanner2'].start()
 
@@ -82,7 +82,7 @@ for chunk in chunks:
 
     for website in chunk:
         print("Checking Control Scanner:", website)
-        if site_filter(packet_dict[website]['control-scanner1'], packet_dict[website]['control-scanner2']):
+        if site_filter(packet_dict[website]['control-scanner1'], packet_dict[website]['control-scanner2'], website):
             print("Passed Control filter:", website)
             for extn in extensions:
                 all_processes[website][extn].start()

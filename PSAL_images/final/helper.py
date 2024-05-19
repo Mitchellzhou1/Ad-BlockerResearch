@@ -135,7 +135,7 @@ class Driver:
             return True
         except Exception as e:
             print("Error loading site:", site)
-            print(e)
+            print(str(e).split("\n")[0])
             self.driver.close()
             self.server.stop()
             self.proxy.close()
@@ -146,6 +146,7 @@ class Driver:
         for i in range(2):
             try:
                 self.initialize(key)
+                print(f"Starting Filter Checks: {website}")
                 self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
                 if not self.load_site(website):
                     storage[website][key] = 'Failed Control Filters'
@@ -160,6 +161,7 @@ class Driver:
                 self.server.stop()
                 self.proxy.close()
                 self.vdisplay.stop()
+                print(f"Finished Scan Filter: {website}")
                 return
             except Exception as e:
                 print(e)
@@ -181,7 +183,7 @@ class Driver:
             packets = self.proxy.har['log']['entries']
             images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
 
-            if site_filter(control, images):
+            if site_filter(control, images, website):
                 print(key, "---", "no missing")
                 results[website][key] = 'No Missing Images'
                 take_ss(self.driver, '', key, website, '', '')
