@@ -256,6 +256,7 @@ def blacklist_parser(blacklist, url):
 
 
 
+
 def site_filter(control_log_1, control_log_2, website):
     try:
         for control_url1 in control_log_1.keys():
@@ -269,7 +270,12 @@ def site_filter(control_log_1, control_log_2, website):
     except Exception as e:
         print(str(e).split("\n"[0]))
         print("*" * 10)
-        print("Failed Filtered:", website)
         print(f"{control_log_1}", website)
         print(f"{control_log_2}", website)
         print("*" * 10)
+
+
+url = "https://pagead2.googlesyndication.com/pagead/gen_204?id=ama_auto_rs&sts=ok&evt=place&vh=1121&eid=44759876%2C44759927%2C44759842%2C31083359%2C31083586%2C44795921%2C95331690%2C95331983%2C95331711%2C95332415&hl=en&pvc=1087174724515324"
+blacklist = initialize_blacklists()
+print(blacklist_parser(blacklist, url))
+

@@ -20,6 +20,12 @@ import re
 from selenium.webdriver.common.action_chains import ActionChains
 from PIL import Image
 import io
+import json
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 user = 'character'
 current_dir = os.getcwd()
@@ -75,6 +81,7 @@ class Driver:
                 '-maxclients', '1024'
             ]
             self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
+            # self.vdisplay = Display(size=(1920, 1280), visible=True)
             self.vdisplay.start()
 
             if user != 'character':
@@ -103,7 +110,7 @@ class Driver:
 
             options.add_argument(f'--proxy-server={proxy.proxy}')
 
-            driver = webdriver.Chrome(options=options)
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
             if 'control-scanner' not in extn:
                 sleep(12)
             else:
@@ -142,21 +149,23 @@ class Driver:
             self.vdisplay.stop()
             return False
 
-    def get_images(self, website, key, storage, blacklist_, inverse_lookup, regular_lookup):
+    def get_images(self, website, key, blacklist_):
         for i in range(2):
             try:
                 self.initialize(key)
                 print(f"Starting Filter Checks: {website}")
                 self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
                 if not self.load_site(website):
-                    storage[website][key] = 'Failed Control Filters'
+                    result = 'Failed Control Filters'
+                    write_data(website, key, result)
                     return
                 wait_until_loaded(self.driver)
-                sleep(5)
+                sleep(2)
                 packets = self.proxy.har['log']['entries']
-                images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
-                # debug_images = self.image_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
-                storage[website][key] = images
+                images = self.filter_packets(website, packets, blacklist_)
+                result = images
+                write_data(website, key, result)
+
                 self.driver.close()
                 self.server.stop()
                 self.proxy.close()
@@ -166,11 +175,11 @@ class Driver:
             except Exception as e:
                 print(e)
                 if i == 1:
-                    storage[website][key] = 'Failed Control Filters'
+                    result = 'Failed Control Filters'
+                    write_data(website, key, result)
                 continue
 
-
-    def find_missing(self, website, key, results, control, blacklist_, inverse_lookup, regular_lookup):
+    def find_missing(self, website, key, blacklist_):
         try:
             self.initialize(key)
             print("Successfully create:", website, key)
@@ -179,20 +188,29 @@ class Driver:
                 return
             wait_until_loaded(self.driver)
 
-            control = control[website]['control-scanner1']
+            url = scheme_extractor(website)
+            if os.path.exists(f"tmp_data/{url}-control-scanner1.json"):
+                with open(f"tmp_data/{url}-control-scanner1.json", 'r') as f:
+                    control = json.load(f)
+            else:
+                result = 'Control-Scanner data was not found... Skipping site'
+                write_data(website, key, result)
+                return
+
             packets = self.proxy.har['log']['entries']
-            images = self.filter_packets(website, packets, blacklist_, inverse_lookup, regular_lookup)
+            images = self.filter_packets(website, packets, blacklist_)
 
             if site_filter(control, images, website):
                 print(key, "---", "no missing")
-                results[website][key] = 'No Missing Images'
+                result = 'No Missing Images'
                 take_ss(self.driver, '', key, website, '', '')
             else:
                 index = 0
+                result = {}
                 for url in (set(control.keys()) - set(images.keys())):
                     if 'control' in key:
-                        results[website][key] = 'Inconsistent Site'
-                        return
+                        result = 'Inconsistent Site'
+                        break
 
                     path = get_path(url)
                     html_string = False
@@ -208,19 +226,21 @@ class Driver:
                     take_ss(self.driver, html_string, key, website, url, str(index))
 
                     # the html_string tells if the url was found in the page or not
-                    results[website][key]['img_' + str(index)] = control[url]
+                    result['img_' + str(index)] = control[url]
                     index += 1
+            write_data(website, key, result)
 
         except Exception as e:
             print(e)
-            results[website][key] = 'Inconsistent Site'
+            result = 'Inconsistent Site'
+            write_data(website, key, result)
 
         self.driver.close()
         self.server.stop()
         self.proxy.close()
         self.vdisplay.stop()
 
-    def filter_packets(self, website, packets, blacklist_, inverse_lookup, regular_lookup):
+    def filter_packets(self, website, packets, blacklist_):
         ret = {}
         driver_domain = url_parser(website)[1]
         for packet in packets:
@@ -260,8 +280,8 @@ class Driver:
                 content_size = packet["response"]["content"]["size"]
                 # Black List Parser
 
-                in_blacklist = (blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url) or
-                                blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
+                in_blacklist = (blacklist_parser(blacklist_, request_url) or
+                                blacklist_parser(blacklist_, referer))
 
                 """ FOR TESTING ONLY """
                 # setting these strings to False to see if I can take picture of them.
@@ -319,8 +339,8 @@ class Driver:
                 content_size = packet["response"]["content"]["size"]
                 # Black List Parser
 
-                in_blacklist = (blacklist_parser(blacklist_, inverse_lookup, regular_lookup, request_url) or
-                                blacklist_parser(blacklist_, inverse_lookup, regular_lookup, referer))
+                in_blacklist = (blacklist_parser(blacklist_, website) or
+                                blacklist_parser(blacklist_, website))
                 ret[request_url] = [request_url, status_code, status_text, content_size, content_type, referer,
                                     in_blacklist]
             except Exception as e:
@@ -630,6 +650,7 @@ def download_image(url, file_path):
             # Save the image to the specified file path
             with open(file_path, 'wb') as file:
                 file.write(response.content)
+            file.close()
         else:
             print(f"Failed to download image: {response.status_code} - {response.reason}")
     except Exception as e:
@@ -640,3 +661,24 @@ def manager_dict_serializer(obj):
     if isinstance(obj, dict):
         return {k: v for k, v in obj.items()}
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+
+def write_data(website, extn, data):
+    website = scheme_extractor(website)
+    with open(f"tmp_data/{website}-{extn}.json", 'w') as f:
+        json.dump(data, f)
+    f.close()
+
+
+def load_extn_data(website):
+    key = scheme_extractor(website)
+    ret = []
+
+    for extn in ["control", "ublock", "adblock", "privacy-badger"]:
+        if os.path.exists(f"tmp_data/{key}-{extn}.json"):
+            with open(f"tmp_data/{key}-{extn}.json", 'r') as f:
+                ret.append(json.load(f))
+        else:
+            ret.append({"missing data": extn})
+            print(f"\nmissing {extn} data!\n Aborting site \n")
+    return ret
