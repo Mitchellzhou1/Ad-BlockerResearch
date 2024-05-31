@@ -9,17 +9,17 @@ base_dir = os.getcwd()
 current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
 os.makedirs(current_path, exist_ok=True)
 
-websites = [
-    "https://www.mrdonn.org/",
-    "https://canyoublockit.com/testing/",
-    "https://www.wikipedia.org",
-    "https://www.github.com",
-    "http://www.guit.edu.cn/en/info/1008/1050.htm",
-    'http://www.bowencoinc.com'
-]
+# websites = [
+#     "https://www.mrdonn.org/",
+#     "https://canyoublockit.com/testing/",
+#     "https://www.wikipedia.org",
+#     "https://www.github.com",
+#     "http://www.guit.edu.cn/en/info/1008/1050.htm",
+#     'http://www.bowencoinc.com'
+# ]
 
-# with open('websites.json', 'r') as f:
-#     websites = json.load(f)
+with open('websites.json', 'r') as f:
+    websites = json.load(f)
 
 extensions = [
     "control",
@@ -28,22 +28,21 @@ extensions = [
     "privacy-badger",
 ]
 
-SIZE = 3
-TIMEOUT = 1800
+SIZE = 1
+TIMEOUT = 1200
 
 all_processes = {}
-driver_dictionary = {}
 filtered_websites = []
 store_to_file_dict = {}
 
 blacklist = initialize_blacklists()
 print("Stage 1: Finished Initializing Blacklist Trie")
 
-for i in range(SIZE):
-    driver_dictionary[i] = Driver()
-
 chunks = list(divide_chunks(websites, SIZE))
 for chunk in chunks:
+    driver_dictionary = {}
+    for i in range(SIZE):
+        driver_dictionary[i] = Driver()
     final_data_dict = {}   # used to store the results
     packet_dict = {}       # used to store the images
     for i, website in enumerate(chunk):
@@ -127,6 +126,7 @@ for chunk in chunks:
             print(f"filtered out: {website}")
             final_data_dict.pop(website)
             filtered_websites.append(website)
+        all_processes.pop(website)
 
     store_to_file_dict.update(final_data_dict)
     file_path = os.path.join(current_path, 'data.json')
@@ -145,6 +145,13 @@ for chunk in chunks:
     cleanup_X()
     cleanup_tmp()
     cleanup_chrome()
+    os.system(f"sudo pkill -f browsermob")
+    os.system(f"sudo pkill -f chromedriver")
+    os.system(f"sudo pkill -f Xephyr")
     os.system(f'rm -rf tmp_data/*')
+    sleep(10)
+    print("finished Cleaning up\n\n\n\n")
 
 print("EVERTHING IS DONE!!\n" * 10)
+
+# http://www.pastelink.net

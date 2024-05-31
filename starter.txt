@@ -13,3 +13,8 @@ sudo apt install -y libatk-bridge2.0-0
 sudo apt install -y libgbm1
 sudo apt install -y libx11-xcb1 libxtst6 libnss3 libxss1 libasound2 libx11-6 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0
 sudo apt install -y libxkbcommon0
+
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt update
+sudo apt install ./google-chrome-stable_current_amd64.deb

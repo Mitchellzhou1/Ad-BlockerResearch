@@ -183,6 +183,11 @@ class Driver:
         try:
             self.initialize(key)
             print("Successfully create:", website, key)
+            if not self.proxy or not self.driver or not self.server:
+                result = 'Initialization failed... Skipping site'
+                write_data(website, key, result)
+                return
+
             self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
             if not self.load_site(website):
                 return
@@ -232,7 +237,7 @@ class Driver:
 
         except Exception as e:
             print(e)
-            result = 'Inconsistent Site'
+            result = 'Something Crashed...'
             write_data(website, key, result)
 
         self.driver.close()

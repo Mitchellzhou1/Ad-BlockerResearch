@@ -23,10 +23,6 @@ for extn in extn_lst:
 
         key = None
         for url, result in extn_data.items():
-            if extn == 'ublock':
-                if html_obj == 'login':
-                    if 'wpastra' in url:
-                        print("hi")
             key = url
             final_dict[extn][html_obj][url] = []
             # if the website is not in the controls, just recheck the false ones
