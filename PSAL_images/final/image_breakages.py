@@ -9,23 +9,19 @@ base_dir = os.getcwd()
 current_path = f'{base_dir}/PSAL_images/final/RESULTS/'
 os.makedirs(current_path, exist_ok=True)
 
-# websites = [
-#     "https://www.mrdonn.org/",
-#     "https://canyoublockit.com/testing/",
-#     "https://www.wikipedia.org",
-#     "https://www.github.com",
-#     "http://www.guit.edu.cn/en/info/1008/1050.htm",
-#     'http://www.bowencoinc.com'
-# ]
+websites = [
+    "https://www.worldsurfleague.com/posts/530078/its-on-finals-day-of-the-shiseido-tahiti-pro-presented-by-outerknown?mc_cid=416250f8fd&amp;mc_eid=cfc35196e5"
+]
 
-with open('websites.json', 'r') as f:
-    websites = json.load(f)
+# with open('websites.json', 'r') as f:
+#     websites = json.load(f)
 
 extensions = [
     "control",
-    "ublock",
-    "adblock",
-    "privacy-badger",
+    # "ublock",
+    # "adblock",
+    # "privacy-badger",
+    "adguard"
 ]
 
 SIZE = 1
@@ -35,7 +31,7 @@ all_processes = {}
 filtered_websites = []
 store_to_file_dict = {}
 
-blacklist = initialize_blacklists()
+blacklist, tree = initialize_blacklists()
 print("Stage 1: Finished Initializing Blacklist Trie")
 
 chunks = list(divide_chunks(websites, SIZE))
@@ -53,13 +49,13 @@ for chunk in chunks:
 
         all_processes[website] = {
             'control-scanner1': multiprocessing.Process(target=driver_dictionary[i].get_images,
-                                                        args=(website, 'control-scanner1', blacklist)),
+                                                        args=(website, 'control-scanner1', blacklist, tree)),
             'control-scanner2': multiprocessing.Process(target=driver_dictionary[i].get_images,
-                                                        args=(website, 'control-scanner2', blacklist))
+                                                        args=(website, 'control-scanner2', blacklist, tree))
         }
         for extn in extensions:
             all_processes[website][extn] = multiprocessing.Process(target=driver_dictionary[i].find_missing,
-                                                                   args=(website, extn, blacklist))
+                                                                   args=(website, extn, blacklist, tree))
     # open two control browsers and collect the images and test if they are the same.
     # if the images are the same then the site is considered "stable" to continue the scan
 
@@ -103,7 +99,7 @@ for chunk in chunks:
                 except Exception as e:
                     print(e)
 
-            control, ublock, adblock, privacy_badger = load_extn_data(website)
+            control, adguard = load_extn_data(website)
             if control == 'Inconsistent Site':
                 print(f"Inconsistent Site: {website}")
                 # remove the bad data... the site is too 'volatile'
@@ -112,15 +108,8 @@ for chunk in chunks:
                 final_data_dict.pop(website)
                 filtered_websites.append(website)
             else:
-                final_data_dict[website]["ublock"] = ublock
-                final_data_dict[website]["adblock"] = adblock
-                final_data_dict[website]["privacy-badger"] = privacy_badger
-
-            # final_data_dict[website]["control"] = control
-
-            if type(ublock) == str and type(adblock) == str and type(privacy_badger) == str:
-                key = scheme_extractor(website)
-                os.system(f'rm -rf {current_path}/{key}')
+                final_data_dict[website]['adguard'] = adguard
+                final_data_dict[website]["control"] = control
 
         else:
             print(f"filtered out: {website}")

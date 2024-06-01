@@ -61,6 +61,8 @@ class Trie:
         node = self.root
         rule = ''
         for char in entire_url:
+            if node.is_end_of_word:
+                return True
             if char not in node.children:
                 if rule in self.possible_rules(node, rule):
                     print("found regular search item:", rule)
@@ -141,6 +143,7 @@ def initialize_blacklists():
     peter_lowe = open(f"{extensions_dir}/Peter Lowe", "r")
 
     combined = set()
+    regular_lookup = Trie()
 
     for rule in easy_privacy:
         if rule[:2] == "||":
@@ -152,7 +155,7 @@ def initialize_blacklists():
             # rule = domain + '.' + suffix
             combined.add(rule)
             # inverse_lookup.insert(rule[::-1])
-            # regular_lookup.insert(rule)
+            regular_lookup.insert(rule)
 
     for rule in easy_list:
         if rule[:2] == "||":
@@ -164,7 +167,7 @@ def initialize_blacklists():
             # rule = domain + '.' + suffix
             combined.add(rule)
             # inverse_lookup.insert(rule[::-1])
-            # regular_lookup.insert(rule)
+            regular_lookup.insert(rule)
 
     for rule in peter_lowe:
         if rule[:10] == "127.0.0.1 ":
@@ -176,7 +179,7 @@ def initialize_blacklists():
             # rule = domain + '.' + suffix
             combined.add(rule)
             # inverse_lookup.insert(rule[::-1])
-            # regular_lookup.insert(rule)
+            regular_lookup.insert(rule)
 
     # THIS IS JUST TO HELP ME DEBUG AND SEE THE CONTENTS OF THE COMBINED BLACKLISTS
     print("\nBuilding Blacklist tree...")
@@ -185,7 +188,7 @@ def initialize_blacklists():
             file.write(str(item) + '\n')
     file.close()
     print("Finished Building Blacklist tree!")
-    return sorted(combined)
+    return sorted(combined), regular_lookup
 
 
 def remove_after_substring(link, substring):
@@ -220,7 +223,7 @@ def scheme_extractor(url):
     new_url = domain + parsed_url.path
     if parsed_url.query:
         new_url += '?' + parsed_url.query
-    new_url = new_url.replace("/", '_')
+    # new_url = new_url.replace("/", '_')
     return new_url
 
 
@@ -240,16 +243,20 @@ def binary_search(blacklist, simplified_url):
     return False
 
 
-def blacklist_parser(blacklist, url):
+def blacklist_parser(blacklist, tree, url):
     # removes the https:// http:// and www. from the url
+    subdomains, domain, suffix = url_parser(url)
     simplified_url = scheme_extractor(url)
     if binary_search(blacklist, simplified_url):
         return True
+    if tree.search(simplified_url):
+        return True
     else:
-        subdomains, domain, suffix = url_parser(url)
         for subdomain in subdomains.split("."):
-            url = url[url.find(subdomain)+len(subdomain)+1:]
-            if binary_search(blacklist, url):
+            simplified_url = simplified_url[simplified_url.find(subdomain)+len(subdomain)+1:]
+            if binary_search(blacklist, simplified_url):
+                return True
+            if tree.search(simplified_url):
                 return True
     return False
 
@@ -275,7 +282,7 @@ def site_filter(control_log_1, control_log_2, website):
         print("*" * 10)
 
 
-url = "https://pagead2.googlesyndication.com/pagead/gen_204?id=ama_auto_rs&sts=ok&evt=place&vh=1121&eid=44759876%2C44759927%2C44759842%2C31083359%2C31083586%2C44795921%2C95331690%2C95331983%2C95331711%2C95332415&hl=en&pvc=1087174724515324"
-blacklist = initialize_blacklists()
-print(blacklist_parser(blacklist, url))
+url = "https://d3qf8nvav5av0u.cloudfront.net/cache/img/placeholder-16x9_1715886351.png"
+blacklist, tree = initialize_blacklists()
+print(blacklist_parser(blacklist, tree, url))
 

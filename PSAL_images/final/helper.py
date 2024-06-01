@@ -21,7 +21,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from PIL import Image
 import io
 import json
-
+from selenium_stealth import stealth
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -80,9 +80,9 @@ class Driver:
             xvfb_args = [
                 '-maxclients', '1024'
             ]
-            self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
+            # self.vdisplay = Display(backend='xvfb', size=(1920, 1280), visible=False, extra_args=xvfb_args)
             # self.vdisplay = Display(size=(1920, 1280), visible=True)
-            self.vdisplay.start()
+            # self.vdisplay.start()
 
             if user != 'character':
                 server = Server(f"/home/{user}/work/pes/browsermob-proxy/bin/browsermob-proxy")
@@ -97,6 +97,7 @@ class Driver:
                 options.add_extension(f"{base_dir}/Extensions/extn_crx/{extn}.crx")
 
             options.add_argument("start-maximized")
+            options.add_argument("--disable-blink-features=AutomationControlled")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument('--ignore-certificate-errors')
             options.add_argument("--no-sandbox")
@@ -111,6 +112,15 @@ class Driver:
             options.add_argument(f'--proxy-server={proxy.proxy}')
 
             driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+            stealth(driver,
+                    languages=["en-US", "en"],
+                    vendor="Google Inc.",
+                    platform="Win32",
+                    webgl_vendor="Intel Inc.",
+                    renderer="Intel Iris OpenGL Engine",
+                    fix_hairline=True,
+                    )
+
             if 'control-scanner' not in extn:
                 sleep(12)
             else:
@@ -130,7 +140,7 @@ class Driver:
             self.driver = driver
             self.server = server
             self.proxy = proxy
-            self.driver.set_page_load_timeout(60)
+            self.driver.set_page_load_timeout(120)
         except Exception as e:
             print(e)
 
@@ -138,7 +148,7 @@ class Driver:
         try:
             self.driver.get(site)
             scroll(self.driver)
-            sleep(2)
+            sleep(1)
             return True
         except Exception as e:
             print("Error loading site:", site)
@@ -146,31 +156,33 @@ class Driver:
             self.driver.close()
             self.server.stop()
             self.proxy.close()
-            self.vdisplay.stop()
+            # self.vdisplay.stop()
             return False
 
-    def get_images(self, website, key, blacklist_):
+    def get_images(self, website, key, blacklist_, tree):
         for i in range(2):
             try:
                 self.initialize(key)
-                print(f"Starting Filter Checks: {website}")
+                print(f"Starting {key}: {website}")
                 self.proxy.new_har("initial", options={'captureHeaders': True, 'captureContent': True})
                 if not self.load_site(website):
-                    result = 'Failed Control Filters'
-                    write_data(website, key, result)
-                    return
+                    if i == 1:
+                        result = 'Failed Control Filters'
+                        write_data(website, key, result)
+                        return
+                    else:
+                        continue
                 wait_until_loaded(self.driver)
-                sleep(2)
                 packets = self.proxy.har['log']['entries']
-                images = self.filter_packets(website, packets, blacklist_)
+                images = self.filter_packets(website, packets, blacklist_, tree)
                 result = images
                 write_data(website, key, result)
 
                 self.driver.close()
                 self.server.stop()
                 self.proxy.close()
-                self.vdisplay.stop()
-                print(f"Finished Scan Filter: {website}")
+                # self.vdisplay.stop()
+                print(f"Finished {key}: {website}")
                 return
             except Exception as e:
                 print(e)
@@ -179,7 +191,7 @@ class Driver:
                     write_data(website, key, result)
                 continue
 
-    def find_missing(self, website, key, blacklist_):
+    def find_missing(self, website, key, blacklist_, tree):
         try:
             self.initialize(key)
             print("Successfully create:", website, key)
@@ -203,7 +215,7 @@ class Driver:
                 return
 
             packets = self.proxy.har['log']['entries']
-            images = self.filter_packets(website, packets, blacklist_)
+            images = self.filter_packets(website, packets, blacklist_, tree)
 
             if site_filter(control, images, website):
                 print(key, "---", "no missing")
@@ -243,9 +255,9 @@ class Driver:
         self.driver.close()
         self.server.stop()
         self.proxy.close()
-        self.vdisplay.stop()
+        # self.vdisplay.stop()
 
-    def filter_packets(self, website, packets, blacklist_):
+    def filter_packets(self, website, packets, blacklist_, tree):
         ret = {}
         driver_domain = url_parser(website)[1]
         for packet in packets:
@@ -275,18 +287,16 @@ class Driver:
                     if header['name'].lower() == 'referer':
                         referer = header['value']
                         break
-
                 content_type = content_eval(content_type)
-
                 # FILTER FOR JUST IMAGES IN THE JSON
-                if "image" not in content_type:
+                if "image" not in content_type and 'videos' not in content_type:
                     continue
 
                 content_size = packet["response"]["content"]["size"]
                 # Black List Parser
 
-                in_blacklist = (blacklist_parser(blacklist_, request_url) or
-                                blacklist_parser(blacklist_, referer))
+                in_blacklist = (blacklist_parser(blacklist_, tree, request_url) or
+                                blacklist_parser(blacklist_, tree, referer))
 
                 """ FOR TESTING ONLY """
                 # setting these strings to False to see if I can take picture of them.
@@ -396,8 +406,8 @@ Image Locator Stuff
 def take_ss_entire(driver, screenshot_path, url, extn):
     driver.execute_script("window.scrollTo(0, 0);")
     time.sleep(1)
-    page_width = driver.execute_script("return document.body.scrollWidth")
-    page_height = driver.execute_script("return document.body.scrollHeight")
+    page_width = driver.execute_script("return document.documentElement.scrollWidth")
+    page_height = driver.execute_script("return document.documentElement.scrollHeight")
 
     driver.set_window_size(page_width, page_height)
 
@@ -619,6 +629,12 @@ def content_eval(content_header):
     script = ['application/javascript', 'application/x-javascript', 'text/javascript', 'text/ecmascript',
               'application/ecmascript']
     images = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml', 'image/x-icon']
+
+    videos = ["application/vnd.apple.mpegurl", "application/x-mpegURL",
+                     "application/vnd.apple.mpegurl; charset=UTF-8", "application/x-mpegURL; charset=UTF-8",
+                     "video/mp4", "video/MP2T", "application/octet-stream", "application/dash+xml", "audio/mp4",
+                     "application/vnd.ms-sstr+xml", "audio/mp4", "application/sdp", "video/webm", "audio/webm"]
+
     if content_header:
         if any(elem in content_header for elem in stylesheet):
             return "stylesheet"
@@ -626,6 +642,9 @@ def content_eval(content_header):
             return "script"
         if any(elem in content_header for elem in images):
             return "images"
+        if any(elem in content_header for elem in videos):
+            return "videos"
+
     return content_header
 
 
@@ -674,12 +693,19 @@ def write_data(website, extn, data):
         json.dump(data, f)
     f.close()
 
-
 def load_extn_data(website):
     key = scheme_extractor(website)
     ret = []
 
-    for extn in ["control", "ublock", "adblock", "privacy-badger"]:
+    # for extn in ["control", "ublock", "adblock", "privacy-badger"]:
+    extensions = [
+        "control",
+        # "ublock",
+        # "adblock",
+        # "privacy-badger",
+        "adguard"
+    ]
+    for extn in extensions:
         if os.path.exists(f"tmp_data/{key}-{extn}.json"):
             with open(f"tmp_data/{key}-{extn}.json", 'r') as f:
                 ret.append(json.load(f))

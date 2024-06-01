@@ -1,0 +1,2 @@
+Adguard French filter once again breaks a website.
+This time it breaks the look of sponsored.qz.com with this rule: .com/sponsors/

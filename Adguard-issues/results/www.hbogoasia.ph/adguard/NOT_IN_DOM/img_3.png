@@ -1,0 +1,213 @@
+{
+  "All Pages": {
+    "eventName": "All Pages",
+    "script": "<!-- Google Tag Manager -->\r\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\r\nnew Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\r\nj=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\r\n'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\r\n})(window,document,'script','dataLayer','GTM-PGN339Z');</script>\r\n<!-- End Google Tag Manager -->",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        ""
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "Page View - Sign Up": {
+    "eventName": "Page View - Sign Up",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/signup",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "Page View - Billing": {
+    "eventName": "Page View - Billing",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/billing",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "Page View - Billing Credit Card": {
+    "eventName": "Page View - Billing Credit Card",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/billing/creditcard",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "Page View - Successful Subscription": {
+    "eventName": "Page View - Successful Subscription",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/successsubscription",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "Page View - Sign In": {
+    "eventName": "Page View - Sign In",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/signin",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "LP1 - Series Page": {
+    "eventName": "LP1 - Series Page",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "/series/sr929",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_angel"
+  },
+  "LP2 - HBO Home": {
+    "eventName": "LP2 - HBO Home",
+    "script": "",
+    "websiteId": "d6a489f5-d989-4ac6-9569-d86251872789",
+    "clientId": "37b08654-6a44-493d-94d2-d0e4cfb0dda5",
+    "triggerEvent": "load",
+    "elementId": "document",
+    "filter": {
+      "eventType": "default",
+      "pageUrl": [
+        {
+          "hashcheck": false,
+          "pathexact": true,
+          "usereferrer": false,
+          "searchparams": {
+            "exact": false,
+            "list": []
+          },
+          "cookiehosts": [],
+          "protocol": "https:",
+          "hostname": "www.hbogoasia.ph",
+          "pathname": "",
+          "hash": ""
+        }
+      ]
+    },
+    "eventCreator": "qrm_jasmin"
+  }
+}
