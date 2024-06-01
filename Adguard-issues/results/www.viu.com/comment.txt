@@ -1,2 +1,0 @@
-VIU播放控件被拦截，无法拖动进度条
-Username: @fayco888

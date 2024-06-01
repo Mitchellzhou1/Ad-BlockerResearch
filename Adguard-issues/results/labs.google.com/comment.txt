@@ -1,1 +1,0 @@
-If AdGuard is turned on, the form for submitting feedback does not pop up in the lower right corner of the screen when you click the icon indicated by the red circle and arrow in the upper right corner of the screen.
