@@ -65,94 +65,54 @@ def wait_until_loaded(webdriver, timeout=30, period=0.25, min_time=0):
 
 
 def remove_cmp_banner(options):
-    options.add_extension(f'/home/mitch/work/pes/measurements/extensions/extn_crx/Consent-O-Matic.crx')
+    options.add_extension(f'../../Extensions/extn_crx/Consent-O-Matic.crx')
     return options
 
 
-def run(site, extn, replay, driver_dict, display_num, html_test):
+
+def run(site, extn, replay, driver, display_num):
     options = Options()
     options.add_argument("start-maximized")
     options.add_argument(
         "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
-    options.binary_location = "/home/mitch/work/pes/chrome_113/chrome"
+    # options.binary_location = "/home/mitch/work/pes/chrome_113/chrome"
 
     options = remove_cmp_banner(options)
     # options = use_catapult(options, extn, temp_port1, temp_port2)
 
     if extn != 'control':
-        options.add_extension(f'/home/mitch/work/pes/measurements/extensions/extn_crx/{extn}.crx')
+        options.add_extension(f'../../Extensions/extn_crx/{extn}.crx')
 
     # display number
     os.environ['DISPLAY'] = f":{display_num}"
 
-    retval = driver_dict.initialize(options, 3, site)
+    retval = driver.initialize(options, site)
     if retval == 0:
         print("Failed to initialize browser!\n"*3)
         return
 
-
     if replay == 0:
         try:
-            if driver_dict.load_site(site):
+            if driver.load_site(site):
 
-                # key = ''
-                # if 'www' in site:
-                #     key = site.split('www.')[1]
-                # else:
-                #     key = site.split('://')[1]
-                # driver_dict.take_ss(f'{key}.png')
+                # driver.take_ss(f'{key}.png')
 
-                driver_dict.scroll()
-                driver_dict.scan_page()
+                driver.scroll()
+                driver.scan_page()
         except TimeoutException:
             print(f"Timeout url:{site}")
 
         except Exception as e:
             print(e)
 
-    if replay == 1:
-        if driver_dict.replay_initialize():
-            tries = 1
-            while driver_dict.curr_site > -1:
-                try:
-                    driver_dict.click_on_elms(tries)
-                except Exception as e:
-                    if type(result) is int:
-                        tries = result
-                    else:
-                        print(driver_dict.url, "\t", result, driver_dict.initial_outer_html)
-                        tries = 1
-                        driver_dict.tries = 1
-                        driver_dict.curr_elem += 1
-
-    if replay == 2:
-        driver_dict.replay_initialize()
-        tries = 1
-        driver_dict.curr_site = 0
-        while driver_dict.curr_site > -1:
+    else:
+        if driver.replay_initialize():
             try:
-                driver_dict.hierarchy_change(tries)
-
+                driver.click_on_elms()
             except Exception as e:
-                tries = 1
-                driver_dict.tries = 1
-                driver_dict.curr_elem += 1
+                print("Error clicking on element")
+                print(e)
 
-        # with open(f'logs/{extn}_{html}.txt', 'a') as f:
-        #     try:
-        #         logs = driver_dict.get_logs()
-        #         if logs != None:
-        #             f.write(f'{site}\n')
-        #             for log in logs:
-        #                 f.write(log['level'])
-        #                 f.write('\n')
-        #                 f.write(log['message'])
-        #                 f.write('\n')
-        #     except Exception as e:
-        #         f.write(str(e))
-        #         f.write('\n')
-        #         f.write('Driver is already closed')
-        #         f.write('\n')
-        # f.close()
 
-    driver_dict.close()
+
+    driver.close()

@@ -25,7 +25,7 @@ attributes_dict = {
         "attributes": ['button', 'submit', '#'],
         "xpaths": ['@role', '@type']
     },
-    "drop downs": {
+    "drop_downs": {
         "attributes": ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
                        'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
                        'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
@@ -38,7 +38,7 @@ attributes_dict = {
         "attributes": [],
         "xpaths": ['href']
     },
-    "login": {  # remember to enable HREF
+    "logins": {  # remember to enable HREF
         "attributes": ['button', 'submit', '#'],
         "xpaths": ['@role', '@type']
     }
@@ -46,7 +46,7 @@ attributes_dict = {
         "attributes": [],
         "xpaths": []
     },
-    "input": {
+    "inputs": {
         "attributes": ['text'],
         "xpaths": ['@type']
     },
@@ -109,10 +109,8 @@ class Driver:
 
         # used for storing the final results
         self.final_result = data_dict
-
-        self.all_sites = {}
+        self.temp_result = []
         self.chosen_elms = []
-        self.all_html_elms = []
 
         #### RITIK
         self.options = ''
@@ -122,13 +120,12 @@ class Driver:
         self.image_index = 0
         self.result = ''
 
-    def initialize(self, options, num_tries, url):
+    def initialize(self, options, url):
         """
             This function will start a Chrome instance with the option of installing an ad blocker.
             Adjust the seconds parameter so that it will wait for the ad blocker to finish downloading.
         """
         self.original_url = url
-        self.tries = num_tries
 
         key = ''
         if 'www' in url:
@@ -143,17 +140,17 @@ class Driver:
         for i in range(self.tries):
             try:
                 self.options = options
-                log_file_path = f"logs/chromedriver_{key}.log"
-                service = Service(executable_path='/home/mitch/work/pes/chromedriver_113/chromedriver',
-                                  service_args=["--verbose", f"--log-path={log_file_path}"])
-                # service = Service(ChromeDriverManager(version=self.chrome_version).install(), service_args=["--verbose", f"--log-path={log_file_path}"])
-                self.driver = webdriver.Chrome(options=options, service=service)
+                # log_file_path = f"logs/chromedriver_{key}.log"
+                # service = Service(executable_path='/home/character/work/pes/chromedriver_113/chromedriver',
+                #                   service_args=["--verbose", f"--log-path={log_file_path}"])
+                # service = Service(ChromeDriverManager().install(), service_args=["--verbose", f"--log-path={log_file_path}"])
+                self.driver = webdriver.Chrome(options=options)
                 print("successfully create driver for", url)
                 self.driver.set_page_load_timeout(45)
                 time.sleep(2)
                 break
             except Exception as e:
-                if num_tries == 1:
+                if self.tries - 1 == i:
                     print(f"couldn't create browser session... FAILED -- {self.original_url}")
                     print(e)
                     return 0
@@ -163,6 +160,15 @@ class Driver:
 
         time.sleep(5)
         self.actions = ActionChains(self.driver)
+
+        all_windows = self.driver.window_handles
+        if len(all_windows) > 1:
+            for window in all_windows[1:]:
+                self.driver.switch_to.window(window)
+                self.driver.close()
+            self.driver.switch_to.window(all_windows[0])
+
+
         return 1
 
     def replay_initialize(self):
@@ -239,7 +245,8 @@ class Driver:
            reinitialized the driver in case selenium crashes trying to perform the specified actions.
         """
         self.driver.close()
-        self.initialize(self.options, 3, self.original_url)
+        self.initialize(self.options, self.original_url)
+        self.load_site(self.original_url)
 
     def scroll(self, speed=0.1):
         """
@@ -260,18 +267,22 @@ class Driver:
             if time.time() - curr_time >= 45:
                 break
 
-    def take_ss(self, fname):
+    def take_ss(self):
         """
            takes a screenshot of the current webpage. Used primarily for debugging
         """
+        key = ''
+        if 'www' in self.original_url:
+            key = self.original_url.split('www.')[1]
+        else:
+            key = self.original_url.split('://')[1]
+
         try:
-            if '//' in fname:
-                fname = fname.split('//')[1]
             filepath = f'screen_shots'
             if not os.path.isdir(filepath):
                 os.makedirs(filepath, exist_ok=True)
             if self.driver:
-                self.driver.save_screenshot(f'{filepath}/{fname}')
+                self.driver.save_screenshot(f'{filepath}/{key}')
         except Exception as e:
             # not that serious if it cannot take the screen shot
             print(f"error taking screen shot for {self.current_url}")
@@ -410,72 +421,80 @@ class Driver:
         else:
             self.result = "Check Filters"
 
-    # @timeout(300)
+
     def test_button(self):
         """
             Interacts with the elements and tests to see if there is any change before and after
         """
         for i in range(self.tries):
             try:
-                self.initial_outer_html = self.dictionary[self.original_url][self.elem_indx]
-                xpath = self.generate_xpath(self.initial_outer_html)
-            except Exception as e:
-                # print(e)
-                # error(self.original_url, self.html_elem, inspect.currentframe().f_code.co_name, e)
-                print("\nUnknown exception while loading outerHTML\n")
-                print(e)
-                return
-
-            element = self.get_correct_elem(xpath, self.initial_outer_html)
-            if not element:
-                return
-
-            self.initial_local_DOM = self.get_local_DOM(element)
-            self.initial_tag = self.count_tags()
-
-            if self.html_elem == 'input':
-                self.initial_manual = self.page_source
-                self.find_and_submit_forms(self.original_url, self.initial_outer_html)
-            else:
-                self.initial_manual = self.get_local_DOM(element, 13)
-                self.click_button(element)
-                self.check_opened(self.current_url, element)
-
-            if 'true' in self.result.lower():
-                self.final_result = [self.result, self.initial_outer_html, '']
-
-            else:
-                # Filter Functions
-                if self.is_slideshow(self.initial_outer_html):
-                    self.check = 'True? - slideshow'
-                elif self.is_required(self.initial_outer_html):
-                    self.check = 'True? - input is required'
-                elif self.is_scrollpage(self.initial_outer_html):
-                    self.check = 'True? - page was scrolled'
-                elif self.is_download_link(self.initial_outer_html):
-                    self.check = 'True? - download link'
-                elif self.is_open_application(self.initial_outer_html):
-                    self.check = 'True? - opened application'
-
-                if self.result == 'False':
-                    check = "False - double checked"
-                else:
-                    # reinitialize the driver and try again
-                    self.result = 'False'
-                    self.elem_indx -= 1
-                    self.reinitialize()
+                try:
+                    self.initial_outer_html = self.dictionary[self.elem_indx]
+                    xpath = self.generate_xpath(self.initial_outer_html)
+                except Exception as e:
+                    print("\nUnknown exception while loading outerHTML\n")
+                    print(e)
                     return
 
-                self.manual_change = (self.initial_manual != self.after_manual)
-                self.final_result.append([check, self.initial_outer_html, self.manual_change])
+                element = self.get_correct_elem(xpath, self.initial_outer_html)
+                if not element:
+                    return
+
+                self.initial_local_DOM = self.get_local_DOM(element)
+                self.initial_tag = self.count_tags()
+
+                if self.html_elem == 'inputs':
+                    self.initial_manual = self.page_source
+                    self.find_and_submit_forms(element, self.initial_outer_html)
+                else:
+                    self.initial_manual = self.get_local_DOM(element, 13)
+                    self.click_button(element)
+                    self.check_opened(self.current_url, element)
+
+                if 'true' in self.result.lower():
+                    self.temp_result.append([self.result, self.initial_outer_html, ''])
+                    return
+
+                else:
+                    # Filter Functions
+                    if self.is_slideshow(self.initial_outer_html):
+                        self.check = 'True? - slideshow'
+                    elif self.is_required(self.initial_outer_html):
+                        self.check = 'True? - input is required'
+                    elif self.is_scrollpage(self.initial_outer_html):
+                        self.check = 'True? - page was scrolled'
+                    elif self.is_download_link(self.initial_outer_html):
+                        self.check = 'True? - download link'
+                    elif self.is_open_application(self.initial_outer_html):
+                        self.check = 'True? - opened application'
+
+                    if self.result == 'False':
+                        self.result = "False - double checked"
+                    else:
+                        # reinitialize the driver and try again
+                        self.result = 'False'
+                        if i != self.tries - 1:
+                            self.reinitialize()
+                            continue
+
+                    self.after_manual = self.get_local_DOM(element, 13)
+                    self.manual_change = (self.initial_manual != self.after_manual)
+                    self.temp_result.append([self.result, self.initial_outer_html, self.manual_change])
+                    return
+            except Exception as e:
+                if i != self.tries - 1:
+                    self.reinitialize()
 
     def click_on_elms(self):
         """
             loops through the elements the page and calls the test_button to test them
         """
-        while self.elem_indx > len(self.dictionary[self.original_url]):
+        while self.elem_indx < len(self.dictionary):
+            self.result = ''
+            self.load_site(self.original_url)
             self.test_button()
             self.elem_indx += 1
+        self.final_result[self.original_url] = self.temp_result
 
     ############################################################
 
@@ -489,9 +508,8 @@ class Driver:
             loads the website, finds, then filters the HTML elements identified on the
             page.
         """
-        self.load_site(self.current_url)  # extra refresh helps get rid of some false findings
         self.get_elements()
-        self.final_result = self.chosen_elms
+        self.final_result[self.original_url] = self.chosen_elms
 
         print("*" * 50)
         print(self.original_url, self.final_result)
@@ -500,21 +518,22 @@ class Driver:
     def get_elements(self):
         # returns the contents (will be selenium objs)
         ret = []
-        if self.html_elem == "drop downs":
+        if self.html_elem == "drop_downs":
             ret = self.find_dropdown()
         elif self.html_elem == "buttons":
             ret = self.find_buttons()
         elif self.html_elem == "links":
             ret = self.find_links()
-        elif self.html_elem == "login":
+        elif self.html_elem == "logins":
             ret = self.find_login()
-        elif self.html_elem == "input":
+        elif self.html_elem == "inputs":
             ret = self.find_forms()
         else:
             print("Invalid Element type to retrieve")
 
         unique = []
         for elem in ret:
+
             if self.html_elem == 'links' and len(unique) > 15:
                 break
                 
@@ -610,10 +629,10 @@ class Driver:
         return None
 
     def filter(self, element):
-        if self.html_elem == 'input':
+        if self.html_elem == 'inputs':
             return True
         
-        if self.html_elem == "login":
+        if self.html_elem == "logins":
             if any(keyword.lower() in element.text.lower() for keyword in self.keywords):
                 if self.cursor_change(element):
                     print(f"{self.current_url} \t {element.text}")
@@ -811,16 +830,11 @@ class Driver:
         attributes = tag.attrs
         return tag_name, attributes
 
-    def find_and_submit_forms(self, url, form_html):
-        if form_html not in self.page_source:
-            return
-
+    def find_and_submit_forms(self, form_elem, form_html):
+        time.sleep(2)
         input_flag = False
 
         final_element = None
-
-        xpath = self.generate_xpath(form_html)
-        form_elem = self.get_correct_elem(xpath, form_html)
 
         soup = BeautifulSoup(form_html, "html.parser")
         text_inputs = soup.find_all("input", {"type": "text"})
@@ -832,7 +846,7 @@ class Driver:
 
         number_inputs = soup.find_all("input", {"type": "tel"})
 
-        input_flag, final_element = self.enter_form(text_inputs, "test", final_element, input_flag)
+        input_flag, final_element = self.enter_form(text_inputs, "test123abc", final_element, input_flag)
         input_flag, final_element = self.enter_form(email_inputs, "test@gmail.com", final_element, input_flag)
         input_flag, final_element = self.enter_form(number_inputs, "1112223333", final_element, input_flag)
 
@@ -840,7 +854,7 @@ class Driver:
             final_element, submit_flag = self.submit_form(form_elem, final_element)
 
             if submit_flag:
-                self.check_opened(url, final_element)
+                self.check_opened(self.current_url, final_element)
         else:
             self.result = "False"
 
