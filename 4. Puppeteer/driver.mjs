@@ -57,17 +57,17 @@ class Driver{
         'вход', 'войти', 'мой аккаунт',  // Russian
         'iniciar sesión', 'mi cuenta'  // Spanish
     ]
-    this.website_sleep_time = 3  // longer this value, more consistent the results
+    this.website_sleep_time = 3             // longer this value, more consistent the results
     this.DOM_traversal_amt = 3
     this.scan_timeout = 180
     this.elem_timeout = 300
 
     // used for checking and storing the final results
     this.results = new Result()
-    this.URL = new Url();                // Correct instantiation of Url class
+    this.URL = new Url();                   // Correct instantiation of Url class
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
-    this.temp_chosen_elms= []
+    // this.temp_chosen_elms= []
     this.chosen_elms = []
 
     /* RITIK */ 
@@ -153,10 +153,44 @@ Driver.prototype.goto = async function(url) {
   await this.driver.goto(url);
 };
 
+Driver.prototype.find_elems = async function() {
+  const methodMap = {
+    'drop_downs': this.find_dropdowns.bind(this),
+    'buttons': this.find_buttons.bind(this),
+    'links': this.find_links.bind(this),
+    'logins': this.find_logins.bind(this),
+    'forms': this.find_forms.bind(this)
+  };
+  
+  const method = methodMap[this.html_elem];
+  
+  if (method) {
+    ret = method();
+  } else {
+    console.error("You have entered an unsupported HTML type");
+  }
+
+  console.log(ret);
+  var unique = [];
+  for (let html in unique){
+
+    if (unique.length >= 15 && this.html_elem == 'links') break;
+
+    if (!unique.includes(html)){
+      // this.filter(html)
+      unique.push(html);
+    }
+
+  }
+
+  this.chosen_elms = unqiue;
+};
+
+
 (async () => {
   const test = new Driver('buttons', 'ublock', 0, {});
   await test.initialize();
   console.log("done");
   await test.goto('https://duckduckgo.com/');
-  
+
 })();
