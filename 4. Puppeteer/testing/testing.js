@@ -1,10 +1,3 @@
-const puppeteer = require('puppeteer');
-const { JSDOM } = require('jsdom');
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
 async function initialize() {
   const browser = await puppeteer.launch({
     headless: false,
@@ -52,7 +45,7 @@ function getCSSselector(outerHTML) {
     });
   
     return selector;
-  }
+}
 
 
 function removeLongestElement(arr) {
@@ -79,6 +72,8 @@ return arr;
 
 
 async function findAllButtons(browser, page) {
+
+  // make sure no HREF
     await page.waitForSelector('button');  
     const uniqueOuterHTML = await page.evaluate(() => {
       const buttonElements = document.querySelectorAll('button');
@@ -92,50 +87,55 @@ async function findAllButtons(browser, page) {
     });
     
     return uniqueOuterHTML;
-  }
+}
 
 
-  (async () => {
 
-    const websites = ['https://duckduckgo.com/', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.google.com/'];
-    const { browser, page } = await initialize();
-    for (const url of websites){
-        try {
-        page.goto(url);
-        await sleep(2000);
-        const uniqueOuterHTML = await findAllButtons(browser, page);
-        console.log(uniqueOuterHTML);
-            
-        // Loop through uniqueOuterHTML with async/await
-        for (const html of uniqueOuterHTML) {
+async function getElems(page,htmlOption){
 
-            selector = await getCSSselector(html);
-            for (let i = 0; i < 2; i++){
-            
-                try {
-                    await page.waitForSelector(selector);
-                    await page.click(selector);
-                    //record results
-                    console.log("It worked");
-                    await sleep(2000);
-                    await page.goto(url);
-                    await sleep(2000);
-                    break;
-                }
-                catch (error) {
-                    const selectorArray = selector.split('[');
-                    removeLongestElement(selectorArray);
-                    selector = selectorArray.join('[');
-                }
 
-            };
-        };
-        
-        } catch (error) {
-        console.error('Error:', error);
-        }
-    };
-    console.log("FINISHED WITH EVERYTHING!");
-    browser.close();
-  })();
+}
+
+(async () => {
+  const websites = ['https://duckduckgo.com/', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.google.com/'];
+  const { browser, page } = await initialize();
+  for (const url of websites){
+      try {
+      page.goto(url);
+      await sleep(2000);
+      const uniqueOuterHTML = await findAllButtons(browser, page);
+      console.log(uniqueOuterHTML);
+          
+      // Loop through uniqueOuterHTML with async/await
+      for (const html of uniqueOuterHTML) {
+
+          selector = await getCSSselector(html);
+          for (let i = 0; i < 2; i++){
+          
+              try {
+                  await page.waitForSelector(selector);
+                  await page.click(selector);
+                  //record results
+                  console.log("It worked");
+                  await sleep(2000);
+                  await page.goto(url);
+                  await sleep(2000);
+                  break;
+              }
+              catch (error) {
+                  const selectorArray = selector.split('[');
+                  removeLongestElement(selectorArray);
+                  selector = selectorArray.join('[');
+              }
+
+          };
+      };
+      
+      } catch (error) {
+      console.error('Error:', error);
+      }
+  };
+  console.log("FINISHED WITH EVERYTHING!");
+  browser.close();
+})();
   
