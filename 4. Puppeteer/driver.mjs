@@ -4,38 +4,6 @@ import { Result } from './result.mjs';
 import { Url } from './url.mjs';
 
 
-const attributesDict = {
-    'buttons': {
-        attributes: ['button', 'submit', '#'],
-        xpaths: ['role', 'type']
-    },
-    'drop_downs': {
-        attributes: ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
-                     'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
-                     'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
-                     'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
-                     'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
-                     'Collapse Your Library'],
-        xpaths: ['aria-expanded', 'aria-label', 'class', 'aria-haspopup', 'aria-describedby', 'data-testid']
-    },
-    'links': {
-        attributes: [],
-        xpaths: ['href']
-    },
-    'logins': {
-        attributes: ['button', 'submit', '#'],
-        xpaths: ['role', 'type']
-    },
-    'inputs': {
-        attributes: ['text'],
-        xpaths: ['type']
-    },
-    'submit': {
-        attributes: ['submit'],
-        xpaths: ['type']
-    }
-};
-
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -147,7 +115,7 @@ Driver.prototype.initialize = async function(){
   await page.setViewport({ width, height });
 
   this.driver = page;
-}
+};
 
 Driver.prototype.goto = async function(url) {
   await this.driver.goto(url);
@@ -165,14 +133,14 @@ Driver.prototype.find_elems = async function() {
   const method = methodMap[this.html_elem];
   
   if (method) {
-    ret = method();
+    var ret = await method();
   } else {
     console.error("You have entered an unsupported HTML type");
   }
 
   console.log(ret);
   var unique = [];
-  for (let html in unique){
+  for (let html of unique){
 
     if (unique.length >= 15 && this.html_elem == 'links') break;
 
@@ -186,45 +154,116 @@ Driver.prototype.find_elems = async function() {
   this.chosen_elms = unqiue;
 };
 
-Driver.prototype.generalElementFinder = async function(){
-  const { attributes, xpaths } = attributesDict[this.html_elem];
-  const results = [];
-  for (const xpath of xpaths) {
-    for (const attr of attributes) {
-      const query = `[${xpath}='${attr}']`;
-      const buttons = document.querySelectorAll(query);
-      buttons.forEach(button => {
-        results.push({
-          tagName: button.tagName,
-          foundBy: selector,
-          outerHTML: button.outerHTML
-        });
-      });
+Driver.prototype.specificElementFinder = async function(elems) {
+
+  const attributesDict = {
+    'buttons': {
+        'attributes': ['button', 'submit', '#'],
+        'values': ['role', 'type']
+    },
+    'drop_downs': {
+        'attributes': ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
+                     'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
+                     'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
+                     'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
+                     'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
+                     'Collapse Your Library'],
+        'values': ['aria-expanded', 'aria-label', 'class', 'aria-haspopup', 'aria-describedby', 'data-testid']
+    },
+    'links': {
+        'attributes': [],
+        'values': ['href']
+    },
+    'logins': {
+        'attributes': ['button', 'submit', '#'],
+        'values': ['role', 'type']
+    },
+    'inputs': {
+        'attributes': ['text'],
+        'values': ['type']
+    },
+    'submit': {
+        'attributes': ['submit'],
+        'values': ['type']
     }
-  }
-  console.log(results);
+  };
+  const { attributes, values } = attributesDict[this.html_elem];
+  const { debug, final } = await this.driver.evaluate((attributes, values) => {
+    const debug = [];
+    const final = [];
+    for (const value of values) {
+      for (const attr of attributes) {
+        const query = `[${value}='${attr}']`;
+        const buttons = document.querySelectorAll(query);
+
+        buttons.forEach(button => {
+          debug.push({
+            tagName: button.tagName,
+            foundBy: query,
+            outerHTML: button.outerHTML
+          });
+
+          final.push(button.outerHTML);  // elems is a set
+        });
+      }
+    }
+    return {debug, final};
+  }, attributes, values);
+
+  console.log("Printing Debugging");
+  console.log(debug); // For debugging
+  return final
 };
 
 
-// Driver.prototype.find_dropdowns = async function(){
 
-// }
 
-// Driver.prototype.find_buttons = async function(){
+Driver.prototype.find_dropdowns = async function(){
+
+};
+
+Driver.prototype.find_buttons = async function(){
+  /*
+    Buttons are defined in this study as any element with 
+    <button> tag or <a> tag with no href attribute.
+  */
+
+  await this.driver.waitForSelector('button, a');
+  const elements_general = await this.driver.evaluate(() => {
+    const buttonElements = document.querySelectorAll('button');
+    const anchorElements = document.querySelectorAll('a');
+
+    uniqueSet = new Set();
+    buttonElements.forEach(button => {
+      uniqueSet.add(button.outerHTML);
+    });
+
+    anchorElements.forEach(anchor => {
+      if (!anchor.hasAttribute('href')) { // Check if the anchor doesn't hvae 'href' attribute
+        uniqueSet.add(anchor.outerHTML);
+      }
+    });
+
+    return Array.from(uniqueSet);
+  });
+
+  const elements_specific = await this.specificElementFinder();
+  const final = new Set([...elements_specific, ...elements_general]);
   
-// }
+  return final;
+};
 
-// Driver.prototype.find_links = async function(){
+Driver.prototype.find_links = async function(){
   
-// }
+};
 
-// Driver.prototype.find_logins = async function(){
+Driver.prototype.find_logins = async function(){
   
-// }
+};
 
-// Driver.prototype.find_forms = async function(){
+Driver.prototype.find_forms = async function(){
   
-// }
+};
 
 (async () => {
   const test = new Driver('buttons', 'ublock', 0, {});
@@ -232,6 +271,6 @@ Driver.prototype.generalElementFinder = async function(){
   console.log("done initialize");
   await test.goto('https://www.programiz.com/python-programming/online-compiler/');
   console.log("done loading site");
-  test.generalElementFinder();
+  await test.find_elems();
 
 })();
