@@ -1,22 +1,32 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-  // Launch the browser
-  const browser = await puppeteer.launch({ headless: false }); // Set headless: false to see the browser window
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
+  
+  // Replace with the URL of the website you want to visit
+  await page.goto('https://www.programiz.com/python-programming/online-compiler/');
 
-  // Go to Google
-  await page.goto('https://www.google.com', { waitUntil: 'networkidle2' });
+  // Extract the relevant elements
+  const elements = await page.evaluate(() => {
+    const results = [];
+    
+    // Select elements with the specified attributes
+    const buttons = document.querySelectorAll('[role="button"], [role="submit"], [role="#"], [type="button"], [type="submit"]');
+    buttons.forEach(button => {
+      results.push({
+        tagName: button.tagName,
+        role: button.getAttribute('role'),
+        type: button.getAttribute('type'),
+        id: button.id,
+        outerHTML: button.outerHTML
+      });
+    });
+    
+    return results;
+  });
 
-  // Click the voice search button
-  const voiceSearchSelector = "div.XDyW0e[jscontroller=\"unV4T\"][jsname=\"F7uqIe\"][aria-label=\"Search by voice\"][role=\"button\"][tabindex=\"0\"][jsaction=\"h5M12e;rcuQ6b:npT2md\"][data-ved=\"0ahUKEwjAhPbu1f6GAxUDEFkFHRugAwoQvs8DCAg\"]";
-  await page.waitForSelector(voiceSearchSelector);
-  await page.click(voiceSearchSelector);
+  console.log(elements);
 
-  // Wait for any potential page changes (optional)
-  // await page.waitForNavigation({ waitUntil: 'networkidle2' });
-
-  // Close the browser
   await browser.close();
 })();
-

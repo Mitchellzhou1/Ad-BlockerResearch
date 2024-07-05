@@ -5,34 +5,34 @@ import { Url } from './url.mjs';
 
 
 const attributesDict = {
-    buttons: {
+    'buttons': {
         attributes: ['button', 'submit', '#'],
-        xpaths: ['@role', '@type']
+        xpaths: ['role', 'type']
     },
-    drop_downs: {
+    'drop_downs': {
         attributes: ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
                      'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
                      'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
                      'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
                      'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
                      'Collapse Your Library'],
-        xpaths: ['@aria-expanded', '@aria-label', '@class', '@aria-haspopup', '@aria-describedby', '@data-testid']
+        xpaths: ['aria-expanded', 'aria-label', 'class', 'aria-haspopup', 'aria-describedby', 'data-testid']
     },
-    links: {
+    'links': {
         attributes: [],
         xpaths: ['href']
     },
-    logins: {
+    'logins': {
         attributes: ['button', 'submit', '#'],
-        xpaths: ['@role', '@type']
+        xpaths: ['role', 'type']
     },
-    inputs: {
+    'inputs': {
         attributes: ['text'],
-        xpaths: ['@type']
+        xpaths: ['type']
     },
-    submit: {
+    'submit': {
         attributes: ['submit'],
-        xpaths: ['@type']
+        xpaths: ['type']
     }
 };
 
@@ -64,7 +64,7 @@ class Driver{
 
     // used for checking and storing the final results
     this.results = new Result()
-    this.URL = new Url();                   // Correct instantiation of Url class
+    this.URL = new Url()                    // Correct instantiation of Url class
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
     // this.temp_chosen_elms= []
@@ -186,11 +186,52 @@ Driver.prototype.find_elems = async function() {
   this.chosen_elms = unqiue;
 };
 
+Driver.prototype.generalElementFinder = async function(){
+  const { attributes, xpaths } = attributesDict[this.html_elem];
+  const results = [];
+  for (const xpath of xpaths) {
+    for (const attr of attributes) {
+      const query = `[${xpath}='${attr}']`;
+      const buttons = document.querySelectorAll(query);
+      buttons.forEach(button => {
+        results.push({
+          tagName: button.tagName,
+          foundBy: selector,
+          outerHTML: button.outerHTML
+        });
+      });
+    }
+  }
+  console.log(results);
+};
+
+
+// Driver.prototype.find_dropdowns = async function(){
+
+// }
+
+// Driver.prototype.find_buttons = async function(){
+  
+// }
+
+// Driver.prototype.find_links = async function(){
+  
+// }
+
+// Driver.prototype.find_logins = async function(){
+  
+// }
+
+// Driver.prototype.find_forms = async function(){
+  
+// }
 
 (async () => {
   const test = new Driver('buttons', 'ublock', 0, {});
   await test.initialize();
-  console.log("done");
-  await test.goto('https://duckduckgo.com/');
+  console.log("done initialize");
+  await test.goto('https://www.programiz.com/python-programming/online-compiler/');
+  console.log("done loading site");
+  test.generalElementFinder();
 
 })();
