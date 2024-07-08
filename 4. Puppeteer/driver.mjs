@@ -164,7 +164,7 @@ Driver.prototype.specificElementFinder = async function(elems) {
     'drop_downs': {
         'attributes': ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
                      'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
-                     'js-menu-toggle', 'searchDropdownDescription', 'ctabutton',
+                     'js-menu-toggle', 'searchDropdownDescription', 'ctabutton', 'toggle',
                      'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
                      'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
                      'Collapse Your Library'],
@@ -219,13 +219,20 @@ Driver.prototype.specificElementFinder = async function(elems) {
 
 
 Driver.prototype.find_dropdowns = async function(){
-
+  /*
+    Dropdowns are defined in this study if having specific HTML attributes
+  */
+  const elements_specific = await this.specificElementFinder();
+  const final = new Set(elements_specific);
+  
+  return final;
 };
 
 Driver.prototype.find_buttons = async function(){
   /*
     Buttons are defined in this study as any element with 
-    <button> tag or <a> tag with no href attribute.
+    <button> tag, <a> tag with no href attribute, or having
+    specific HTML attributes
   */
 
   await this.driver.waitForSelector('button, a');
@@ -254,15 +261,99 @@ Driver.prototype.find_buttons = async function(){
 };
 
 Driver.prototype.find_links = async function(){
+  /*
+    Links are defined in this study as <a> tag  with href attribute
+  */
+  await this.driver.waitForSelector('a');
+
+  const elements_general = await this.driver.evaluate((currentURL, fullAddress) => {
+    const anchorElements = document.querySelectorAll('a');
+    const blacklist = ['#', '/', currentURL, fullAddress];
   
+    const uniqueHrefs = new Set();
+    
+    anchorElements.forEach(anchor => {
+      if (anchor.hasAttribute('href')) {
+        const href = anchor.getAttribute('href');
+        if (!blacklist.includes(href)) {
+          uniqueHrefs.add(anchor.outerHTML);
+        }
+      }
+    });
+  
+    return Array.from(uniqueHrefs);
+  }, this.URL.current_url, this.URL.full_address);
+
+  const final = new Set(elements_general);
+  
+  return final;
 };
 
 Driver.prototype.find_logins = async function(){
+  /*
+    Logins are defined in this study as any element with 
+    <button> tag, <a> tag, or HTML elements having specific predefined attributes.
+    These elements then go through a filter that checks for keywords such as 
+    'login', 'signin', 'my account', etc.
+  */
+
+    const filter = [
+      'login', 'my account', 'sign in', 'sign-in', 'signin', 'log in',  // English
+      '登录', '我的帐户',  // Chinese (Simplified)
+      'вход', 'войти', 'мой аккаунт',  // Russian
+      'iniciar sesión', 'mi cuenta'  // Spanish
+    ];
+    await this.driver.waitForSelector('button, a');
+    const elements_general = await this.driver.evaluate(() => {
+      const buttonElements = document.querySelectorAll('button');
+      const anchorElements = document.querySelectorAll('a');
+
+      uniqueSet = new Set();
+      buttonElements.forEach(button => {
+        if (filter.some(word => button.outerHTML.includes(word))) {
+          uniqueSet.add(button.outerHTML);
+        }
+      });
+    
+      anchorElements.forEach(anchor => {
+        if (anchor.hasAttribute('href') && filter.some(word => anchor.outerHTML.includes(word))) {
+          uniqueSet.add(anchor.outerHTML);
+        }
+      });
+
+      return Array.from(uniqueSet);
+    });
+
+  const elements_specific = await this.specificElementFinder();
+  const final = new Set([...elements_specific, ...elements_general]);
   
+  return final;
+
+
 };
 
 Driver.prototype.find_forms = async function(){
+  /*
+    Forms are defined in this study as any element that has a <form> tag.
+  */
+    await this.driver.waitForSelector('form');
+
+    const elements_general = await this.driver.evaluate(() => {
+      const formElements = document.querySelectorAll('form');
+    
+      uniqueSet = new Set();
+      
+      formElements.forEach(form => {
+        uniqueSet.add(form.outerHTML);
+        }
+      );
+    
+      return Array.from(uniqueSet);
+    });
   
+    const final = new Set(elements_general);
+    
+    return final;
 };
 
 (async () => {

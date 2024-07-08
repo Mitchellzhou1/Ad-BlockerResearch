@@ -80,7 +80,6 @@ class Driver:
             'вход', 'войти', 'мой аккаунт',  # Russian
             'iniciar sesión', 'mi cuenta'  # Spanish
         ]
-        self.seen_sites = []
         self.xpath_remover = 3
         self.website_sleep_time = 3  # longer this value, more consistent the results
         self.DOM_traversal_amt = 3
