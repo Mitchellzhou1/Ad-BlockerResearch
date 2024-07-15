@@ -121,6 +121,19 @@ Driver.prototype.goto = async function(url) {
   await this.driver.goto(url);
 };
 
+Driver.prototype.isVisable = async function(jQueryElementHandle) {
+  try {
+    const visible = await this.driver.evaluate((element) => {
+      return $(element).is(':visible');
+    }, jQueryElementHandle);
+    console.log(visible);
+    return visible;
+  } catch (error) {
+    console.error(`Error checking element visibility: ${error}`);
+    return false;
+  }
+}
+
 Driver.prototype.find_elems = async function() {
   const methodMap = {
     'drop_downs': this.find_dropdowns.bind(this),
@@ -140,7 +153,11 @@ Driver.prototype.find_elems = async function() {
 
   console.log(ret);
   var unique = [];
-  for (let html of unique){
+  for (let html of ret){
+
+    if (this.isVisable(html)){
+      console.log("hi");
+    }
 
     if (unique.length >= 15 && this.html_elem == 'links') break;
 
@@ -151,7 +168,7 @@ Driver.prototype.find_elems = async function() {
 
   }
 
-  this.chosen_elms = unqiue;
+  this.chosen_elms = unique;
 };
 
 Driver.prototype.specificElementFinder = async function(elems) {
@@ -194,16 +211,16 @@ Driver.prototype.specificElementFinder = async function(elems) {
     for (const value of values) {
       for (const attr of attributes) {
         const query = `[${value}='${attr}']`;
-        const buttons = document.querySelectorAll(query);
+        const elements = document.querySelectorAll(query);
 
-        buttons.forEach(button => {
+        elements.forEach(elem => {
           debug.push({
-            tagName: button.tagName,
+            tagName: elem.tagName,
             foundBy: query,
-            outerHTML: button.outerHTML
+            outerHTML: elem.outerHTML
           });
 
-          final.push(button.outerHTML);  // elems is a set
+          final.push(elem);  // elems is a set
         });
       }
     }
@@ -242,12 +259,12 @@ Driver.prototype.find_buttons = async function(){
 
     uniqueSet = new Set();
     buttonElements.forEach(button => {
-      uniqueSet.add(button.outerHTML);
+      uniqueSet.add(button);
     });
 
     anchorElements.forEach(anchor => {
       if (!anchor.hasAttribute('href')) { // Check if the anchor doesn't hvae 'href' attribute
-        uniqueSet.add(anchor.outerHTML);
+        uniqueSet.add(anchor);
       }
     });
 
@@ -276,7 +293,7 @@ Driver.prototype.find_links = async function(){
       if (anchor.hasAttribute('href')) {
         const href = anchor.getAttribute('href');
         if (!blacklist.includes(href)) {
-          uniqueHrefs.add(anchor.outerHTML);
+          uniqueHrefs.add(anchor);
         }
       }
     });
@@ -317,7 +334,7 @@ Driver.prototype.find_logins = async function(){
     
       anchorElements.forEach(anchor => {
         if (anchor.hasAttribute('href') && filter.some(word => anchor.outerHTML.includes(word))) {
-          uniqueSet.add(anchor.outerHTML);
+          uniqueSet.add(anchor);
         }
       });
 
@@ -344,7 +361,7 @@ Driver.prototype.find_forms = async function(){
       uniqueSet = new Set();
       
       formElements.forEach(form => {
-        uniqueSet.add(form.outerHTML);
+        uniqueSet.add(form);
         }
       );
     
