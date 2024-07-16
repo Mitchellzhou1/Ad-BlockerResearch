@@ -1,0 +1,5 @@
+{
+  "https://en.wikipedia.org/wiki/Main_Page": [
+    "<form action=\"/w/index.php\" id=\"searchform\" class=\"cdx-search-input cdx-search-input--has-end-button\">\n\t\t\t\t<div id=\"simpleSearch\" class=\"cdx-search-input__input-wrapper\" data-search-loc=\"header-moved\">\n\t\t\t\t\t<div class=\"cdx-text-input cdx-text-input--has-start-icon\">\n\t\t\t\t\t\t<input class=\"cdx-text-input__input\" type=\"search\" name=\"search\" placeholder=\"Search Wikipedia\" aria-label=\"Search Wikipedia\" autocapitalize=\"sentences\" title=\"Search Wikipedia [alt-shift-f]\" accesskey=\"f\" id=\"searchInput\" autocomplete=\"off\">\n\t\t\t\t\t\t<span class=\"cdx-text-input__icon cdx-text-input__start-icon\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<input type=\"hidden\" name=\"title\" value=\"Special:Search\">\n\t\t\t\t</div>\n\t\t\t\t<button class=\"cdx-button cdx-search-input__end-button\">Search</button>\n\t\t\t</form>"
+  ]
+}

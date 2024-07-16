@@ -15,7 +15,7 @@ class Driver{
   constructor(html_elem, adB, replay, data_dict){
     this.adBlocker = adB;
     this.page = null;       // current page
-    this.driver = null;     // browser instance
+    this.browser = null;     // browser instance
     this.debug = true;
     this.tries = 2;
     this.html_elem = html_elem;
@@ -33,11 +33,12 @@ class Driver{
     this.elem_timeout = 300
 
     // used for checking and storing the final results
+    this.elem_indx = 0
     this.results = new Result()
     this.URL = new Url()                    // Correct instantiation of Url class
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
-    this.chosen_elms = []
+    this.chosen_elms = []                   // used to store the pre-selected elems
 
     /* RITIK */ 
     this.options = ''
@@ -46,7 +47,7 @@ class Driver{
 
 }
 
-Driver.prototype.initialize = async function(){
+Driver.prototype.initialize = async function(url){
   const browser = await puppeteer.launch({
     headless: false,
     args: ['--start-maximized']
@@ -62,15 +63,16 @@ Driver.prototype.initialize = async function(){
     };
   });
 
-  await page.setViewport({ width, height });
-
+  await page.setViewport({ width, height });  
   this.page = page;
-  this.driver = browser;
+  this.browser = browser;
+
+  this.URL.initialize(url);
+  await this.page.goto(url);
 };
 
 Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
-  this.URL.initialize(url);
 };
 
 Driver.prototype.write_results = async function(){
@@ -425,18 +427,54 @@ Driver.prototype.find_forms = async function(){
 
 Driver.prototype.replay_initialize = async function(){
 
+  const filePath = `./Results/replay_0/${this.html_elem}_${this.adBlocker}.json`;
+  try {
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf8');
+      const jsonData = JSON.parse(data);
+      if (jsonData.hasOwnProperty(this.URL.full_address)) {
+        this.chosen_elms = jsonData[this.URL.full_address];
+        return true;
+      } else {
+        throw new Error(`site not found in json --- site:${this.URL.full_address}, extn:${this.adBlocker}, html: ${this.html}`);
+      }
+    } else {
+      throw new Error("The control file was not found. Please run the replay 0 option.");
+    }
+  } catch (err) {
+    if (err.message.startsWith("site not found in json")) {
+      console.error(err.message);
+    } else {
+      console.error(`Failed Replay-initialization for ${this.URL.full_address}`);
+      console.error(err);
+    }
+  }
+  return false;
 };
 
-
-
+Driver.prototype.test_all_elements = async function(){
+  this.final_result[this.URL.full_address] = new Array();
+  while (this.elem_indx < this.chosen_elms.length){
+    this.temp_result = '';              // reset the result between elements
+    this.goto(this.URL.full_address);   // resets the page by refreshing it
+    this.test_element();
+    this.elem_indx += 1;
+  }
+};
 
 (async () => {
-  const html_options = ['drop_downs', 'buttons', 'links', 'logins', 'inputs']
-  for (let html_option of html_options){
-    const test = new Driver(html_option, 'control', 0, {});
-    await test.initialize();
-    await test.goto('https://en.wikipedia.org/wiki/Main_Page');
-    await test.find_elems();
-    await test.driver.close();
+  const html_options = ['drop_downs', 'buttons', 'links', 'logins', 'inputs'];
+  // for (let html_option of html_options){
+  //   const test = new Driver(html_option, 'control', 0, {});
+  //   await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
+  //   await test.find_elems();
+  //   await test.browser.close();
+  // }
+
+  const test = new Driver('buttons', 'control', 0, {});
+  await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
+  if (test.replay_initialize()){
+    await test.test_all_elements();
   }
+
 })();
