@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import fs from 'fs';
 import { JSDOM } from 'jsdom';
 import { Result } from './result.mjs';
 import { Url } from './url.mjs';
@@ -13,7 +14,8 @@ function sleep(ms) {
 class Driver{
   constructor(html_elem, adB, replay, data_dict){
     this.adBlocker = adB;
-    this.driver = null;
+    this.page = null;       // current page
+    this.driver = null;     // browser instance
     this.debug = true;
     this.tries = 2;
     this.html_elem = html_elem;
@@ -35,63 +37,11 @@ class Driver{
     this.URL = new Url()                    // Correct instantiation of Url class
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
-    // this.temp_chosen_elms= []
     this.chosen_elms = []
 
     /* RITIK */ 
     this.options = ''
     this.replay = replay
-
-    /* Methods */
-
-    // // Driver, page, Functions
-
-    // this.initialize = initialize;
-    // this.replay_initialize = replay_initialize;
-    // this.is_loaded = is_loaded;
-    // this.wait_until_loaded = wait_until_loaded;
-    // this.load_site = load_site;
-    // this.reinitialize = reinitialize;
-    // this.scroll = scroll;
-    // this.take_ss = take_ss;
-
-    // // Comparison Methods
-
-    // this.cursor_change = cursor_change;
-    // this.check_redirect = check_redirect;
-    // this.count_tags = count_tags;
-    // this.get_local_dom = get_local_dom;
-    
-    // // Testing
-
-    // this.check_opened = check_opened;
-    // this.test_button = test_button;
-    // this.test_page = test_page;
-
-    // // Scaning
-    // this.scan_page = scan_page;
-    // this.get_elements = get_elements;
-    // this.generate_xpath = generate_xpath;
-    // this.get_correct_elem = get_correct_elem;
-    // this.filter = filter;
-    // this.get_specific_elem = get_specific_elem;
-    // this.find_buttons = find_buttons;
-    // this.find_dropdown = find_dropdown;
-    // this.find_links = find_links;
-    // this.find_login = find_login;
-    // this.find_forms = find_forms;
-
-    // // False Positive Checks
-    // this.is_slideshow = is_slideshow;
-    // this.is_required = is_required;
-    // this.is_scrollpage = is_scrollpage;
-    // this.is_download_link = is_download_link;
-    // this.is_open_application = is_open_application;
-
-    // // Submitting Forms
-    // this.find_and_submit_forms = find_and_submit_forms;
-    // this.enter_forms = enter_forms;
-    // this.submit_form = submit_form;
   }
 
 }
@@ -114,25 +64,98 @@ Driver.prototype.initialize = async function(){
 
   await page.setViewport({ width, height });
 
-  this.driver = page;
+  this.page = page;
+  this.driver = browser;
 };
 
 Driver.prototype.goto = async function(url) {
-  await this.driver.goto(url);
+  await this.page.goto(url);
+  this.URL.initialize(url);
 };
 
-Driver.prototype.isVisable = async function(jQueryElementHandle) {
-  try {
-    const visible = await this.driver.evaluate((element) => {
-      return $(element).is(':visible');
-    }, jQueryElementHandle);
-    console.log(visible);
-    return visible;
-  } catch (error) {
-    console.error(`Error checking element visibility: ${error}`);
-    return false;
+Driver.prototype.write_results = async function(){
+  const data = {};
+  let folder;
+  if (this.replay === 0){
+    folder = 'replay_0';
+    data[this.URL.full_address] = this.chosen_elms;
   }
-}
+  else{
+    folder = 'replay_1';
+    data[this.URL.full_address] = this.results;
+  }
+
+  const jsonData = JSON.stringify(data, null, 2);
+  const filePath = `./Results/${folder}/${this.html_elem}_${this.adBlocker}.json`;
+
+  fs.writeFile(filePath, jsonData, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing file:', err);
+      return;
+    }
+    console.log('Data has been written to', filePath);
+  });
+};
+
+Driver.prototype.getCSSselector = async function(outerHTML) {
+    const dom = new JSDOM();
+    const document = dom.window.document;
+  
+    // Create a temporary element to parse the outerHTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = outerHTML.trim();
+    const element = tempElement.firstChild;
+  
+    // Get the tag name
+    let selector = element.tagName.toLowerCase();
+  
+    // Get the class names
+    if (element.classList.length > 0) {
+      selector += '.' + Array.from(element.classList).join('.');
+    }
+  
+    // Get other attributes
+    Array.from(element.attributes).forEach(attr => {
+      if (attr.name !== 'class') {
+        selector += `[${attr.name}="${attr.value}"]`;
+      }
+    });
+  
+    return selector;
+};
+
+Driver.prototype.checkCursorStyle = async function(cssSelector) {
+  try {
+      await this.page.waitForSelector(cssSelector);
+      const element = await this.page.$(cssSelector);
+      await element.hover();
+
+      // Evaluate the cursor style
+      const cursorStyle = await this.page.evaluate((selector, elem) => {
+          const element = document.querySelector(selector);
+          return window.getComputedStyle(elem).cursor;
+      }, cssSelector, element);
+      return cursorStyle;
+  } catch (error) {
+    return '';
+  }
+};
+
+Driver.prototype.filter = async function(cssSelector) {
+  if (this.html_elem == 'inputs') 
+    return true;
+  const cursor = await this.checkCursorStyle(cssSelector);
+  if (cursor && cursor != 'default') 
+    return true;
+  return false;
+};
+
+/*
+
+  Methods for Replay 0 (finding elements)
+
+*/
+
 
 Driver.prototype.find_elems = async function() {
   const methodMap = {
@@ -140,7 +163,7 @@ Driver.prototype.find_elems = async function() {
     'buttons': this.find_buttons.bind(this),
     'links': this.find_links.bind(this),
     'logins': this.find_logins.bind(this),
-    'forms': this.find_forms.bind(this)
+    'inputs': this.find_forms.bind(this)
   };
   
   const method = methodMap[this.html_elem];
@@ -151,98 +174,103 @@ Driver.prototype.find_elems = async function() {
     console.error("You have entered an unsupported HTML type");
   }
 
-  console.log(ret);
-  var unique = [];
+  const unique = new Set();
   for (let html of ret){
+    const cssSelector = await this.getCSSselector(html)
+    const clickable = await this.filter(cssSelector);
+    
+    if (unique.size >= 15 && this.html_elem == 'links') 
+      break;
 
-    if (this.isVisable(html)){
-      console.log("hi");
-    }
-
-    if (unique.length >= 15 && this.html_elem == 'links') break;
-
-    if (!unique.includes(html)){
-      // this.filter(html)
-      unique.push(html);
-    }
-
+    if (this.html_elem == 'inputs')
+      unique.add(html);
+    else if (clickable && !unique.has(cssSelector))
+      unique.add(html);
   }
 
-  this.chosen_elms = unique;
+  this.chosen_elms = Array.from(unique);
+  console.log('*'.repeat(100));
+  console.log(this.URL.full_address);
+  console.log(this.chosen_elms);
+  console.log('*'.repeat(100));
+  await this.write_results();
 };
 
 Driver.prototype.specificElementFinder = async function(elems) {
-
-  const attributesDict = {
-    'buttons': {
-        'attributes': ['button', 'submit', '#'],
-        'values': ['role', 'type']
-    },
-    'drop_downs': {
-        'attributes': ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
-                     'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
-                     'js-menu-toggle', 'searchDropdownDescription', 'ctabutton', 'toggle',
-                     'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
-                     'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
-                     'Collapse Your Library'],
-        'values': ['aria-expanded', 'aria-label', 'class', 'aria-haspopup', 'aria-describedby', 'data-testid']
-    },
-    'links': {
-        'attributes': [],
-        'values': ['href']
-    },
-    'logins': {
-        'attributes': ['button', 'submit', '#'],
-        'values': ['role', 'type']
-    },
-    'inputs': {
-        'attributes': ['text'],
-        'values': ['type']
-    },
-    'submit': {
-        'attributes': ['submit'],
-        'values': ['type']
-    }
-  };
-  const { attributes, values } = attributesDict[this.html_elem];
-  const { debug, final } = await this.driver.evaluate((attributes, values) => {
-    const debug = [];
-    const final = [];
-    for (const value of values) {
-      for (const attr of attributes) {
-        const query = `[${value}='${attr}']`;
-        const elements = document.querySelectorAll(query);
-
-        elements.forEach(elem => {
-          debug.push({
-            tagName: elem.tagName,
-            foundBy: query,
-            outerHTML: elem.outerHTML
-          });
-
-          final.push(elem);  // elems is a set
-        });
+  try{
+    const attributesDict = {
+      'buttons': {
+          'attributes': ['button', 'submit', '#'],
+          'values': ['role', 'type']
+      },
+      'drop_downs': {
+          'attributes': ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
+                      'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
+                      'js-menu-toggle', 'searchDropdownDescription', 'ctabutton', 'toggle',
+                      'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
+                      'Toggle language selector', 'Open Navigation Drawer', 'guide', 'Expand Your Library',
+                      'Collapse Your Library'],
+          'values': ['aria-expanded', 'aria-label', 'class', 'aria-haspopup', 'aria-describedby', 'data-testid']
+      },
+      'links': {
+          'attributes': [],
+          'values': ['href']
+      },
+      'inputs': {
+          'attributes': ['text'],
+          'values': ['type']
+      },
+      'submit': {
+          'attributes': ['submit'],
+          'values': ['type']
       }
-    }
-    return {debug, final};
-  }, attributes, values);
+    };
+    const { attributes, values } = attributesDict[this.html_elem];
+    const { debug, final } = await this.page.evaluate((attributes, values) => {
+      const debug = [];
+      const final = [];
+      for (const value of values) {
+        for (const attr of attributes) {
+          const query = `[${value}='${attr}']`;
+          const elements = document.querySelectorAll(query);
 
-  console.log("Printing Debugging");
-  console.log(debug); // For debugging
-  return final
+          elements.forEach(elem => {
+            debug.push({
+              tagName: elem.tagName,
+              foundBy: query,
+              outerHTML: elem.outerHTML
+            });
+
+            final.push(elem.outerHTML);  // elems is a set
+          });
+        }
+      }
+      return {debug, final};
+    }, attributes, values);
+
+    // console.log("Printing Debugging");
+    // console.log(debug); // For debugging
+    return final
+  }catch(error){
+    console.log("Crashed in specificElementFinder()", error.toString().split('\n')[0]);
+    return new Array();
+  }
 };
-
-
-
 
 Driver.prototype.find_dropdowns = async function(){
   /*
     Dropdowns are defined in this study if having specific HTML attributes
   */
-  const elements_specific = await this.specificElementFinder();
-  const final = new Set(elements_specific);
-  
-  return final;
+  try{
+    const elements_specific = await this.specificElementFinder();
+    const final = new Set(elements_specific);
+    
+    return final;
+  }
+  catch(error){
+    console.log("Crashed in find_dropdowns()", error.toString().split('\n')[0]);
+    return new Set();
+  }
 };
 
 Driver.prototype.find_buttons = async function(){
@@ -251,59 +279,68 @@ Driver.prototype.find_buttons = async function(){
     <button> tag, <a> tag with no href attribute, or having
     specific HTML attributes
   */
+  try{
+    await this.page.waitForSelector('button, a');
+    const elements_general = await this.page.evaluate(() => {
+      const buttonElements = document.querySelectorAll('button');
+      const anchorElements = document.querySelectorAll('a');
 
-  await this.driver.waitForSelector('button, a');
-  const elements_general = await this.driver.evaluate(() => {
-    const buttonElements = document.querySelectorAll('button');
-    const anchorElements = document.querySelectorAll('a');
+      const uniqueSet = new Set();
+      buttonElements.forEach(button => {
+        uniqueSet.add(button.outerHTML);
+      });
 
-    uniqueSet = new Set();
-    buttonElements.forEach(button => {
-      uniqueSet.add(button);
+      anchorElements.forEach(anchor => {
+        if (!anchor.hasAttribute('href')) { // Check if the anchor doesn't hvae 'href' attribute
+          uniqueSet.add(anchor.outerHTML);
+        }
+      });
+
+      return Array.from(uniqueSet);
     });
 
-    anchorElements.forEach(anchor => {
-      if (!anchor.hasAttribute('href')) { // Check if the anchor doesn't hvae 'href' attribute
-        uniqueSet.add(anchor);
-      }
-    });
-
-    return Array.from(uniqueSet);
-  });
-
-  const elements_specific = await this.specificElementFinder();
-  const final = new Set([...elements_specific, ...elements_general]);
-  
-  return final;
+    const elements_specific = await this.specificElementFinder();
+    const final = new Set([...elements_specific, ...elements_general]);
+    
+    return final;
+  }catch(error){
+    console.log("Crashed in find_buttons()", error.toString().split('\n')[0]);
+    return new Set();
+  }
 };
 
 Driver.prototype.find_links = async function(){
   /*
     Links are defined in this study as <a> tag  with href attribute
   */
-  await this.driver.waitForSelector('a');
+  try{
+    await this.page.waitForSelector('a');
 
-  const elements_general = await this.driver.evaluate((currentURL, fullAddress) => {
-    const anchorElements = document.querySelectorAll('a');
-    const blacklist = ['#', '/', currentURL, fullAddress];
-  
-    const uniqueHrefs = new Set();
+    const elements_general = await this.page.evaluate((currentURL, fullAddress) => {
+      const anchorElements = document.querySelectorAll('a');
+      const blacklist = ['#', '/', currentURL, fullAddress];
     
-    anchorElements.forEach(anchor => {
-      if (anchor.hasAttribute('href')) {
-        const href = anchor.getAttribute('href');
-        if (!blacklist.includes(href)) {
-          uniqueHrefs.add(anchor);
+      const uniqueSet = new Set();
+      
+      anchorElements.forEach(anchor => {
+        if (anchor.hasAttribute('href')) {
+          const href = anchor.getAttribute('href');
+          if (!blacklist.includes(href)) {
+            uniqueSet.add(anchor.outerHTML);
+          }
         }
-      }
-    });
-  
-    return Array.from(uniqueHrefs);
-  }, this.URL.current_url, this.URL.full_address);
+      });
+    
+      return Array.from(uniqueSet);
+    }, this.URL.current_url, this.URL.full_address);
 
-  const final = new Set(elements_general);
-  
-  return final;
+    const final = new Set(elements_general);
+    
+    return final;
+  }catch(error){
+    console.log("Crashed in find_links()", error.toString().split('\n')[0]);
+    return new Set();
+  }
 };
 
 Driver.prototype.find_logins = async function(){
@@ -313,55 +350,57 @@ Driver.prototype.find_logins = async function(){
     These elements then go through a filter that checks for keywords such as 
     'login', 'signin', 'my account', etc.
   */
-
-    const filter = [
-      'login', 'my account', 'sign in', 'sign-in', 'signin', 'log in',  // English
+  try{
+    const keywords = [
+      'login', 'account', 'sign in', 'sign-in', 'signin', 'log in',  // English
       '登录', '我的帐户',  // Chinese (Simplified)
       'вход', 'войти', 'мой аккаунт',  // Russian
       'iniciar sesión', 'mi cuenta'  // Spanish
     ];
-    await this.driver.waitForSelector('button, a');
-    const elements_general = await this.driver.evaluate(() => {
+    await this.page.waitForSelector('button, a');
+    const elements_general = await this.page.evaluate((keywords) => {
       const buttonElements = document.querySelectorAll('button');
       const anchorElements = document.querySelectorAll('a');
-
-      uniqueSet = new Set();
+    
+      const uniqueSet = new Set();
+    
       buttonElements.forEach(button => {
-        if (filter.some(word => button.outerHTML.includes(word))) {
+        if (keywords.some(keyword => button.outerHTML.toLowerCase().includes(keyword.toLowerCase()))) {
           uniqueSet.add(button.outerHTML);
         }
       });
     
       anchorElements.forEach(anchor => {
-        if (anchor.hasAttribute('href') && filter.some(word => anchor.outerHTML.includes(word))) {
-          uniqueSet.add(anchor);
+        if (anchor.hasAttribute('href') && keywords.some(keyword => anchor.outerHTML.toLowerCase().includes(keyword.toLowerCase()))) {
+          uniqueSet.add(anchor.outerHTML);
         }
       });
-
+    
       return Array.from(uniqueSet);
-    });
+    }, keywords);
 
-  const elements_specific = await this.specificElementFinder();
-  const final = new Set([...elements_specific, ...elements_general]);
-  
-  return final;
-
-
+ 
+    return elements_general;
+  }catch(error){
+    console.log("Crashed in find_logins()", error.toString().split('\n')[0]);
+    return new Set();
+  }
 };
 
 Driver.prototype.find_forms = async function(){
   /*
     Forms are defined in this study as any element that has a <form> tag.
   */
-    await this.driver.waitForSelector('form');
+ try{
+    await this.page.waitForSelector('form');
 
-    const elements_general = await this.driver.evaluate(() => {
+    const elements_general = await this.page.evaluate(() => {
       const formElements = document.querySelectorAll('form');
     
-      uniqueSet = new Set();
+      const uniqueSet = new Set();
       
       formElements.forEach(form => {
-        uniqueSet.add(form);
+        uniqueSet.add(form.outerHTML);
         }
       );
     
@@ -371,14 +410,33 @@ Driver.prototype.find_forms = async function(){
     const final = new Set(elements_general);
     
     return final;
+  }
+  catch(error){
+    console.log("Crashed in find_forms()", error.toString().split('\n')[0]);
+    return new Set();
+  }
 };
 
-(async () => {
-  const test = new Driver('buttons', 'ublock', 0, {});
-  await test.initialize();
-  console.log("done initialize");
-  await test.goto('https://www.programiz.com/python-programming/online-compiler/');
-  console.log("done loading site");
-  await test.find_elems();
+/*
 
+  Methods for Replay 1 (interacting with elements)
+
+*/
+
+Driver.prototype.replay_initialize = async function(){
+
+};
+
+
+
+
+(async () => {
+  const html_options = ['drop_downs', 'buttons', 'links', 'logins', 'inputs']
+  for (let html_option of html_options){
+    const test = new Driver(html_option, 'control', 0, {});
+    await test.initialize();
+    await test.goto('https://en.wikipedia.org/wiki/Main_Page');
+    await test.find_elems();
+    await test.driver.close();
+  }
 })();

@@ -12,7 +12,7 @@ const data = {
 const jsonData = JSON.stringify(data, null, 2); // null and 2 are for pretty formatting
 
 // File path where the JSON file will be written
-const filePath = './data.json';
+const filePath = './record/data.json';
 
 // Write JSON data to the file
 fs.writeFile(filePath, jsonData, 'utf8', (err) => {
