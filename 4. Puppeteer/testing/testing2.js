@@ -1,32 +1,24 @@
-const puppeteer = require('puppeteer');
+// Importing the fs (file system) module
+const fs = require('fs');
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  
-  // Replace with the URL of the website you want to visit
-  await page.goto('https://www.programiz.com/python-programming/online-compiler/');
+// Example data to write to the JSON file
+const data = {
+  name: 'John Doe',
+  age: 30,
+  city: 'New York'
+};
 
-  // Extract the relevant elements
-  const elements = await page.evaluate(() => {
-    const results = [];
-    
-    // Select elements with the specified attributes
-    const buttons = document.querySelectorAll('[role="button"], [role="submit"], [role="#"], [type="button"], [type="submit"]');
-    buttons.forEach(button => {
-      results.push({
-        tagName: button.tagName,
-        role: button.getAttribute('role'),
-        type: button.getAttribute('type'),
-        id: button.id,
-        outerHTML: button.outerHTML
-      });
-    });
-    
-    return results;
-  });
+// Convert data to JSON format
+const jsonData = JSON.stringify(data, null, 2); // null and 2 are for pretty formatting
 
-  console.log(elements);
+// File path where the JSON file will be written
+const filePath = './data.json';
 
-  await browser.close();
-})();
+// Write JSON data to the file
+fs.writeFile(filePath, jsonData, 'utf8', (err) => {
+  if (err) {
+    console.error('Error writing file:', err);
+    return;
+  }
+  console.log('Data has been written to', filePath);
+});
