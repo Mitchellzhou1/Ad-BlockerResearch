@@ -1,52 +1,93 @@
 const puppeteer = require('puppeteer');
 
-(async () => {
-    const browser = await puppeteer.launch({
-      headless: false,
-      args: ['--start-maximized'] // This argument starts the browser maximized
-    });
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1920, height: 1080 }); // Set the viewport size to match a maximized window
 
-    await page.goto('https://en.wikipedia.org/wiki/Main_Page');
+function parseOuterHTMLAttributes(outerHTML) {
+    const tagRegex = /^<(\w+)\s+/; // Regex to match the tag name
+    const attributeRegex = /(\w+)\s*=\s*["']([^"']*)["']/g; // Regex to match attributes and their values
+    const attributes = {}; // Dictionary to store attribute key-value pairs
 
-    // The outerHTML of the target button
-    const targetOuterHTML = `<input type=\"checkbox\" id=\"vector-main-menu-dropdown-checkbox\" role=\"button\" aria-haspopup=\"true\" data-event-name=\"ui.dropdown-vector-main-menu-dropdown\" class=\"vector-dropdown-checkbox \" aria-label=\"Main menu\">"`; // Replace with the actual outerHTML
-
-    // Function to extract the tag name from outerHTML
-    function getTagName(outerHTML) {
-        const match = outerHTML.trim().match(/^<([a-zA-Z0-9-]+)/);
-        return match ? match[1] : null;
+    // Extract tag name
+    const tagMatch = outerHTML.match(tagRegex);
+    if (tagMatch) {
+        attributes['tag'] = tagMatch[1].trim(); // Store the tag name (trimmed)
     }
 
-    // Extract the tag name from the target outerHTML
-    const tagName = getTagName(targetOuterHTML);
-    if (!tagName) {
-        console.log("Invalid outerHTML: Unable to extract tag name");
-        await browser.close();
-        return;
+    // Extract attributes
+    let match;
+    while ((match = attributeRegex.exec(outerHTML)) !== null) {
+        const attributeName = match[1].trim(); // Attribute name (trimmed)
+        const attributeValue = match[2].trim(); // Attribute value (trimmed)
+        attributes[attributeName] = attributeValue;
     }
 
-    // Find and click the element with the matching outerHTML
-    const clicked = await page.evaluate((targetOuterHTML, tagName) => {
-        const elements = document.querySelectorAll(tagName);
-        for (let element of elements) {
-            if (element.outerHTML.trim() === targetOuterHTML.trim()) {
-                element.click();
-                return true;
-            }
-        }
+    return attributes;
+}
+
+function compareAttributeObjects(obj1, obj2) {
+    // Check if both objects are defined and have the same number of keys
+    if (!obj1 || !obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
         return false;
-    }, targetOuterHTML, tagName);
-
-    if (clicked) {
-        console.log("Button clicked successfully");
-    } else {
-        console.log("Button not found");
     }
+    // Iterate through keys of obj1 and compare values with obj2
+    for (let key in obj1) {
+        if (!(key in obj2) || obj1[key] !== obj2[key]) {
+            return false;
+        }
+    }
+    // Iterate through keys of obj2 to check for any extra keys not in obj1 (though they should be same length)
+    for (let key in obj2) {
+        if (!(key in obj1)) {
+            return false;
+        }
+    }
+    return true;
+}
 
-    // Optional: Perform additional actions or wait for navigation
-    await page.waitForNavigation();
+(async () => {
+    // Launch Puppeteer with headless:false and defaultViewport set to null for full screen
+    const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
+    
+    try {
+        const page = await browser.newPage();
 
-    await browser.close();
+        // Navigate to the Wikipedia Main Page
+        await page.goto('https://en.wikipedia.org/wiki/Main_Page');
+
+        // Define the target outerHTML you are looking for
+        const targetOuterHTML = '<input type="checkbox" id="vector-main-menu-dropdown-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-main-menu-dropdown" class="vector-dropdown-checkbox" aria-label="Main menu">';
+        const targetValues = parseOuterHTMLAttributes(targetOuterHTML);
+
+        // Wait for the element to appear on the page
+        await page.waitForSelector('input[type="checkbox"]');
+
+        // Get all input elements of type checkbox on the page
+        const checkboxes = await page.$$('input[type="checkbox"]');
+
+        let elementToClick = null;
+
+        // Iterate through each checkbox and compare outerHTML
+        for (let checkbox of checkboxes) {
+            const outerHTML = await page.evaluate(el => el.outerHTML, checkbox);
+            const testValues = parseOuterHTMLAttributes(outerHTML);
+            // Compare outerHTML
+            if (compareAttributeObjects(targetValues, testValues)){
+                elementToClick = checkbox;
+                break;
+            }
+
+        }
+
+        // If elementToClick is found, click on it
+        if (elementToClick) {
+            await elementToClick.click();
+            console.log('Clicked on the checkbox');
+        } else {
+            console.log('Checkbox element not found');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        // Close the browser
+        await browser.close();
+    }
 })();

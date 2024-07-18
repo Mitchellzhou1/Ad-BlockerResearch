@@ -7,7 +7,8 @@ import { Url } from './url.mjs';
 
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    const seconds = ms * 1000;
+    return new Promise(resolve => setTimeout(resolve, seconds));
   }
 
 
@@ -34,7 +35,7 @@ class Driver{
 
     // used for checking and storing the final results
     this.elem_indx = 0
-    this.results = new Result()
+    this.RESULT = new Result()
     this.URL = new Url()                    // Correct instantiation of Url class
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
@@ -70,6 +71,11 @@ Driver.prototype.initialize = async function(url){
   this.URL.initialize(url);
   await this.page.goto(url);
 };
+
+Driver.prototype.reinitialize = async function(){
+  await this.browser.close();
+  await this.initialize(this.URL.full_address);
+}
 
 Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
@@ -457,10 +463,113 @@ Driver.prototype.test_all_elements = async function(){
   while (this.elem_indx < this.chosen_elms.length){
     this.temp_result = '';              // reset the result between elements
     this.goto(this.URL.full_address);   // resets the page by refreshing it
-    this.test_element();
+    await this.test_element();
     this.elem_indx += 1;
   }
 };
+
+Driver.prototype.test_element = async function(){
+  for (let i = 0; i < this.tries; i++){
+    let cssSelector;
+    try{
+      try{
+        this.RESULT.initial_outer_html = this.chosen_elms[this.elem_indx];
+        cssSelector = await this.getCSSselector(this.RESULT.initial_outer_html);
+      }
+      catch(error){
+        console.log(`Error while loading outerHTML for ${this.URL.full_address}`, error.toString().split('\n')[0]);
+        return;
+      }
+
+      const element = await this.get_element(cssSelector);
+      if (!element)
+        return;
+
+
+      
+      console.log("clicking on:", cssSelector);
+      await sleep(2);
+      await element.click();
+      await sleep(2);
+      console.log("Done");
+      return;
+    }
+    catch(error){
+      console.log(error);
+      if (i !== this.tries - 1){
+        await this.reinitialize();
+        this.elem_indx -= 1;
+      }
+      else{
+        return;
+      }
+    }
+
+  }
+
+};
+
+Driver.prototype.get_element = async function(selector){
+
+  const targetVal = this.parseOuterHTMLAttributes(this.RESULT.initial_outer_html);
+  await this.page.waitForSelector(selector);
+  const candidates = await this.page.$$(selector);
+
+  let element = null;
+
+  for (let candidate of candidates) {
+    const outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
+    const candidateVal = this.parseOuterHTMLAttributes(outerHTML);
+    // Compare outerHTML
+    if (this.compareAttributeObjects(targetVal, candidateVal)){
+      element = candidate;
+      break;
+    }
+  }
+
+  return element;
+};
+
+Driver.prototype.parseOuterHTMLAttributes = function(outerHTML) {
+  const tagRegex = /^<(\w+)\s+/; // Regex to match the tag name
+  const attributeRegex = /(\w+)\s*=\s*["']([^"']*)["']/g; // Regex to match attributes and their values
+  const attributes = {}; // Dictionary to store attribute key-value pairs
+
+  // Extract tag name
+  const tagMatch = outerHTML.match(tagRegex);
+  if (tagMatch) {
+      attributes['tag'] = tagMatch[1].trim(); // Store the tag name (trimmed)
+  }
+
+  // Extract attributes
+  let match;
+  while ((match = attributeRegex.exec(outerHTML)) !== null) {
+      const attributeName = match[1].trim(); // Attribute name (trimmed)
+      const attributeValue = match[2].trim(); // Attribute value (trimmed)
+      attributes[attributeName] = attributeValue;
+  }
+
+  return attributes;
+};
+
+Driver.prototype.compareAttributeObjects = function(obj1, obj2) {
+  // Need to remove longest in case
+  if (!obj1 || !obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
+      return false;
+  }
+  for (let key in obj1) {
+      if (!(key in obj2) || obj1[key] !== obj2[key]) {
+          return false;
+      }
+  }
+  for (let key in obj2) {
+      if (!(key in obj1)) {
+          return false;
+      }
+  }
+  return true;
+};
+
 
 (async () => {
   const html_options = ['drop_downs', 'buttons', 'links', 'logins', 'inputs'];
@@ -474,7 +583,8 @@ Driver.prototype.test_all_elements = async function(){
   const test = new Driver('buttons', 'control', 0, {});
   await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
   if (test.replay_initialize()){
+    console.log(test.chosen_elms.length)
     await test.test_all_elements();
   }
-
+  console.log("FINISHED EVERYTHING");
 })();
