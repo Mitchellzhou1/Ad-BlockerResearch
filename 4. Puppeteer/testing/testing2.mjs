@@ -544,22 +544,19 @@ Driver.prototype.test_element = async function(){
         return;
       }
 
-      let element = await this.get_element(cssSelector);
+      const element = await this.get_element(cssSelector);
       if (!element)
         return;
 
-      const { original_element, outerHTML } = await this.get_local_DOM(element);
-      element = original_element;
-      this.RESULT.initial_local_DOM = outerHTML;
-      
+      element, this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
+      this.RESULT.initial_tags = await this.get_total_tags();
+
       if (this.html_elem == "inputs"){
         this.RESULT.initial_manual = await this.page.content();
         await this.find_and_submit_forms(element);
       }
       else{
-        const { original_element, outerHTML } = await this.get_local_DOM(element, 13);
-        element = original_element;
-        this.RESULT.initial_manual = outerHTML;
+        element, this.RESULT.initial_manual = await this.get_local_DOM(element, 13);
         await this.click(element, 5);
         await this.check_opened(element);
       }
@@ -585,44 +582,41 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
   if (!formElem) return;
 
   // Use `evaluate` to work with the browser context
-  const input_flag = await this.page.evaluate(() => {
-
+  const inputFlag = await this.page.evaluate((formElem) => {
     let flag = false;
     const textValue = 'textvalue123';
     const emailValue = 'test@gmail.com';
     const numberValue = '1234567890';
 
-    const textInputs = document.querySelectorAll('input[type="text"], input[type="search"], input[type="password"], textarea');
-    const emailInputs = document.querySelectorAll('input[type="email"]');
-    const numberInputs = document.querySelectorAll('input[type="tel"]');
+    const form = document.querySelector(formElem); // Use the formElem selector to find the form
+    if (!form) return flag; // Return false if the form is not found
+
+    const textInputs = form.querySelectorAll('input[type="text"], input[type="search"], input[type="password"], textarea');
+    const emailInputs = form.querySelectorAll('input[type="email"]');
+    const numberInputs = form.querySelectorAll('input[type="tel"], input[type="number"]');
 
     textInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = textValue; // Set the value
+      input.focus();
+      input.value = textValue; 
       flag = true;
     });
     emailInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = emailValue; // Set the value
+      input.focus();
+      input.value = emailValue;
       flag = true;
     });
     numberInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = numberValue; // Set the value
+      input.focus(); 
+      input.value = numberValue;
       flag = true;
     });
-    return flag;
-  });
 
-  if (input_flag) {
-    const {original_element, parent} = await this.get_parent(formElem, 2);
-    formElem = original_element;
-    const outerHTML = await this.page.evaluate(el => el.outerHTML, parent);
-    console.log(outerHTML);
+    return flag; // Return the flag indicating if any inputs were modified
+  }, formElem);
 
+  if (inputFlag) {
     const submission_stat =  await this.page.evaluate((formElem) => {
       const form = document.querySelector(formElem);
-
       if (form) {
         const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
         try{
@@ -671,9 +665,7 @@ Driver.prototype.check_opened = async function(element){
     return;
   }
   try{
-    const { original_element, outerHTML } = await this.get_local_DOM(element);
-    element = original_element;
-    this.RESULT.after_outer_html = outerHTML;
+    element, this.RESULT.after_local_DOM = await this.get_local_DOM(element);
   }
   catch(error){
     if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
@@ -684,13 +676,11 @@ Driver.prototype.check_opened = async function(element){
   }
 
   this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
-  const { original_element, outerHTML } = await this.get_local_DOM(element, 13);
-  element = original_element;
-  this.RESULT.after_local_DOM = outerHTML;
+  element, this.RESULT.after_local_DOM = await this.get_local_DOM(element)
 
   this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
   this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
-
+  this.RESULT.after_tags = await this.get_total_tags();
   
   if (this.RESULT.outer_HTML_changed)
     this.temp_result = "True - outerHTML change";
@@ -727,36 +717,26 @@ Driver.prototype.get_element = async function(selector){
   return element;
 };
 
-Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
+Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt){
   let original_element = await this.page.evaluateHandle(el => el.cloneNode(true), element);
   let ancestor = element;
   let parentHandle;
-
   for (let i = 0; i < traversal_amt; i++) {
     try {
+      // Traverse up to the parent element
       parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
-      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
-      console.log(html.split(">")[0]);
+      await this.page.evaluate(el => el.outerHTML, parentHandle);   // this will crash if we are at the top
       if (i > 0) await ancestor.dispose();
-      ancestor = parentHandle;
+        ancestor = parentHandle;
     } catch (error) {
       if (parentHandle) await parentHandle.dispose();
       break;
     }
   }
-  return { original_element, ancestor };
-};
-
-Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt) {
-  const { original_element, ancestor } = await this.get_parent(element, traversal_amt);
   const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
   await ancestor.dispose();
-
-  const testing = await this.page.evaluate(el => el.outerHTML, original_element);
-  console.log(testing);
-  return { original_element, outerHTML };
+  return original_element, outerHTML;
 };
-
 
 Driver.prototype.get_total_tags = async function(){
   const totalTags = await this.page.evaluate(() => {
