@@ -6,10 +6,10 @@ import { Url } from './url.mjs';
 
 
 
-function sleep(ms) {
-    const seconds = ms * 1000;
-    return new Promise(resolve => setTimeout(resolve, seconds));
-  }
+async function sleep(ms) {
+  const seconds = ms * 1000;
+  return new Promise(resolve => setTimeout(resolve, seconds));
+}
 
 
 class Driver{
@@ -69,7 +69,7 @@ Driver.prototype.initialize = async function(url){
   this.browser = browser;
 
   this.URL.initialize(url);
-  await this.page.goto(url);
+  await this.goto(url);
 };
 
 Driver.prototype.reinitialize = async function(){
@@ -79,6 +79,56 @@ Driver.prototype.reinitialize = async function(){
 
 Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
+  await this.scroll_to_bottom();
+  this.URL.current_url = this.page.url();
+  await this.page.screenshot({ path: 'screenshot.png' });
+};
+
+Driver.prototype.scroll_to_bottom = async function() {
+  // Define a timeout period in milliseconds
+  const TIMEOUT_MS = 30000;
+
+  // Define the scrolling operation
+  const scrollOperation = this.page.evaluate(async () => {
+    await new Promise((resolve) => {
+      const distance = 100; // Scroll distance
+      const delay = 200;    // Delay between scrolls
+
+      const scrollDown = () => {
+        const totalHeight = document.body.scrollHeight;
+        const currentPosition = window.scrollY + window.innerHeight;
+
+        window.scrollBy(0, distance);
+
+        if (currentPosition >= totalHeight) {
+          resolve();
+        } else {
+          setTimeout(scrollDown, delay);
+        }
+      };
+
+      scrollDown();
+    });
+  });
+
+  // Define the timeout promise
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Scroll operation timed out')), TIMEOUT_MS)
+  );
+
+  // Race the scrolling operation against the timeout
+  try {
+    await Promise.race([scrollOperation, timeoutPromise]);
+  } catch (error) {
+    console.error(error.message);
+    // Handle timeout case or perform other actions
+    await sleep(3);
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+    return;
+  }
+
+  await sleep(2);
+  await this.page.evaluate(() => window.scrollTo(0, 0));
 };
 
 Driver.prototype.write_results = async function(){
@@ -106,30 +156,42 @@ Driver.prototype.write_results = async function(){
 };
 
 Driver.prototype.getCSSselector = async function(outerHTML) {
-    const dom = new JSDOM();
-    const document = dom.window.document;
-  
-    // Create a temporary element to parse the outerHTML
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = outerHTML.trim();
-    const element = tempElement.firstChild;
-  
-    // Get the tag name
-    let selector = element.tagName.toLowerCase();
-  
-    // Get the class names
-    if (element.classList.length > 0) {
-      selector += '.' + Array.from(element.classList).join('.');
+  function escapeSpecialChars(str) {
+    return str.replace(/([:.\[\],=@])/g, '\\$1');
     }
-  
-    // Get other attributes
-    Array.from(element.attributes).forEach(attr => {
-      if (attr.name !== 'class') {
-        selector += `[${attr.name}="${attr.value}"]`;
-      }
-    });
-  
-    return selector;
+  const dom = new JSDOM();
+  const document = dom.window.document;
+
+  // Create a temporary element to parse the outerHTML
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = outerHTML.trim();
+  const element = tempElement.firstChild;
+
+  if (!element) {
+  throw new Error('Invalid outerHTML provided.');
+  }
+
+  // Start building the selector with the tag name
+  let selector = element.tagName.toLowerCase();
+
+  // Get the ID attribute
+  if (element.id) {
+  selector += `#${escapeSpecialChars(element.id)}`;
+  }
+
+  // Get the class names
+  if (element.classList.length > 0) {
+  selector += '.' + Array.from(element.classList).map(cls => escapeSpecialChars(cls)).join('.');
+  }
+
+  // Get other attributes, excluding 'id' and 'class'
+  Array.from(element.attributes).forEach(attr => {
+  if (attr.name !== 'id' && attr.name !== 'class' && attr.value) {
+    selector += `[${escapeSpecialChars(attr.name)}="${escapeSpecialChars(attr.value)}"]`;
+  }
+  });
+
+  return selector;
 };
 
 Driver.prototype.checkCursorStyle = async function(cssSelector) {
@@ -137,6 +199,7 @@ Driver.prototype.checkCursorStyle = async function(cssSelector) {
       await this.page.waitForSelector(cssSelector);
       const element = await this.page.$(cssSelector);
       await element.hover();
+      // await sleep(1);
 
       // Evaluate the cursor style
       const cursorStyle = await this.page.evaluate((selector, elem) => {
@@ -198,10 +261,10 @@ Driver.prototype.find_elems = async function() {
 
   this.chosen_elms = Array.from(unique);
   console.log('*'.repeat(100));
+  await this.write_results();
   console.log(this.URL.full_address);
   console.log(this.chosen_elms);
   console.log('*'.repeat(100));
-  await this.write_results();
 };
 
 Driver.prototype.specificElementFinder = async function(elems) {
@@ -461,9 +524,9 @@ Driver.prototype.replay_initialize = async function(){
 Driver.prototype.test_all_elements = async function(){
   this.final_result[this.URL.full_address] = new Array();
   while (this.elem_indx < this.chosen_elms.length){
-    this.temp_result = '';              // reset the result between elements
-    this.goto(this.URL.full_address);   // resets the page by refreshing it
+    this.reset_result();                // reset the result between elements
     await this.test_element();
+    await this.goto(this.URL.full_address);   // resets the page by refreshing it
     this.elem_indx += 1;
   }
 };
@@ -485,20 +548,26 @@ Driver.prototype.test_element = async function(){
       if (!element)
         return;
 
+      element, this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
+      this.RESULT.initial_tags = await this.get_total_tags();
 
-      
-      console.log("clicking on:", cssSelector);
-      await sleep(2);
-      await element.click();
-      await sleep(2);
-      console.log("Done");
+      if (this.html_elem == "inputs"){
+        this.RESULT.initial_manual = await this.page.content();
+        await this.find_and_sumbit_forms(element);
+      }
+      else{
+        element, this.RESULT.initial_manual = await this.get_local_DOM(element, 13);
+        await this.click(element, 5);
+      }
+      await this.check_opened(element);
+      console.log(this.temp_result);
+
       return;
     }
     catch(error){
       console.log(error);
       if (i !== this.tries - 1){
         await this.reinitialize();
-        this.elem_indx -= 1;
       }
       else{
         return;
@@ -507,6 +576,64 @@ Driver.prototype.test_element = async function(){
 
   }
 
+};
+
+Driver.prototype.find_and_sumbit_forms = async function(){
+
+};
+
+Driver.prototype.reset_result = function(){
+  this.temp_result = '';
+  this.RESULT.reset();
+};
+
+Driver.prototype.check_redirect = function(){
+  try {
+    const parsedUrl1 = new URL(this.URL.current_url);
+    const parsedUrl2 = new URL(this.page.url());
+
+    return parsedUrl1.href !== parsedUrl2.href;
+  } catch (e) {
+    return false;
+  }
+
+};
+
+Driver.prototype.check_opened = async function(element){
+  if (this.check_redirect()){
+    this.temp_result = "True - Redirect";
+    return;
+  }
+  try{
+    element, this.RESULT.after_local_DOM = await this.get_local_DOM(element);
+  }
+  catch(error){
+    if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
+      this.temp_result = "True - Stale Element";
+      console.log("Stale element error!");
+    }
+    return;
+  }
+
+  this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
+  element, this.RESULT.after_local_DOM = await this.get_local_DOM(element)
+
+  this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
+  this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
+  this.RESULT.after_tags = await this.get_total_tags();
+  
+  if (this.RESULT.outer_HTML_changed)
+    this.temp_result = "True - outerHTML change";
+  else if (this.RESULT.local_DOM_changed)
+    this.temp_result = "True? - Local DOM Change";
+  else
+    this.temp_result = "Check Filters";
+};
+
+Driver.prototype.click = async function(element, time = 3){
+  await sleep(time);
+  await element.click();
+  await sleep(time);
 };
 
 Driver.prototype.get_element = async function(selector){
@@ -528,6 +655,34 @@ Driver.prototype.get_element = async function(selector){
   }
 
   return element;
+};
+
+Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt){
+  let original_element = await this.page.evaluateHandle(el => el.cloneNode(true), element);
+  let ancestor = element;
+  let parentHandle;
+  for (let i = 0; i < traversal_amt; i++) {
+    try {
+      // Traverse up to the parent element
+      parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
+      await this.page.evaluate(el => el.outerHTML, parentHandle);   // this will crash if we are at the top
+      if (i > 0) await ancestor.dispose();
+        ancestor = parentHandle;
+    } catch (error) {
+      if (parentHandle) await parentHandle.dispose();
+      break;
+    }
+  }
+  const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
+  await ancestor.dispose();
+  return original_element, outerHTML;
+};
+
+Driver.prototype.get_total_tags = async function(){
+  const totalTags = await this.page.evaluate(() => {
+    return document.getElementsByTagName('*').length;
+  });
+  return totalTags;
 };
 
 Driver.prototype.parseOuterHTMLAttributes = function(outerHTML) {
@@ -572,19 +727,44 @@ Driver.prototype.compareAttributeObjects = function(obj1, obj2) {
 
 
 (async () => {
-  const html_options = ['drop_downs', 'buttons', 'links', 'logins', 'inputs'];
-  // for (let html_option of html_options){
-  //   const test = new Driver(html_option, 'control', 0, {});
-  //   await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
-  //   await test.find_elems();
-  //   await test.browser.close();
-  // }
 
-  const test = new Driver('buttons', 'control', 0, {});
-  await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
-  if (test.replay_initialize()){
-    console.log(test.chosen_elms.length)
-    await test.test_all_elements();
+  const html_options = [
+    // 'drop_downs', 
+    // 'buttons', 
+    // 'links', 
+    // 'logins', 
+    'inputs'
+  ];
+  
+  const links = [
+    // 'https://en.wikipedia.org/wiki/Main_Page',
+    // 'https://openai.com/', 
+    'https://duckduckgo.com/', 
+    // 'https://brightspace.nyu.edu/d2l/home',
+    // 'https://picoctf.org/',
+    // 'https://portswigger.net/web-security/all-labs'
+  ];
+  for (let link of links){
+    for (let html_option of html_options){
+      const test = new Driver(html_option, 'control', 0, {});
+      // await test.initialize(link);
+      // await test.find_elems();
+
+
+      await test.initialize(link);
+      if (test.replay_initialize()){
+        console.log(test.chosen_elms.length)
+        await test.test_all_elements();
+      }
+      await test.browser.close();
+    }
   }
+
+  // const test = new Driver('buttons', 'control', 0, {});
+  // await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
+  // if (test.replay_initialize()){
+  //   console.log(test.chosen_elms.length)
+  //   await test.test_all_elements();
+  // }
   console.log("FINISHED EVERYTHING");
 })();

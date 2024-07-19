@@ -18,9 +18,5 @@ export class Url {
       this.stripped_address = this.cleanUrl(full_address);
       this.current_url = '';
     }
-
-    setCurrent(address){
-      this.current_url = address;
-    }
   }
   

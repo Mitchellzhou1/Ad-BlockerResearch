@@ -1,93 +1,48 @@
-const puppeteer = require('puppeteer');
-
-
-function parseOuterHTMLAttributes(outerHTML) {
-    const tagRegex = /^<(\w+)\s+/; // Regex to match the tag name
-    const attributeRegex = /(\w+)\s*=\s*["']([^"']*)["']/g; // Regex to match attributes and their values
-    const attributes = {}; // Dictionary to store attribute key-value pairs
-
-    // Extract tag name
-    const tagMatch = outerHTML.match(tagRegex);
-    if (tagMatch) {
-        attributes['tag'] = tagMatch[1].trim(); // Store the tag name (trimmed)
-    }
-
-    // Extract attributes
-    let match;
-    while ((match = attributeRegex.exec(outerHTML)) !== null) {
-        const attributeName = match[1].trim(); // Attribute name (trimmed)
-        const attributeValue = match[2].trim(); // Attribute value (trimmed)
-        attributes[attributeName] = attributeValue;
-    }
-
-    return attributes;
-}
-
-function compareAttributeObjects(obj1, obj2) {
-    // Check if both objects are defined and have the same number of keys
-    if (!obj1 || !obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
-        return false;
-    }
-    // Iterate through keys of obj1 and compare values with obj2
-    for (let key in obj1) {
-        if (!(key in obj2) || obj1[key] !== obj2[key]) {
-            return false;
-        }
-    }
-    // Iterate through keys of obj2 to check for any extra keys not in obj1 (though they should be same length)
-    for (let key in obj2) {
-        if (!(key in obj1)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-(async () => {
-    // Launch Puppeteer with headless:false and defaultViewport set to null for full screen
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
-    
+Driver.prototype.scroll_to_bottom = async function() {
+    // Define a timeout period in milliseconds
+    const TIMEOUT_MS = 10000; // 10 seconds
+  
+    // Define the scrolling operation
+    const scrollOperation = this.page.evaluate(async () => {
+      await new Promise((resolve) => {
+        const distance = 100; // Scroll distance
+        const delay = 300;    // Delay between scrolls
+  
+        const scrollDown = () => {
+          const totalHeight = document.body.scrollHeight;
+          const currentPosition = window.scrollY + window.innerHeight;
+  
+          window.scrollBy(0, distance);
+  
+          if (currentPosition >= totalHeight) {
+            resolve();
+          } else {
+            setTimeout(scrollDown, delay);
+          }
+        };
+  
+        scrollDown();
+      });
+    });
+  
+    // Define the timeout promise
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Scroll operation timed out')), TIMEOUT_MS)
+    );
+  
+    // Race the scrolling operation against the timeout
     try {
-        const page = await browser.newPage();
-
-        // Navigate to the Wikipedia Main Page
-        await page.goto('https://en.wikipedia.org/wiki/Main_Page');
-
-        // Define the target outerHTML you are looking for
-        const targetOuterHTML = '<input type="checkbox" id="vector-main-menu-dropdown-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-main-menu-dropdown" class="vector-dropdown-checkbox" aria-label="Main menu">';
-        const targetValues = parseOuterHTMLAttributes(targetOuterHTML);
-
-        // Wait for the element to appear on the page
-        await page.waitForSelector('input[type="checkbox"]');
-
-        // Get all input elements of type checkbox on the page
-        const checkboxes = await page.$$('input[type="checkbox"]');
-
-        let elementToClick = null;
-
-        // Iterate through each checkbox and compare outerHTML
-        for (let checkbox of checkboxes) {
-            const outerHTML = await page.evaluate(el => el.outerHTML, checkbox);
-            const testValues = parseOuterHTMLAttributes(outerHTML);
-            // Compare outerHTML
-            if (compareAttributeObjects(targetValues, testValues)){
-                elementToClick = checkbox;
-                break;
-            }
-
-        }
-
-        // If elementToClick is found, click on it
-        if (elementToClick) {
-            await elementToClick.click();
-            console.log('Clicked on the checkbox');
-        } else {
-            console.log('Checkbox element not found');
-        }
+      await Promise.race([scrollOperation, timeoutPromise]);
+      console.log('Scrolling completed successfully.');
     } catch (error) {
-        console.error('Error:', error);
-    } finally {
-        // Close the browser
-        await browser.close();
+      console.error(error.message);
+      // Handle timeout case or perform other actions
+      console.log('Handling timeout case...');
     }
-})();
+  
+    // Wait for 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  
+    // Scroll instantly to the top of the page
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+  };
