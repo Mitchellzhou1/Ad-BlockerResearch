@@ -40,6 +40,7 @@ class Driver{
     this.temp_result = ''                   // used to temporarily hold the result
     this.final_result = data_dict
     this.chosen_elms = []                   // used to store the pre-selected elems
+    this.cssSelector = '';                  // used throughout program to identify the element
 
     /* RITIK */ 
     this.options = ''
@@ -75,7 +76,7 @@ Driver.prototype.initialize = async function(url){
 Driver.prototype.reinitialize = async function(){
   await this.browser.close();
   await this.initialize(this.URL.full_address);
-}
+};
 
 Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
@@ -155,7 +156,7 @@ Driver.prototype.write_results = async function(){
   });
 };
 
-Driver.prototype.getCSSselector = async function(outerHTML) {
+Driver.prototype.getCSSselector = async function(outerHTML, set_field = true) {
   function escapeSpecialChars(str) {
     return str.replace(/([:.\[\],=@])/g, '\\$1');
     }
@@ -191,7 +192,15 @@ Driver.prototype.getCSSselector = async function(outerHTML) {
   }
   });
 
+  if (set_field) {
+    this.cssSelector = selector
+  }
   return selector;
+};
+
+Driver.prototype.current_url = async function(){
+  const currentUrl = await this.page.evaluate(() => window.location.href);
+  return currentUrl;
 };
 
 Driver.prototype.checkCursorStyle = async function(cssSelector) {
@@ -524,7 +533,7 @@ Driver.prototype.replay_initialize = async function(){
 Driver.prototype.test_all_elements = async function(){
   this.final_result[this.URL.full_address] = new Array();
   while (this.elem_indx < this.chosen_elms.length){
-    this.reset_result();                // reset the result between elements
+    this.reset_result();                      // reset the result between elements
     await this.test_element();
     await this.goto(this.URL.full_address);   // resets the page by refreshing it
     this.elem_indx += 1;
@@ -533,33 +542,28 @@ Driver.prototype.test_all_elements = async function(){
 
 Driver.prototype.test_element = async function(){
   for (let i = 0; i < this.tries; i++){
-    let cssSelector;
     try{
       try{
         this.RESULT.initial_outer_html = this.chosen_elms[this.elem_indx];
-        cssSelector = await this.getCSSselector(this.RESULT.initial_outer_html);
+        this.getCSSselector(this.RESULT.initial_outer_html);
       }
       catch(error){
         console.log(`Error while loading outerHTML for ${this.URL.full_address}`, error.toString().split('\n')[0]);
         return;
       }
 
-      let element = await this.get_element(cssSelector);
+      let element = await this.get_element(this.cssSelector);
       if (!element)
         return;
 
-      const { original_element, outerHTML } = await this.get_local_DOM(element);
-      element = original_element;
-      this.RESULT.initial_local_DOM = outerHTML;
+      this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
       
       if (this.html_elem == "inputs"){
         this.RESULT.initial_manual = await this.page.content();
         await this.find_and_submit_forms(element);
       }
       else{
-        const { original_element, outerHTML } = await this.get_local_DOM(element, 13);
-        element = original_element;
-        this.RESULT.initial_manual = outerHTML;
+        this.RESULT.initial_manual = await this.get_local_DOM(element, 13);
         await this.click(element, 5);
         await this.check_opened(element);
       }
@@ -583,6 +587,18 @@ Driver.prototype.test_element = async function(){
 
 Driver.prototype.find_and_submit_forms = async function(formElem) {
   if (!formElem) return;
+
+  // let final_elem, final_css;
+  // try{
+  //   let parent_outerHTML = await this.get_local_DOM(formElem, 2);
+  //   final_css = await this.getCSSselector(parent_outerHTML, false);
+  //   final_elem = await this.get_element(final_css, parent_outerHTML);
+  // }
+  // catch(error){
+  //   final_elem = formElem;
+  //   final_css = this.cssSelector;
+  // }
+
 
   // Define values to type into inputs
   const textValue = 'textvalue123';
@@ -621,41 +637,42 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
     await typeIntoInput(input, numberValue, flag);
   }
 
-  const input_flag = flag.value;
+  if (flag.value) {
+  const submission_stat = await this.page.evaluate((selector) => {
+    const form = document.querySelector(selector);
 
-  if (input_flag) {
-    const {original_element, parent} = await this.get_parent(formElem, 2);
-    formElem = original_element;
-    const outerHTML = await this.page.evaluate(el => el.outerHTML, parent);
-    console.log(outerHTML);
-
-    const submission_stat =  await this.page.evaluate((formElem) => {
-      const form = document.querySelector(formElem);
-
-      if (form) {
-        const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
-        try{
-          if (submitButton) {
-            submitButton.click(); // Trigger the submit button click
-          } else {
-            form.submit(); // If no submit button found, try submitting the form directly
-          }
-          return true;
-        } catch(error){
-          return false;
+    if (form) {
+      const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
+      try {
+        if (submitButton) {
+          submitButton.click(); // Trigger the submit button click
+        } else {
+          form.submit(); // If no submit button found, try submitting the form directly
         }
+        return true;
+      } 
+      
+      catch (error) {
+        console.log(error);
+        return false;
       }
-    }, formElem);
 
-    if (!submission_stat) {
-      await this.page.keyboard.press('Enter');
     }
-    await this.check_opened(formElem);
+    return false;
+  }, this.cssSelector);
+
+  if (!submission_stat) {
+    await this.page.keyboard.press('Enter');
   }
+
+  await this.check_opened(formElem);
+  } 
+  
   else {
     this.temp_result = 'False';
   }
 };
+
 
 Driver.prototype.reset_result = function(){
   this.temp_result = '';
@@ -680,9 +697,7 @@ Driver.prototype.check_opened = async function(element){
     return;
   }
   try{
-    const { original_element, outerHTML } = await this.get_local_DOM(element);
-    element = original_element;
-    this.RESULT.after_outer_html = outerHTML;
+    this.RESULT.after_outer_html = await this.get_local_DOM(element);
   }
   catch(error){
     if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
@@ -693,9 +708,7 @@ Driver.prototype.check_opened = async function(element){
   }
 
   this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
-  const { original_element, outerHTML } = await this.get_local_DOM(element, 13);
-  element = original_element;
-  this.RESULT.after_local_DOM = outerHTML;
+  this.RESULT.after_local_DOM = await this.get_local_DOM(element, 13);
 
   this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
   this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
@@ -715,17 +728,21 @@ Driver.prototype.click = async function(element, time = 3){
   await sleep(time);
 };
 
-Driver.prototype.get_element = async function(selector){
+// Driver.prototype.check_if_same = async function(selector, elem1, elem2){
+//   // Need to Do
+// };
 
-  const targetVal = this.parseOuterHTMLAttributes(this.RESULT.initial_outer_html);
+Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.initial_outer_html){
+
+  const targetVal = this.parseOuterHTMLAttributes(outerHTML);
   await this.page.waitForSelector(selector);
   const candidates = await this.page.$$(selector);
 
   let element = null;
 
   for (let candidate of candidates) {
-    const outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
-    const candidateVal = this.parseOuterHTMLAttributes(outerHTML);
+    const candidate_outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
+    const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
     // Compare outerHTML
     if (this.compareAttributeObjects(targetVal, candidateVal)){
       element = candidate;
@@ -737,15 +754,21 @@ Driver.prototype.get_element = async function(selector){
 };
 
 Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
-  let original_element = await this.page.evaluateHandle(el => el.cloneNode(true), element);
-  let ancestor = element;
+  
+  let ancestor = await this.get_element(this.cssSelector);
+  // while (!this.check_if_same(selector, clone, element)){
+
+  // }
+
   let parentHandle;
+  var check1 = await this.page.evaluate(el => el.outerHTML, element);
+  var check2 = await this.page.evaluate(el => el.outerHTML, ancestor);
 
   for (let i = 0; i < traversal_amt; i++) {
     try {
       parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
-      // const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
-      // console.log(html.split(">")[0]);
+      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
+      console.log(html.split(">")[0]);
       if (i > 0) await ancestor.dispose();
       ancestor = parentHandle;
     } catch (error) {
@@ -753,14 +776,14 @@ Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_t
       break;
     }
   }
-  return { original_element, ancestor };
+  return ancestor;
 };
 
 Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt) {
-  const { original_element, ancestor } = await this.get_parent(element, traversal_amt);
+  const ancestor = await this.get_parent(element, traversal_amt);
   const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
   await ancestor.dispose();
-  return { original_element, outerHTML };
+  return outerHTML;
 };
 
 Driver.prototype.get_total_tags = async function(){
