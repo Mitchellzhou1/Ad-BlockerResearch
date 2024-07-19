@@ -584,35 +584,44 @@ Driver.prototype.test_element = async function(){
 Driver.prototype.find_and_submit_forms = async function(formElem) {
   if (!formElem) return;
 
-  // Use `evaluate` to work with the browser context
-  const input_flag = await this.page.evaluate(() => {
+  // Define values to type into inputs
+  const textValue = 'textvalue123';
+  const emailValue = 'test@gmail.com';
+  const numberValue = '1234567890';
+  const flag = { value: false };
 
-    let flag = false;
-    const textValue = 'textvalue123';
-    const emailValue = 'test@gmail.com';
-    const numberValue = '1234567890';
+  // Get the form inputs within formElem
+  const textInputs = await formElem.$$('input[type="text"], input[type="search"], input[type="password"], textarea');
+  const emailInputs = await formElem.$$('input[type="email"]');
+  const numberInputs = await formElem.$$('input[type="tel"]');
 
-    const textInputs = document.querySelectorAll('input[type="text"], input[type="search"], input[type="password"], textarea');
-    const emailInputs = document.querySelectorAll('input[type="email"]');
-    const numberInputs = document.querySelectorAll('input[type="tel"]');
+  const typeIntoInput = async (input, value, flag) => {
+    await input.focus();
+    try {
+      await input.click({ clickCount: 3 });
+    } catch (error) {
+      // This is not that bad. Just needs to be able to enter the values
+    }
+    try {
+      await input.type(value);
+      flag.value = true;
+    } catch (error) {
+      // If it cannot, we just move on. Not all textboxes are required (usually)
+    }
+  };
 
-    textInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = textValue; // Set the value
-      flag = true;
-    });
-    emailInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = emailValue; // Set the value
-      flag = true;
-    });
-    numberInputs.forEach(input => {
-      input.focus(); // Focus on the input
-      input.value = numberValue; // Set the value
-      flag = true;
-    });
-    return flag;
-  });
+  // Type values into the respective inputs
+  for (const input of textInputs) {
+    await typeIntoInput(input, textValue, flag);
+  }
+  for (const input of emailInputs) {
+    await typeIntoInput(input, emailValue, flag);
+  }
+  for (const input of numberInputs) {
+    await typeIntoInput(input, numberValue, flag);
+  }
+
+  const input_flag = flag.value;
 
   if (input_flag) {
     const {original_element, parent} = await this.get_parent(formElem, 2);
@@ -735,8 +744,8 @@ Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_t
   for (let i = 0; i < traversal_amt; i++) {
     try {
       parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
-      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
-      console.log(html.split(">")[0]);
+      // const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
+      // console.log(html.split(">")[0]);
       if (i > 0) await ancestor.dispose();
       ancestor = parentHandle;
     } catch (error) {
@@ -751,12 +760,8 @@ Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DO
   const { original_element, ancestor } = await this.get_parent(element, traversal_amt);
   const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
   await ancestor.dispose();
-
-  const testing = await this.page.evaluate(el => el.outerHTML, original_element);
-  console.log(testing);
   return { original_element, outerHTML };
 };
-
 
 Driver.prototype.get_total_tags = async function(){
   const totalTags = await this.page.evaluate(() => {
