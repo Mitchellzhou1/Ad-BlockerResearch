@@ -558,8 +558,8 @@ Driver.prototype.test_element = async function(){
       else{
         element, this.RESULT.initial_manual = await this.get_local_DOM(element, 13);
         await this.click(element, 5);
+        await this.check_opened(element);
       }
-      await this.check_opened(element);
       console.log(this.temp_result);
 
       return;
@@ -578,9 +578,75 @@ Driver.prototype.test_element = async function(){
 
 };
 
-Driver.prototype.find_and_sumbit_forms = async function(){
+Driver.prototype.find_and_submit_forms = async function(formElem) {
+  if (!formElem) return;
+
+  // Use `evaluate` to work with the browser context
+  const inputFlag = await this.page.evaluate((formElem) => {
+    let flag = false;
+    const textValue = 'textvalue123';
+    const emailValue = 'test@gmail.com';
+    const numberValue = '1234567890';
+
+    const form = document.querySelector(formElem); // Use the formElem selector to find the form
+    if (!form) return flag; // Return false if the form is not found
+
+    const textInputs = form.querySelectorAll('input[type="text"], input[type="search"], input[type="password"], textarea');
+    const emailInputs = form.querySelectorAll('input[type="email"]');
+    const numberInputs = form.querySelectorAll('input[type="tel"], input[type="number"]');
+
+    textInputs.forEach(input => {
+      input.focus();
+      input.value = textValue; 
+      flag = true;
+    });
+    emailInputs.forEach(input => {
+      input.focus();
+      input.value = emailValue;
+      flag = true;
+    });
+    numberInputs.forEach(input => {
+      input.focus(); 
+      input.value = numberValue;
+      flag = true;
+    });
+
+    return flag; // Return the flag indicating if any inputs were modified
+  }, formElem);
+
+  if (inputFlag) {
+    const submission_stat =  await this.page.evaluate((formElem) => {
+      const form = document.querySelector(formElem);
+      if (form) {
+        const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
+        try{
+          if (submitButton) {
+            submitButton.click(); // Trigger the submit button click
+          } else {
+            form.submit(); // If no submit button found, try submitting the form directly
+          }
+          return true;
+        } catch(error){
+          return false;
+        }
+      }
+    }, formElem);
+
+    if (!submission_stat) {
+      await this.page.keyboard.press('Enter');
+    }
+    await this.check_opened(formElem);
+  }
+  else {
+    this.temp_result = 'False';
+  }
+};
+
+
+Driver.prototype.sumbit_form = async function(){
 
 };
+
 
 Driver.prototype.reset_result = function(){
   this.temp_result = '';

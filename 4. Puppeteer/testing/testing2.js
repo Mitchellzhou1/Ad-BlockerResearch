@@ -1,48 +1,80 @@
-Driver.prototype.scroll_to_bottom = async function() {
-    // Define a timeout period in milliseconds
-    const TIMEOUT_MS = 10000; // 10 seconds
-  
-    // Define the scrolling operation
-    const scrollOperation = this.page.evaluate(async () => {
-      await new Promise((resolve) => {
-        const distance = 100; // Scroll distance
-        const delay = 300;    // Delay between scrolls
-  
-        const scrollDown = () => {
-          const totalHeight = document.body.scrollHeight;
-          const currentPosition = window.scrollY + window.innerHeight;
-  
-          window.scrollBy(0, distance);
-  
-          if (currentPosition >= totalHeight) {
-            resolve();
-          } else {
-            setTimeout(scrollDown, delay);
-          }
-        };
-  
-        scrollDown();
-      });
-    });
-  
-    // Define the timeout promise
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Scroll operation timed out')), TIMEOUT_MS)
-    );
-  
-    // Race the scrolling operation against the timeout
-    try {
-      await Promise.race([scrollOperation, timeoutPromise]);
-      console.log('Scrolling completed successfully.');
-    } catch (error) {
-      console.error(error.message);
-      // Handle timeout case or perform other actions
-      console.log('Handling timeout case...');
-    }
-  
-    // Wait for 2 seconds
-    await new Promise(resolve => setTimeout(resolve, 2000));
-  
-    // Scroll instantly to the top of the page
-    await this.page.evaluate(() => window.scrollTo(0, 0));
-  };
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+
+  // Navigate to the target page
+  await page.goto('https://duckduckgo.com/'); // Update with your URL
+  console.log('Navigated to the page');
+
+  // Wait for the form element to be available
+  await page.waitForSelector('form');
+  console.log('Form element is available');
+
+  // Handle text inputs individually
+  const textInputs = await page.evaluate(() => {
+    const elements = document.querySelectorAll('input[type="text"]');
+    console.log('Text Inputs found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Handle search inputs individually
+  const searchInputs = await page.evaluate(() => {
+    const elements = document.querySelectorAll('input[type="search"]');
+    console.log('Search Inputs found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Handle password inputs individually
+  const passwordInputs = await page.evaluate(() => {
+    const elements = document.querySelectorAll('input[type="password"]');
+    console.log('Password Inputs found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Handle textareas individually
+  const textareas = await page.evaluate(() => {
+    const elements = document.querySelectorAll('textarea');
+    console.log('Textareas found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Handle email inputs individually
+  const emailInputs = await page.evaluate(() => {
+    const elements = document.querySelectorAll('input[type="email"]');
+    console.log('Email Inputs found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Handle number inputs individually
+  const numberInputs = await page.evaluate(() => {
+    const elements = document.querySelectorAll('input[type="tel"]');
+    console.log('Number Inputs found:', elements.length);
+    return Array.from(elements).map(element => element.outerHTML); // Return HTML strings for easier debugging
+  });
+
+  // Log the results outside of page.evaluate
+  console.log('Text Inputs:', textInputs);
+  console.log('Search Inputs:', searchInputs);
+  console.log('Password Inputs:', passwordInputs);
+  console.log('Textareas:', textareas);
+  console.log('Email Inputs:', emailInputs);
+  console.log('Number Inputs:', numberInputs);
+
+  // Optionally, set values for the inputs if found
+  await page.evaluate(() => {
+    document.querySelectorAll('input[type="text"]').forEach(input => input.value = 'SampleText');
+    document.querySelectorAll('input[type="search"]').forEach(input => input.value = 'SampleSearch');
+    document.querySelectorAll('input[type="password"]').forEach(input => input.value = 'SamplePassword');
+    document.querySelectorAll('textarea').forEach(textarea => textarea.value = 'SampleTextarea');
+    document.querySelectorAll('input[type="email"]').forEach(input => input.value = 'sample@example.com');
+    document.querySelectorAll('input[type="tel"]').forEach(input => input.value = '1234567890');
+  });
+
+  // Optionally, submit the form
+  await page.click('button[type="submit"]'); // Adjust the selector as needed
+  await page.waitForNavigation();
+
+  await browser.close();
+})();
