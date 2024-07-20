@@ -49,6 +49,14 @@ class Driver{
 
 }
 
+/*
+
+  General Helper Functions
+
+*/
+
+
+
 Driver.prototype.initialize = async function(url){
   const browser = await puppeteer.launch({
     headless: false,
@@ -81,8 +89,8 @@ Driver.prototype.reinitialize = async function(){
 Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
   await this.scroll_to_bottom();
-  this.URL.current_url = this.page.url();
-  await this.page.screenshot({ path: 'screenshot.png' });
+  this.URL.current_url = await this.current_url()
+  // await this.page.screenshot({ path: 'screenshot.png' });
 };
 
 Driver.prototype.scroll_to_bottom = async function() {
@@ -132,6 +140,38 @@ Driver.prototype.scroll_to_bottom = async function() {
   await this.page.evaluate(() => window.scrollTo(0, 0));
 };
 
+Driver.prototype.current_url = async function(){
+  const currentUrl = await this.page.evaluate(() => window.location.href);
+  return currentUrl;
+};
+
+Driver.prototype.checkCursorStyle = async function(cssSelector) {
+  try {
+      await this.page.waitForSelector(cssSelector);
+      const element = await this.page.$(cssSelector);
+      await element.hover();
+      // await sleep(1);
+
+      // Evaluate the cursor style
+      const cursorStyle = await this.page.evaluate((selector, elem) => {
+          const element = document.querySelector(selector);
+          return window.getComputedStyle(elem).cursor;
+      }, cssSelector, element);
+      return cursorStyle;
+  } catch (error) {
+    return '';
+  }
+};
+
+Driver.prototype.filter = async function(cssSelector) {
+  if (this.html_elem == 'inputs') 
+    return true;
+  const cursor = await this.checkCursorStyle(cssSelector);
+  if (cursor && cursor != 'default') 
+    return true;
+  return false;
+};
+
 Driver.prototype.write_results = async function(){
   const data = {};
   let folder;
@@ -155,6 +195,12 @@ Driver.prototype.write_results = async function(){
     console.log('Data has been written to', filePath);
   });
 };
+
+/*
+
+  Methods for Finding and Identifying Elements
+
+*/
 
 Driver.prototype.getCSSselector = async function(outerHTML, set_field = true) {
   function escapeSpecialChars(str) {
@@ -198,37 +244,223 @@ Driver.prototype.getCSSselector = async function(outerHTML, set_field = true) {
   return selector;
 };
 
-Driver.prototype.current_url = async function(){
-  const currentUrl = await this.page.evaluate(() => window.location.href);
-  return currentUrl;
-};
+Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.initial_outer_html){
 
-Driver.prototype.checkCursorStyle = async function(cssSelector) {
-  try {
-      await this.page.waitForSelector(cssSelector);
-      const element = await this.page.$(cssSelector);
-      await element.hover();
-      // await sleep(1);
 
-      // Evaluate the cursor style
-      const cursorStyle = await this.page.evaluate((selector, elem) => {
-          const element = document.querySelector(selector);
-          return window.getComputedStyle(elem).cursor;
-      }, cssSelector, element);
-      return cursorStyle;
-  } catch (error) {
-    return '';
+  function rejoinSelector(baseSelector, contents) {
+      // Remove all square bracket contents from the base selector
+      let baseWithoutBrackets = baseSelector.replace(/\[[^\]]+\]/g, '');
+      
+      // Append the remaining contents back to the base selector
+      contents.forEach(content => {
+          baseWithoutBrackets += `[${content}]`;
+      });
+
+      return baseWithoutBrackets;
   }
+
+  function removeLongestElement(contents) {
+    let longestIndex = -1;
+    let maxLength = 0;
+
+    // Find the index of the longest element if it is not aria-label
+    for (let i = 0; i < contents.length; i++) {
+        if (contents[i].startsWith('aria-label')) continue;
+        if (contents[i].length > maxLength) {
+            maxLength = contents[i].length;
+            longestIndex = i;
+        }
+    }
+
+    // Remove the longest element if found
+    if (longestIndex !== -1) {
+        contents.splice(longestIndex, 1);
+    }
+
+    return contents;
+  }
+
+  function parseSelector(selector) {
+    // Regular expression to match the contents inside square brackets
+    const bracketContentRegex = /\[([^\]]+)\]/g;
+    let matches;
+    const contents = [];
+
+    // Use a while loop to find all matches
+    while ((matches = bracketContentRegex.exec(selector)) !== null) {
+        contents.push(matches[1]);
+    }
+
+    return contents;
+  }
+
+  let element = null;
+  const targetVal = this.parseOuterHTMLAttributes(outerHTML);
+  for(let i = 0; i < 3; i++){
+    try{
+      await this.page.waitForSelector(selector);
+      const candidates = await this.page.$$(selector);
+      if (candidates.length === 1){
+        element = candidates[0];
+        break;
+      }
+      else if (candidates.length > 1){
+        for (let candidate of candidates) {
+          const candidate_outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
+          const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
+          // Compare outerHTML
+          if (this.compareAttributeObjects(targetVal, candidateVal)){
+            element = candidate;
+            break;
+          }
+        }
+      }
+      else {  // the selector may be too specific
+        let parsedContent = parseSelector(selector)
+        let updateContents = removeLongestElement(parsedContent)
+        selector = rejoinSelector(selector, updateContents)
+      }
+
+    }
+    catch(error){
+      return null;
+    }
+  }
+  return element;
 };
 
-Driver.prototype.filter = async function(cssSelector) {
-  if (this.html_elem == 'inputs') 
-    return true;
-  const cursor = await this.checkCursorStyle(cssSelector);
-  if (cursor && cursor != 'default') 
-    return true;
-  return false;
+Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
+  
+  let ancestor = await this.get_element(this.cssSelector);
+  // while (!this.check_if_same(selector, clone, element)){
+
+  // }
+
+  let parentHandle;
+  var check1 = await this.page.evaluate(el => el.outerHTML, element);
+  var check2 = await this.page.evaluate(el => el.outerHTML, ancestor);
+
+  for (let i = 0; i < traversal_amt; i++) {
+    try {
+      parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
+      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
+      console.log(html.split(">")[0]);
+      if (i > 0) await ancestor.dispose();
+      ancestor = parentHandle;
+    } catch (error) {
+      if (parentHandle) await parentHandle.dispose();
+      break;
+    }
+  }
+  return ancestor;
 };
+
+Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt) {
+  const ancestor = await this.get_parent(element, traversal_amt);
+  const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
+  await ancestor.dispose();
+  return outerHTML;
+};
+
+Driver.prototype.parseOuterHTMLAttributes = function(outerHTML) {
+  const tagRegex = /^<(\w+)\s+/; // Regex to match the tag name
+  const attributeRegex = /(\w+)\s*=\s*["']([^"']*)["']/g; // Regex to match attributes and their values
+  const attributes = {}; // Dictionary to store attribute key-value pairs
+
+  // Extract tag name
+  const tagMatch = outerHTML.match(tagRegex);
+  if (tagMatch) {
+      attributes['tag'] = tagMatch[1].trim(); // Store the tag name (trimmed)
+  }
+
+  // Extract attributes
+  let match;
+  while ((match = attributeRegex.exec(outerHTML)) !== null) {
+      const attributeName = match[1].trim(); // Attribute name (trimmed)
+      const attributeValue = match[2].trim(); // Attribute value (trimmed)
+      attributes[attributeName] = attributeValue;
+  }
+
+  return attributes;
+};
+
+Driver.prototype.compareAttributeObjects = function(obj1, obj2) {
+  // Need to remove longest in case
+  if (!obj1 || !obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
+      return false;
+  }
+  for (let key in obj1) {
+      if (!(key in obj2) || obj1[key] !== obj2[key]) {
+          return false;
+      }
+  }
+  for (let key in obj2) {
+      if (!(key in obj1)) {
+          return false;
+      }
+  }
+  return true;
+};
+
+
+/*
+
+  Methods for getting collecting results
+
+*/
+
+Driver.prototype.reset_result = function(){
+  this.temp_result = '';
+  this.RESULT.reset();
+};
+
+Driver.prototype.check_redirect = async function(){
+  try {
+    const parsedUrl1 = new URL(this.URL.current_url);
+    const current_url = await this.current_url();
+    const parsedUrl2 = new URL(current_url);
+
+    return parsedUrl1.href !== parsedUrl2.href;
+  } catch (e) {
+    if (e.message.includes('Execution context was destroyed')) {
+      return true;
+    }
+    return false;
+  }
+
+};
+
+Driver.prototype.check_opened = async function(element){
+  if (await this.check_redirect()){
+    this.temp_result = "True - Redirect";
+    return;
+  }
+  try{
+    this.RESULT.after_outer_html = await this.get_local_DOM(element);
+  }
+  catch(error){
+    if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
+      this.temp_result = "True - Stale Element";
+      console.log("Stale element error!");
+    }
+    return;
+  }
+
+  this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
+  this.RESULT.after_local_DOM = await this.get_local_DOM(element, 13);
+
+  this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
+  this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
+
+  
+  if (this.RESULT.outer_HTML_changed)
+    this.temp_result = "True - outerHTML change";
+  else if (this.RESULT.local_DOM_changed)
+    this.temp_result = "True? - Local DOM Change";
+  else
+    this.temp_result = "Check Filters";
+};
+
 
 /*
 
@@ -673,181 +905,114 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
   }
 };
 
-
-Driver.prototype.reset_result = function(){
-  this.temp_result = '';
-  this.RESULT.reset();
-};
-
-Driver.prototype.check_redirect = function(){
-  try {
-    const parsedUrl1 = new URL(this.URL.current_url);
-    const parsedUrl2 = new URL(this.page.url());
-
-    return parsedUrl1.href !== parsedUrl2.href;
-  } catch (e) {
-    return false;
-  }
-
-};
-
-Driver.prototype.check_opened = async function(element){
-  if (this.check_redirect()){
-    this.temp_result = "True - Redirect";
-    return;
-  }
-  try{
-    this.RESULT.after_outer_html = await this.get_local_DOM(element);
-  }
-  catch(error){
-    if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
-      this.temp_result = "True - Stale Element";
-      console.log("Stale element error!");
-    }
-    return;
-  }
-
-  this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
-  this.RESULT.after_local_DOM = await this.get_local_DOM(element, 13);
-
-  this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
-  this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
-
-  
-  if (this.RESULT.outer_HTML_changed)
-    this.temp_result = "True - outerHTML change";
-  else if (this.RESULT.local_DOM_changed)
-    this.temp_result = "True? - Local DOM Change";
-  else
-    this.temp_result = "Check Filters";
-};
-
 Driver.prototype.click = async function(element, time = 3){
   await sleep(time);
   await element.click();
   await sleep(time);
 };
 
-// Driver.prototype.check_if_same = async function(selector, elem1, elem2){
-//   // Need to Do
-// };
+/*
 
-Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.initial_outer_html){
+  Methods for Filter Functions (interacting with elements)
 
-  const targetVal = this.parseOuterHTMLAttributes(outerHTML);
-  await this.page.waitForSelector(selector);
-  const candidates = await this.page.$$(selector);
+*/
 
-  let element = null;
-
-  for (let candidate of candidates) {
-    const candidate_outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
-    const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
-    // Compare outerHTML
-    if (this.compareAttributeObjects(targetVal, candidateVal)){
-      element = candidate;
-      break;
+Driver.prototype.isSlideshow = function(html) {
+  html = html.toLowerCase();
+  const possible = ['active', 'aria-pressed="true"', 'aria-selected="true"'];
+  for (const attribute of possible) {
+    if (html.includes(attribute)) {
+      return null;
     }
   }
-
-  return element;
+  return false;
 };
 
-Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
+Driver.prototype.isRequired = function(html){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  if (doc.querySelector('input')) {
+    return true;
+  }
+
+  const keywords = ['aria-disabled="true"', ' disabled ', 'disabled=""'];
+  html = html.toLowerCase();
+
+  if (keywords.some(keyword => html.includes(keyword))) {
+    return true;
+  }
+  return false;
+};
+
+Driver.prototype.isRequired = function(html){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  const scrollLinks = Array.from(doc.querySelectorAll('a')).filter(a => a.getAttribute('href')?.startsWith('#') && a.getAttribute('href').length > 1);
+
+  if (scrollLinks.length > 0) {
+    return true;
+  }
+  const keywords = ['scrollintoview', 'scroll-down'];
+  html = html.toLowerCase();
+  if (keywords.some(keyword => html.includes(keyword))) {
+    return true;
+  }
+  return false;
+};
   
-  let ancestor = await this.get_element(this.cssSelector);
-  // while (!this.check_if_same(selector, clone, element)){
+Driver.prototype.isDownloadLink = function(html){
+  const fileExtensions = [
+    '.aac', '.aif', '.aifc', '.aiff', '.au', '.avi', '.bat', '.bin', '.bmp', '.bz2',
+    '.c', '.class', '.com', '.cpp', '.css', '.csv', '.dat', '.dmg', '.doc', '.docx',
+    '.dot', '.dotx', '.eps', '.exe', '.flac', '.flv', '.gif', '.gzip', '.h', '.htm',
+    '.html', '.ico', '.iso', '.java', '.jpeg', '.jpg', '.js', '.json', '.log', '.m4a',
+    '.m4v', '.mid', '.midi', '.mov', '.mp3', '.mp4', '.mpa', '.mpeg', '.mpg', '.odp',
+    '.ods', '.odt', '.ogg', '.otf', '.pdf', '.php', '.pl', '.png', '.ppt', '.pptx',
+    '.ps', '.psd', '.py', '.qt', '.rar', '.rb', '.rtf', '.s', '.sh', '.svg', '.swf',
+    '.tar', '.tar.gz', '.tex', '.tif', '.tiff', '.ttf', '.txt', '.wav', '.webm', '.wma',
+    '.wmv', '.woff', '.woff2', '.xls', '.xlsx', '.xml', '.yml', '.zip', '.apk'
+  ];
+  if (fileExtensions.some(ext => html.endsWith(ext))) {
+    return true;
+  }
+  const keywords = ['download', 'file'];
+  if (keywords.some(keyword => html.toLowerCase().includes(keyword))) {
+    return true;
+  }
+  return false;
+};
 
-  // }
-
-  let parentHandle;
-  var check1 = await this.page.evaluate(el => el.outerHTML, element);
-  var check2 = await this.page.evaluate(el => el.outerHTML, ancestor);
-
-  for (let i = 0; i < traversal_amt; i++) {
-    try {
-      parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
-      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
-      console.log(html.split(">")[0]);
-      if (i > 0) await ancestor.dispose();
-      ancestor = parentHandle;
-    } catch (error) {
-      if (parentHandle) await parentHandle.dispose();
-      break;
+Driver.prototype.isOpenApplication = function(html) {
+  const potential = ['mailto', 'tel', 'sms'];
+  html = html.toLowerCase();
+  for (const attribute of potential) {
+    if (html.includes(attribute)) {
+      return true;
     }
   }
-  return ancestor;
+  return false;
 };
 
-Driver.prototype.get_local_DOM = async function(element, traversal_amt = this.DOM_traversal_amt) {
-  const ancestor = await this.get_parent(element, traversal_amt);
-  const outerHTML = await this.page.evaluate(el => el.outerHTML, ancestor);
-  await ancestor.dispose();
-  return outerHTML;
-};
 
-Driver.prototype.get_total_tags = async function(){
-  const totalTags = await this.page.evaluate(() => {
-    return document.getElementsByTagName('*').length;
-  });
-  return totalTags;
-};
 
-Driver.prototype.parseOuterHTMLAttributes = function(outerHTML) {
-  const tagRegex = /^<(\w+)\s+/; // Regex to match the tag name
-  const attributeRegex = /(\w+)\s*=\s*["']([^"']*)["']/g; // Regex to match attributes and their values
-  const attributes = {}; // Dictionary to store attribute key-value pairs
-
-  // Extract tag name
-  const tagMatch = outerHTML.match(tagRegex);
-  if (tagMatch) {
-      attributes['tag'] = tagMatch[1].trim(); // Store the tag name (trimmed)
-  }
-
-  // Extract attributes
-  let match;
-  while ((match = attributeRegex.exec(outerHTML)) !== null) {
-      const attributeName = match[1].trim(); // Attribute name (trimmed)
-      const attributeValue = match[2].trim(); // Attribute value (trimmed)
-      attributes[attributeName] = attributeValue;
-  }
-
-  return attributes;
-};
-
-Driver.prototype.compareAttributeObjects = function(obj1, obj2) {
-  // Need to remove longest in case
-  if (!obj1 || !obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
-      return false;
-  }
-  for (let key in obj1) {
-      if (!(key in obj2) || obj1[key] !== obj2[key]) {
-          return false;
-      }
-  }
-  for (let key in obj2) {
-      if (!(key in obj1)) {
-          return false;
-      }
-  }
-  return true;
-};
 
 
 (async () => {
 
   const html_options = [
-    // 'drop_downs', 
-    // 'buttons', 
-    // 'links', 
-    // 'logins', 
+    'drop_downs', 
+    'buttons', 
+    'links', 
+    'logins', 
     'inputs'
   ];
   
   const links = [
-    // 'https://en.wikipedia.org/wiki/Main_Page',
+    'https://en.wikipedia.org/wiki/Main_Page',
     // 'https://openai.com/', 
-    'https://duckduckgo.com/', 
+    // 'https://duckduckgo.com/', 
     // 'https://brightspace.nyu.edu/d2l/home',
     // 'https://picoctf.org/',
     // 'https://portswigger.net/web-security/all-labs'
