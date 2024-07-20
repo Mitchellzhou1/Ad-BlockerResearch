@@ -131,9 +131,9 @@ Driver.prototype.scroll_to_bottom = async function() {
   } catch (error) {
     console.error(error.message);
     // Handle timeout case or perform other actions
-    await sleep(3);
-    await this.page.evaluate(() => window.scrollTo(0, 0));
-    return;
+    await sleep(1);
+    await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); // Scroll to bottom
+    await sleep(1);
   }
 
   await sleep(2);
@@ -980,7 +980,8 @@ Driver.prototype.isOpenApplication = function(html) {
 
   let ret = {}
 
-  const [,, site, html_option, extn, replay] = process.argv;
+  // const [,, site, html_option, extn, replay] = process.argv;
+  const [site, html_option, extn, replay] = ['https://portswigger.net/web-security/all-labs', 'links', 'control', '0']
   console.log(`Current process ID: ${process.pid}`);
   console.log(site, html_option, extn, replay)
 
@@ -998,6 +999,7 @@ Driver.prototype.isOpenApplication = function(html) {
   }
   await driver.browser.close();
 
-  process.send(ret);
+  // process.send(ret);
+  console.log(ret);
   console.log(`Finished -- ${html_option} ${extn} -- ${site}`);
 })();

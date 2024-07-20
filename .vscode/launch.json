@@ -9,8 +9,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/4. Puppeteer/crawler.js",
-            // "program": "${workspaceFolder}/4. Puppeteer/driver.mjs",
+            // "program": "${workspaceFolder}/4. Puppeteer/crawler.js",
+            "program": "${workspaceFolder}/4. Puppeteer/driver.mjs",
             "cwd": "${workspaceFolder}/4. Puppeteer"
         }
     ]
