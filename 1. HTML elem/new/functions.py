@@ -21,8 +21,6 @@ def cleanup_tmp():
     for file_path in files_to_delete:
         try:
             'I know this is really bad...'
-            # subprocess.run(["echo", "'mitch'", "|", "sudo", "rm", "-rf", file_path], check=True)
-
             #for debugging!!! don't want it to fill output:
             subprocess.run(["rm", "-rf", file_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 

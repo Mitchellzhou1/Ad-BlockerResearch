@@ -1,8 +1,0 @@
-{
-  "https://en.wikipedia.org/wiki/Main_Page": [
-    "<a data-mw=\"interface\" href=\"/w/index.php?title=Special:CreateAccount&amp;returnto=Main+Page\" title=\"You are encouraged to create an account and log in; however, it is not mandatory\" class=\"\"><span>Create account</span></a>",
-    "<a data-mw=\"interface\" href=\"/w/index.php?title=Special:UserLogin&amp;returnto=Main+Page\" title=\"You're encouraged to log in; however, it's not mandatory. [alt-shift-o]\" accesskey=\"o\" class=\"\"><span>Log in</span></a>",
-    "<a href=\"/w/index.php?title=Special:CreateAccount&amp;returnto=Main+Page\" title=\"You are encouraged to create an account and log in; however, it is not mandatory\"><span class=\"vector-icon mw-ui-icon-userAdd mw-ui-icon-wikimedia-userAdd\"></span> <span>Create account</span></a>",
-    "<a href=\"/w/index.php?title=Special:UserLogin&amp;returnto=Main+Page\" title=\"You're encouraged to log in; however, it's not mandatory. [alt-shift-o]\" accesskey=\"o\"><span class=\"vector-icon mw-ui-icon-logIn mw-ui-icon-wikimedia-logIn\"></span> <span>Log in</span></a>"
-  ]
-}

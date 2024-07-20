@@ -172,29 +172,6 @@ Driver.prototype.filter = async function(cssSelector) {
   return false;
 };
 
-Driver.prototype.write_results = async function(){
-  const data = {};
-  let folder;
-  if (this.replay === 0){
-    folder = 'replay_0';
-    data[this.URL.full_address] = this.chosen_elms;
-  }
-  else{
-    folder = 'replay_1';
-    data[this.URL.full_address] = this.results;
-  }
-
-  const jsonData = JSON.stringify(data, null, 2);
-  const filePath = `./Results/${folder}/${this.html_elem}_${this.adBlocker}.json`;
-
-  fs.writeFile(filePath, jsonData, 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing file:', err);
-      return;
-    }
-    console.log('Data has been written to', filePath);
-  });
-};
 
 /*
 
@@ -501,11 +478,11 @@ Driver.prototype.find_elems = async function() {
   }
 
   this.chosen_elms = Array.from(unique);
-  console.log('*'.repeat(100));
-  await this.write_results();
-  console.log(this.URL.full_address);
-  console.log(this.chosen_elms);
-  console.log('*'.repeat(100));
+  // console.log('*'.repeat(100));
+  // await this.write_results();
+  // console.log(this.URL.full_address);
+  // console.log(this.chosen_elms);
+  // console.log('*'.repeat(100));
 };
 
 Driver.prototype.specificElementFinder = async function(elems) {
@@ -1001,43 +978,26 @@ Driver.prototype.isOpenApplication = function(html) {
 
 (async () => {
 
-  const html_options = [
-    'drop_downs', 
-    'buttons', 
-    'links', 
-    'logins', 
-    'inputs'
-  ];
-  
-  const links = [
-    'https://en.wikipedia.org/wiki/Main_Page',
-    // 'https://openai.com/', 
-    // 'https://duckduckgo.com/', 
-    // 'https://brightspace.nyu.edu/d2l/home',
-    // 'https://picoctf.org/',
-    // 'https://portswigger.net/web-security/all-labs'
-  ];
-  for (let link of links){
-    for (let html_option of html_options){
-      const test = new Driver(html_option, 'control', 0, {});
-      // await test.initialize(link);
-      // await test.find_elems();
+  let ret = {}
 
+  const [,, site, html_option, extn, replay] = process.argv;
+  console.log(`Current process ID: ${process.pid}`);
+  console.log(site, html_option, extn, replay)
 
-      await test.initialize(link);
-      if (test.replay_initialize()){
-        console.log(test.chosen_elms.length)
-        await test.test_all_elements();
-      }
-      await test.browser.close();
+  const driver = new Driver(html_option, extn, replay, ret);
+  await driver.initialize(site);
+
+  if (replay === '0'){
+    await driver.find_elems();
+    ret[site] = driver.chosen_elms;
+  }
+  else {
+    if (driver.replay_initialize()){
+      await driver.test_all_elements();
     }
   }
+  await driver.browser.close();
 
-  // const test = new Driver('buttons', 'control', 0, {});
-  // await test.initialize('https://en.wikipedia.org/wiki/Main_Page');
-  // if (test.replay_initialize()){
-  //   console.log(test.chosen_elms.length)
-  //   await test.test_all_elements();
-  // }
-  console.log("FINISHED EVERYTHING");
+  process.send(ret);
+  console.log(`Finished -- ${html_option} ${extn} -- ${site}`);
 })();
