@@ -116,8 +116,8 @@ async function runInBatches(chunksList, html_option, extn, replay) {
 
 const html_options = [
   // 'drop_downs', 
-  'buttons', 
-  // 'links', 
+  // 'buttons', 
+  'links', 
   // 'logins', 
   // 'inputs'
 ];
@@ -128,13 +128,13 @@ const links = [
   // 'https://duckduckgo.com/', 
   // 'https://brightspace.nyu.edu/d2l/home',
   // 'https://picoctf.org/',
-  'https://drive.google.com/file/d/1cDIYE1CYtAo0NRXvb55K7QnydqJzh6VH/view'
+  'https://rufus.ie/en/'      // scroll down, download, redirect
 ];
 
 let extn_lst = [
-  'control', 
+  // 'control', 
   // 'adblock', 
-  // 'ublock', 
+  'ublock', 
   // 'privacy-badger'
 ];
 

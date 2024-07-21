@@ -289,15 +289,13 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
     return contents;
   }
 
-  let element = null;
   const targetVal = this.parseOuterHTMLAttributes(outerHTML);
   for(let i = 0; i < 3; i++){
     try{
       await this.page.waitForSelector(selector);
       const candidates = await this.page.$$(selector);
       if (candidates.length === 1){
-        element = candidates[0];
-        break;
+        return candidates[0];
       }
       else if (candidates.length > 1){
         for (let candidate of candidates) {
@@ -305,15 +303,15 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
           const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
           // Compare outerHTML
           if (this.compareAttributeObjects(targetVal, candidateVal)){
-            element = candidate;
-            break;
+            return candidate;
           }
         }
       }
       else {  // the selector may be too specific
-        let parsedContent = parseSelector(selector)
-        let updateContents = removeLongestElement(parsedContent)
-        selector = rejoinSelector(selector, updateContents)
+        let parsedContent = parseSelector(selector);
+        let updateContents = removeLongestElement(parsedContent);
+        selector = rejoinSelector(selector, updateContents);
+        continue;
       }
 
     }
@@ -321,7 +319,6 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
       return null;
     }
   }
-  return element;
 };
 
 Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
@@ -417,11 +414,13 @@ Driver.prototype.check_redirect = async function(){
     }
     else{
       const pages = await this.browser.pages();
-      if (pages.length > 1)
+      if (pages.length > 1){
         for (let i = 1; i < pages.length; i++) {
           await pages[i].close();
         }
         return true;
+      }
+      return false;
     }
   } catch (e) {
     if (e.message.includes('Execution context was destroyed')) {
@@ -740,7 +739,7 @@ Driver.prototype.find_forms = async function(){
 
 Driver.prototype.replay_initialize = async function(){
 
-  const filePath = `./Results/replay_0/${this.html_elem}_${this.adBlocker}.json`;
+  const filePath = `./Results/replay_0/${this.html_elem}_control.json`;
   try {
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf8');
@@ -787,9 +786,9 @@ Driver.prototype.test_element = async function(){
         return;
       }
 
-      let element = await this.get_element(this.cssSelector);
+      let element = await this.get_element(this.cssSelector, this.chosen_elms[this.elem_indx]);
       if (!element)
-        return;
+        continue;
 
       this.RESULT.initial_outer_html = await this.page.evaluate(el => el.outerHTML, element);
       this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
@@ -959,31 +958,33 @@ Driver.prototype.isSlideshow = function(html) {
 };
 
 Driver.prototype.isRequired = function(html){
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
 
-  if (doc.querySelector('input')) {
-    return true;
-  }
-
-  const keywords = ['aria-disabled="true"', ' disabled ', 'disabled=""'];
   html = html.toLowerCase();
-
-  if (keywords.some(keyword => html.includes(keyword))) {
-    return true;
+  const possible = ['aria-disabled="true"', ' disabled ', 'disabled=""'];
+  for (const attribute of possible) {
+    if (html.includes(attribute)) {
+      return true;
+    }
   }
   return false;
 };
 
 Driver.prototype.isRequired = function(html){
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+  
+  // Select all anchor tags
+  const anchorTags = document.querySelectorAll('a');
 
-  const scrollLinks = Array.from(doc.querySelectorAll('a')).filter(a => a.getAttribute('href')?.startsWith('#') && a.getAttribute('href').length > 1);
+  // Check if any anchor tag has href attribute set to '#'
+  let hasHashHref = false;
+  anchorTags.forEach(anchor => {
+    const href = anchor.getAttribute('href');
+    if (href === '#') {
+      return true;
+    }
+  });
 
-  if (scrollLinks.length > 0) {
-    return true;
-  }
   const keywords = ['scrollintoview', 'scroll-down'];
   html = html.toLowerCase();
   if (keywords.some(keyword => html.includes(keyword))) {
