@@ -3,8 +3,11 @@ import fs from 'fs';
 import { JSDOM } from 'jsdom';
 import { Result } from './result.mjs';
 import { Url } from './url.mjs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+// import {path} from 'path';
 
-
+let EXTENSION_NAME = ''; 
 
 async function sleep(ms) {
   const seconds = ms * 1000;
@@ -55,15 +58,30 @@ class Driver{
 
 */
 
-
-
 Driver.prototype.initialize = async function(url){
+
+  const __path = fileURLToPath(import.meta.url);
+
+  let args = ['--start-maximized'];
+  if (EXTENSION_NAME !== 'control') {
+    const extensionPath = `../../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
+    const absolutePath = resolve(__path, extensionPath);
+    args.push(`--disable-extensions-except=${absolutePath}`);
+    args.push(`--load-extension=${absolutePath}`);
+  }
   const browser = await puppeteer.launch({
     headless: false,
-    args: ['--start-maximized']
+    args: args
   });
 
+  if (EXTENSION_NAME !== 'control') 
+    await sleep(10);
   const pages = await browser.pages();
+  for (let i = 1; i < pages.length; i++) {
+    const title = await pages[i].title();
+    console.log(`Closing page: ${title}`);
+    await pages[i].close();
+  }
   const page = pages[0];
 
   const { width, height } = await page.evaluate(() => {
@@ -309,10 +327,6 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
 Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_traversal_amt) {
   
   let ancestor = await this.get_element(this.cssSelector);
-  // while (!this.check_if_same(selector, clone, element)){
-
-  // }
-
   let parentHandle;
   var check1 = await this.page.evaluate(el => el.outerHTML, element);
   var check2 = await this.page.evaluate(el => el.outerHTML, ancestor);
@@ -320,8 +334,9 @@ Driver.prototype.get_parent = async function(element, traversal_amt = this.DOM_t
   for (let i = 0; i < traversal_amt; i++) {
     try {
       parentHandle = await this.page.evaluateHandle(el => el.parentElement, ancestor);
-      const html = await this.page.evaluate(el => el.outerHTML, parentHandle); // This will crash if we are at the top
-      console.log(html.split(">")[0]);
+      var check1 = await this.page.evaluate(el => el.outerHTML, parentHandle);
+      var check2 = await this.page.evaluate(el => el.outerHTML, ancestor);      
+      // console.log(check1.split(">")[0]);
       if (i > 0) await ancestor.dispose();
       ancestor = parentHandle;
     } catch (error) {
@@ -397,7 +412,17 @@ Driver.prototype.check_redirect = async function(){
     const current_url = await this.current_url();
     const parsedUrl2 = new URL(current_url);
 
-    return parsedUrl1.href !== parsedUrl2.href;
+    if (parsedUrl1.href !== parsedUrl2.href){
+      return true;
+    }
+    else{
+      const pages = await this.browser.pages();
+      if (pages.length > 1)
+        for (let i = 1; i < pages.length; i++) {
+          await pages[i].close();
+        }
+        return true;
+    }
   } catch (e) {
     if (e.message.includes('Execution context was destroyed')) {
       return true;
@@ -413,7 +438,7 @@ Driver.prototype.check_opened = async function(element){
     return;
   }
   try{
-    this.RESULT.after_outer_html = await this.get_local_DOM(element);
+    await this.get_local_DOM(element);
   }
   catch(error){
     if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
@@ -424,11 +449,12 @@ Driver.prototype.check_opened = async function(element){
   }
 
   this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
-  this.RESULT.after_local_DOM = await this.get_local_DOM(element, 13);
+  this.RESULT.after_local_DOM = await this.get_local_DOM(element);
+  this.RESULT.after_manual = await this.get_local_DOM(element, 13);
 
   this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
   this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
-
+  this.RESULT.manual_change = this.RESULT.initial_manual != this.RESULT.after_manual;
   
   if (this.RESULT.outer_HTML_changed)
     this.temp_result = "True - outerHTML change";
@@ -744,7 +770,8 @@ Driver.prototype.test_all_elements = async function(){
   while (this.elem_indx < this.chosen_elms.length){
     this.reset_result();                      // reset the result between elements
     await this.test_element();
-    await this.goto(this.URL.full_address);   // resets the page by refreshing it
+    if (this.elem_indx != this.chosen_elms.length-1)
+      await this.goto(this.URL.full_address);   // resets the page by refreshing it
     this.elem_indx += 1;
   }
 };
@@ -753,8 +780,7 @@ Driver.prototype.test_element = async function(){
   for (let i = 0; i < this.tries; i++){
     try{
       try{
-        this.RESULT.initial_outer_html = this.chosen_elms[this.elem_indx];
-        this.getCSSselector(this.RESULT.initial_outer_html);
+        this.getCSSselector(this.chosen_elms[this.elem_indx]);
       }
       catch(error){
         console.log(`Error while loading outerHTML for ${this.URL.full_address}`, error.toString().split('\n')[0]);
@@ -765,6 +791,7 @@ Driver.prototype.test_element = async function(){
       if (!element)
         return;
 
+      this.RESULT.initial_outer_html = await this.page.evaluate(el => el.outerHTML, element);
       this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
       
       if (this.html_elem == "inputs"){
@@ -776,8 +803,34 @@ Driver.prototype.test_element = async function(){
         await this.click(element, 5);
         await this.check_opened(element);
       }
-      console.log(this.temp_result);
 
+      console.log(this.temp_result);
+      if (!this.temp_result.toLocaleLowerCase().includes('true')){    // if it is False check the filters
+        if (this.isSlideshow(this.RESULT.initial_outer_html)){
+          this.temp_result = 'True? - slideshow';
+        } else if (this.isRequired(this.RESULT.initial_outer_html)) {
+          this.temp_result = 'True? - input is required';
+        } else if (this.isScrollpage(this.RESULT.initial_outer_html)) {
+          this.temp_result = 'True? - page was scrolled';
+        } else if (this.isDownloadLink(this.RESULT.initial_outer_html)) {
+          this.temp_result = 'True? - download link';
+        } else if (this.isOpenApplication(this.RESULT.initial_outer_html)) {
+          this.temp_result = 'True? - opened application';
+        }
+        else{
+          if (this.temp_result === 'False') {
+            this.temp_result = 'False - double checked';
+          } else {
+            this.temp_result = 'False';
+            if (i !== this.tries - 1) {
+              this.reinitialize();
+              continue;
+            }
+          }
+        }
+      }
+      const data_format = [this.temp_result, this.RESULT.initial_outer_html, this.RESULT.outer_HTML_changed, this.RESULT.local_DOM_changed, this.RESULT.manual_change];
+      this.final_result[this.URL.full_address].push(data_format);
       return;
     }
     catch(error){
@@ -883,7 +936,7 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
 };
 
 Driver.prototype.click = async function(element, time = 3){
-  await sleep(time);
+  await sleep(2);
   await element.click();
   await sleep(time);
 };
@@ -896,10 +949,10 @@ Driver.prototype.click = async function(element, time = 3){
 
 Driver.prototype.isSlideshow = function(html) {
   html = html.toLowerCase();
-  const possible = ['active', 'aria-pressed="true"', 'aria-selected="true"'];
+  const possible = ['active', 'aria-pressed="true"', 'aria-selected="true"', 'aria-expanded="true"'];
   for (const attribute of possible) {
     if (html.includes(attribute)) {
-      return null;
+      return true;
     }
   }
   return false;
@@ -980,8 +1033,9 @@ Driver.prototype.isOpenApplication = function(html) {
 
   let ret = {}
 
-  // const [,, site, html_option, extn, replay] = process.argv;
-  const [site, html_option, extn, replay] = ['https://portswigger.net/web-security/all-labs', 'links', 'control', '0']
+  const [,, site, html_option, extn, replay] = process.argv;
+  EXTENSION_NAME = extn;
+  // const [site, html_option, extn, replay] = ['https://duckduckgo.com/', 'buttons', 'ublock', '1']
   console.log(`Current process ID: ${process.pid}`);
   console.log(site, html_option, extn, replay)
 
@@ -996,10 +1050,12 @@ Driver.prototype.isOpenApplication = function(html) {
     if (driver.replay_initialize()){
       await driver.test_all_elements();
     }
+    ret[site] = this.final_result;
   }
+  
   await driver.browser.close();
 
-  // process.send(ret);
+  process.send(ret);
   console.log(ret);
   console.log(`Finished -- ${html_option} ${extn} -- ${site}`);
 })();

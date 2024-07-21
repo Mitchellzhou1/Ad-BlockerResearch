@@ -115,32 +115,34 @@ async function runInBatches(chunksList, html_option, extn, replay) {
 
 
 const html_options = [
-  'drop_downs', 
+  // 'drop_downs', 
   'buttons', 
-  'links', 
-  'logins', 
-  'inputs'
+  // 'links', 
+  // 'logins', 
+  // 'inputs'
 ];
 
 const links = [
-  'https://en.wikipedia.org/wiki/Main_Page',
-  'https://openai.com/', 
-  'https://duckduckgo.com/', 
-  'https://brightspace.nyu.edu/d2l/home',
-  'https://picoctf.org/',
-  'https://portswigger.net/web-security/all-labs'
+  // 'https://en.wikipedia.org/wiki/Main_Page',
+  // 'https://openai.com/', 
+  // 'https://duckduckgo.com/', 
+  // 'https://brightspace.nyu.edu/d2l/home',
+  // 'https://picoctf.org/',
+  'https://drive.google.com/file/d/1cDIYE1CYtAo0NRXvb55K7QnydqJzh6VH/view'
 ];
 
-const extn_lst = [
+let extn_lst = [
   'control', 
-  'adblock', 
-  'ublock', 
-  'privacy-badger'
+  // 'adblock', 
+  // 'ublock', 
+  // 'privacy-badger'
 ];
 
 
 (async () => {
-  const replay = 0;
+  const replay = 1;
+  if (replay === 0)
+    extn_lst = ['control']
   const chunks = divideChunks(links, SIZE);
   for (let html_option of html_options) {
     for (let extn of extn_lst) {
