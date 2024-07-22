@@ -1,13 +1,5 @@
 {
-  "https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin": [
-    "<button class=\"mw-htmlform-submit cdx-button cdx-button--weight-primary cdx-button--action-progressive\" id=\"wpLoginAttempt\" type=\"submit\" name=\"wploginattempt\" value=\"Log in\" tabindex=\"6\">Log in</button>",
-    "<input type=\"checkbox\" id=\"vector-main-menu-dropdown-checkbox\" role=\"button\" aria-haspopup=\"true\" data-event-name=\"ui.dropdown-vector-main-menu-dropdown\" class=\"vector-dropdown-checkbox \" aria-label=\"Main menu\">",
-    "<input type=\"checkbox\" id=\"vector-user-links-dropdown-checkbox\" role=\"button\" aria-haspopup=\"true\" data-event-name=\"ui.dropdown-vector-user-links-dropdown\" class=\"vector-dropdown-checkbox \" aria-label=\"Personal tools\">",
-    "<input type=\"checkbox\" id=\"vector-page-tools-dropdown-checkbox\" role=\"button\" aria-haspopup=\"true\" data-event-name=\"ui.dropdown-vector-page-tools-dropdown\" class=\"vector-dropdown-checkbox \" aria-label=\"Tools\">",
-    "<button class=\"vector-pinnable-header-toggle-button vector-pinnable-header-pin-button\" data-event-name=\"pinnable-header.vector-main-menu.pin\">move to sidebar</button>",
-    "<button class=\"uls-settings-trigger\" title=\"Language settings\"></button>",
-    "<button class=\"cdx-button cdx-search-input__end-button\">Search</button>",
-    "<button class=\"vector-pinnable-header-toggle-button vector-pinnable-header-pin-button\" data-event-name=\"pinnable-header.vector-page-tools.pin\">move to sidebar</button>",
-    "<button class=\"vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button\" data-event-name=\"pinnable-header.vector-appearance.unpin\">hide</button>"
+  "https://canyoublockit.com/": [
+    "<a class=\"menu-link\">Advanced Test</a>"
   ]
 }

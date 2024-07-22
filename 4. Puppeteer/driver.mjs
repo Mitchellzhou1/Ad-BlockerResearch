@@ -108,7 +108,7 @@ Driver.prototype.goto = async function(url) {
   await this.page.goto(url);
   await this.scroll_to_bottom();
   this.URL.current_url = await this.current_url()
-  // await this.page.screenshot({ path: 'screenshot.png' });
+  await this.page.screenshot({ path: 'TESITNG AD BLOCKER.png' });
 };
 
 Driver.prototype.scroll_to_bottom = async function() {
@@ -1041,7 +1041,7 @@ Driver.prototype.isOpenApplication = function(html) {
     if (driver.replay_initialize()){
       await driver.test_all_elements();
     }
-    ret[site] = this.final_result;
+    ret[site] = driver.final_result;
   }
   
   await driver.browser.close();

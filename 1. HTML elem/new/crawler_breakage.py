@@ -19,6 +19,7 @@ def store_results(data):
         os.makedirs(folder)
     json.dump(data, open(f"{folder}/{args.html}_{extn}.json", 'w'))
 
+
 if __name__ == "__main__":
     # Parse the command line arguments
     parser = argparse.ArgumentParser()

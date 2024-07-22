@@ -130,7 +130,8 @@ const links = [
   // 'https://picoctf.org/',
   // 'https://rufus.ie/en/',      // scroll down, download, redirect
   // 'https://picoctf.org/contact.html'   // Is application open
-  'https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin'  //isRequired
+  // 'https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin'  //isRequired
+      'https://canyoublockit.com/'  // testing adblocker
 ];
 
 let extn_lst = [
