@@ -116,8 +116,8 @@ async function runInBatches(chunksList, html_option, extn, replay) {
 
 const html_options = [
   // 'drop_downs', 
-  // 'buttons', 
-  'links', 
+  'buttons', 
+  // 'links', 
   // 'logins', 
   // 'inputs'
 ];
@@ -128,7 +128,9 @@ const links = [
   // 'https://duckduckgo.com/', 
   // 'https://brightspace.nyu.edu/d2l/home',
   // 'https://picoctf.org/',
-  'https://rufus.ie/en/'      // scroll down, download, redirect
+  // 'https://rufus.ie/en/',      // scroll down, download, redirect
+  // 'https://picoctf.org/contact.html'   // Is application open
+  'https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin'  //isRequired
 ];
 
 let extn_lst = [

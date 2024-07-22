@@ -459,8 +459,10 @@ Driver.prototype.check_opened = async function(element){
     this.temp_result = "True - outerHTML change";
   else if (this.RESULT.local_DOM_changed)
     this.temp_result = "True? - Local DOM Change";
-  else
-    this.temp_result = "Check Filters";
+  else{
+    if (!this.temp_result)
+      this.temp_result = "Check Filters";
+  }
 };
 
 
@@ -748,7 +750,7 @@ Driver.prototype.replay_initialize = async function(){
         this.chosen_elms = jsonData[this.URL.full_address];
         return true;
       } else {
-        throw new Error(`site not found in json --- site:${this.URL.full_address}, extn:${this.adBlocker}, html: ${this.html}`);
+        throw new Error(`site not found in json --- site:${this.URL.full_address}, html: ${this.html}`);
       }
     } else {
       throw new Error("The control file was not found. Please run the replay 0 option.");
@@ -807,7 +809,7 @@ Driver.prototype.test_element = async function(){
       if (!this.temp_result.toLocaleLowerCase().includes('true')){    // if it is False check the filters
         if (this.isSlideshow(this.RESULT.initial_outer_html)){
           this.temp_result = 'True? - slideshow';
-        } else if (this.isRequired(this.RESULT.initial_outer_html)) {
+        } else if (this.isDisabled(this.RESULT.initial_outer_html)) {
           this.temp_result = 'True? - input is required';
         } else if (this.isScrollpage(this.RESULT.initial_outer_html)) {
           this.temp_result = 'True? - page was scrolled';
@@ -822,7 +824,7 @@ Driver.prototype.test_element = async function(){
           } else {
             this.temp_result = 'False';
             if (i !== this.tries - 1) {
-              this.reinitialize();
+              await this.reinitialize();
               continue;
             }
           }
@@ -848,18 +850,6 @@ Driver.prototype.test_element = async function(){
 
 Driver.prototype.find_and_submit_forms = async function(formElem) {
   if (!formElem) return;
-
-  // let final_elem, final_css;
-  // try{
-  //   let parent_outerHTML = await this.get_local_DOM(formElem, 2);
-  //   final_css = await this.getCSSselector(parent_outerHTML, false);
-  //   final_elem = await this.get_element(final_css, parent_outerHTML);
-  // }
-  // catch(error){
-  //   final_elem = formElem;
-  //   final_css = this.cssSelector;
-  // }
-
 
   // Define values to type into inputs
   const textValue = 'textvalue123';
@@ -957,7 +947,7 @@ Driver.prototype.isSlideshow = function(html) {
   return false;
 };
 
-Driver.prototype.isRequired = function(html){
+Driver.prototype.isDisabled = function(html){
 
   html = html.toLowerCase();
   const possible = ['aria-disabled="true"', ' disabled ', 'disabled=""'];
@@ -969,7 +959,7 @@ Driver.prototype.isRequired = function(html){
   return false;
 };
 
-Driver.prototype.isRequired = function(html){
+Driver.prototype.isScrollpage = function(html){
   const dom = new JSDOM(html);
   const document = dom.window.document;
   
