@@ -292,7 +292,7 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
   const targetVal = this.parseOuterHTMLAttributes(outerHTML);
   for(let i = 0; i < 3; i++){
     try{
-      await this.page.waitForSelector(selector);
+      await this.page.waitForSelector(selector, { timeout: 5000 });
       const candidates = await this.page.$$(selector);
       if (candidates.length === 1){
         return candidates[0];
@@ -316,7 +316,12 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
 
     }
     catch(error){
-      return null;
+      let parsedContent = parseSelector(selector);
+      removeLongestElement(parsedContent);
+      selector = rejoinSelector(selector, parsedContent);
+      this.cssSelector = selector;
+      continue;
+      // return null;
     }
   }
 };
@@ -1041,7 +1046,7 @@ Driver.prototype.isOpenApplication = function(html) {
     if (driver.replay_initialize()){
       await driver.test_all_elements();
     }
-    ret[site] = driver.final_result;
+    ret = driver.final_result;
   }
   
   await driver.browser.close();
