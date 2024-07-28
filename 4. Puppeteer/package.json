@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "jsdom": "^24.1.0",
-    "puppeteer": "^22.12.1",
-    "xpath": "^0.0.34"
-  }
-}
