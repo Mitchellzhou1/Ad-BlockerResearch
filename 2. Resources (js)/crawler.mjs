@@ -1,17 +1,87 @@
 import puppeteer from 'puppeteer';
+import { spawn, exec } from 'child_process';
+import path from 'path';
+import { startupSnapshot } from 'v8';
 
-const proxyPort = 8081; // Ensure this matches your BrowserMob Proxy port
-const proxyUrl = `http://localhost:${proxyPort}`;
 
-async function setupPuppeteerWithProxy(proxyUrl) {
+class Driver{
+  constructor(adB){
+    this.page;
+    this.browser;
+    this.server;
+
+    this.proxyPort = 8081; // Ensure this matches your BrowserMob Proxy port
+    this.proxyUrl = `http://localhost:${this.proxyPort}`;
+
+    this.extn = adB;
+    this.values = {};
+  }
+
+}
+
+
+Driver.prototype.start_server = async function() {
   try {
+    const command = path.resolve('/home/character/Desktop/Ad-BlockerResearch/browsermob-proxy/bin/browsermob-proxy');
+    const args = ['--port', '8080'];
+  
+    this.server = spawn(command, args, {
+      stdio: 'ignore'  // This will hide stdout and stderr
+    });
+  
+    this.server.on('error', (err) => {
+      console.error(`Failed to start server: ${err}`);
+    });
+  
+    console.log(`Server started with PID: ${this.server.pid}`);
+  } catch (error) {
+    console.error(`Error starting server: ${error.message}`);
+  }
+};
+
+Driver.prototype.stop_server = async function() {
+    exec('pkill -f browsermob');
+    console.log("closed proxy");
+};
+
+Driver.prototype.initialize = async function() {
+  try {
+    let args = ['--start-maximized'];
+    args.push(`--proxy-server=${proxyUrl}`);
+    if (EXTENSION_NAME !== 'control') {
+      const extensionPath = `../../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
+      const absolutePath = resolve(__path, extensionPath);
+      args.push(`--disable-extensions-except=${absolutePath}`);
+      args.push(`--load-extension=${absolutePath}`);
+    }
+
     const browser = await puppeteer.launch({
       headless: false,
-      args: [`--proxy-server=${proxyUrl}`],
+      args: args,
       ignoreHTTPSErrors: true // Ignore HTTPS errors
     });
 
-    const page = await browser.newPage();
+    if (EXTENSION_NAME !== 'control') 
+      await sleep(10);
+    const pages = await browser.pages();
+    for (let i = 1; i < pages.length; i++) {
+      const title = await pages[i].title();
+      console.log(`Closing page: ${title}`);
+      await pages[i].close();
+    }
+    const page = pages[0];
+  
+    const { width, height } = await page.evaluate(() => {
+      return {
+        width: window.outerWidth,
+        height: window.outerHeight
+      };
+    });
+  
+    await page.setViewport({ width, height });  
+    this.page = page;
+    this.browser = browser;
+
 
     page.on('request', request => {
       console.log('Request:', request.url(), request.method(), request.headers());
@@ -26,18 +96,24 @@ async function setupPuppeteerWithProxy(proxyUrl) {
       }
     });
 
-    await page.goto('https://google.com'); // Test a simple URL
-    await page.waitForTimeout(10000); // Adjust the time as needed
-    await browser.close();
+    this.page = page;
+    this.browser = browser;
+    this.start_server();
+
   } catch (error) {
     console.error('Error in script:', error.message);
   }
+
 }
 
+
+
+
 (async () => {
-  try {
-    await setupPuppeteerWithProxy(proxyUrl);
-  } catch (error) {
-    console.error('Error in script:', error.message);
-  }
+  const driver = new Driver();
+  await driver.start_server();
+
+  setTimeout(() => {
+    this.stop_server();
+  }, 10000);
 })();
