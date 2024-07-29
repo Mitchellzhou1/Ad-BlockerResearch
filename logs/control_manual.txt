@@ -1,0 +1,13 @@
+http://natuero-dougakan.com/blog-entry-2926.html
+SEVERE
+https://www.shisuh.com/djs/relatedPageFeed/ - Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR
+WARNING
+http://rcm.shinobi.jp/js/imp.js 6 A parser-blocking, cross site (i.e. different eTLD+1) script, http://asumi.shinobi.jp/assault?f=190, is invoked via document.write. The network request for this script MAY be blocked by the browser in this or a future page load due to poor network connectivity. If blocked in this page load, it will be confirmed in a subsequent console message. See https://www.chromestatus.com/feature/5718547946799104 for more details.
+WARNING
+http://asumi.shinobi.jp/assault?f=190 0 A parser-blocking, cross site (i.e. different eTLD+1) script, http://cnobi.jp/v1/asumi/arms/1.17.46, is invoked via document.write. The network request for this script MAY be blocked by the browser in this or a future page load due to poor network connectivity. If blocked in this page load, it will be confirmed in a subsequent console message. See https://www.chromestatus.com/feature/5718547946799104 for more details.
+WARNING
+http://asumi.shinobi.jp/assault?f=190 0 A parser-blocking, cross site (i.e. different eTLD+1) script, http://cnobi.jp/v1/asumi/arms/1.17.46, is invoked via document.write. The network request for this script MAY be blocked by the browser in this or a future page load due to poor network connectivity. If blocked in this page load, it will be confirmed in a subsequent console message. See https://www.chromestatus.com/feature/5718547946799104 for more details.
+WARNING
+http://asumi.shinobi.jp/assault?f=190 0 A parser-blocking, cross site (i.e. different eTLD+1) script, http://asumi.shinobi.jp/fire?f=190, is invoked via document.write. The network request for this script MAY be blocked by the browser in this or a future page load due to poor network connectivity. If blocked in this page load, it will be confirmed in a subsequent console message. See https://www.chromestatus.com/feature/5718547946799104 for more details.
+SEVERE
+http://natuero-dougakan.com/blog-entry-2926.html 0:0 Uncaught DOMException: Failed to load because no supported source was found.
