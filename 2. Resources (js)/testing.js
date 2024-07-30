@@ -3,6 +3,11 @@ import puppeteer from "puppeteer";
 const requests = [];
 const responses = [];
 
+async function sleep(ms) {
+    const seconds = ms * 1000;
+    return new Promise(resolve => setTimeout(resolve, seconds));
+  }
+
 async function setupPuppeteer() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -14,22 +19,12 @@ async function setupPuppeteer() {
       method: request.method(),
       headers: request.headers()
     };
-    requests.push(requestData);
+    requests.push(request.url());
   });
 
   // Capture response details
   page.on('response', async response => {
-    try {
-      const responseBody = await response.buffer();
-      const responseData = {
-        url: response.url(),
-        status: response.status(),
-        headers: response.headers()
-      };
-      responses.push(responseData);
-    } catch (error) {
-      console.error('Error handling response:', error.message);
-    }
+    responses.push(response.url());
   });
 
   return { browser, page };
@@ -38,6 +33,7 @@ async function setupPuppeteer() {
 async function navigateToWebsite(page, url) {
   await page.goto(url);
 
+    await sleep(5);
   // Wait for a specific element or a certain amount of time if needed
   // For example, wait for the page to fully load
 }
@@ -45,12 +41,19 @@ async function navigateToWebsite(page, url) {
 (async () => {
   const { browser, page } = await setupPuppeteer();
 
-  await navigateToWebsite(page, 'https://www.uxmatters.com/');
+  await navigateToWebsite(page, 'https://www.microsoft.com/store/cart?rtc=1');
 
-//   // Close the browser
-//   await browser.close();
+  console.log('All Requests:', requests.length);
+  console.log('All Responses:', responses.length);
 
-  // Access the captured requests and responses
-  console.log('All Requests:', requests);
-  console.log('All Responses:', responses);
+
+    // Elements in array1 but not in array2
+    const uniqueToArr1 = requests.filter(element => !responses.includes(element));
+
+    // Elements in array2 but not in array1
+    const uniqueToArr2 = responses.filter(element => !requests.includes(element));
+
+    console.log('Unique to array1:', uniqueToArr1); // Output: [1, 2, 3]
+    console.log('Unique to array2:', uniqueToArr2); // Output: [6, 7, 8]
+
 })();

@@ -1,8 +1,12 @@
 import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import path from 'path';
-import { startupSnapshot } from 'v8';
 
+
+async function sleep(ms) {
+  const seconds = ms * 1000;
+  return new Promise(resolve => setTimeout(resolve, seconds));
+}
 
 class Driver{
   constructor(adB){
@@ -10,44 +14,18 @@ class Driver{
     this.browser;
     this.server;
 
-    this.proxyPort = 8081; // Ensure this matches your BrowserMob Proxy port
-    this.proxyUrl = `http://localhost:${this.proxyPort}`;
-
     this.extn = adB;
     this.values = {};
+
+    this.requests = new Set();
+    this.responses = new Set();
   }
 
 }
 
-
-Driver.prototype.start_server = async function() {
-  try {
-    const command = path.resolve('/home/character/Desktop/Ad-BlockerResearch/browsermob-proxy/bin/browsermob-proxy');
-    const args = ['--port', '8080'];
-  
-    this.server = spawn(command, args, {
-      stdio: 'ignore'  // This will hide stdout and stderr
-    });
-  
-    this.server.on('error', (err) => {
-      console.error(`Failed to start server: ${err}`);
-    });
-  
-    console.log(`Server started with PID: ${this.server.pid}`);
-  } catch (error) {
-    console.error(`Error starting server: ${error.message}`);
-  }
-};
-
-Driver.prototype.stop_server = async function() {
-    exec('pkill -f browsermob');
-    console.log("closed proxy");
-};
-
 Driver.prototype.initialize = async function() {
   try {
     let args = ['--start-maximized'];
-    args.push(`--proxy-server=${proxyUrl}`);
     if (EXTENSION_NAME !== 'control') {
       const extensionPath = `../../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
       const absolutePath = resolve(__path, extensionPath);
@@ -83,37 +61,51 @@ Driver.prototype.initialize = async function() {
     this.browser = browser;
 
 
+    // Capture request details
     page.on('request', request => {
-      console.log('Request:', request.url(), request.method(), request.headers());
+    const requestData = {
+      url: request.url(),
+      method: request.method(),
+      headers: request.headers()
+    };
+    this.requests.add(requestData);
     });
 
+    // Capture response details
     page.on('response', async response => {
-      try {
-        const responseBody = await response.buffer();
-        console.log('Response:', response.url(), response.status(), response.headers(), responseBody.toString());
-      } catch (error) {
-        console.error('Error handling response:', error.message);
-      }
+    const responseData = {
+      url: response.url(),
+      responseCode: response.status(),
+      referer: response.referer(),
+      statusText: response.statusText() || 'N/A',
+      contentLength: response.headers.get('Content-Length') || 'N/A',
+      contentType: response.headers.get('Content-Type') || 'N/A',
+      referrer: response.headers.get('Referrer') || 'N/A',
+    };
+    this.responses.add(responseData);
+
     });
 
-    this.page = page;
-    this.browser = browser;
     this.start_server();
 
   } catch (error) {
     console.error('Error in script:', error.message);
   }
 
+};
+
+Driver.prototype.navigateToWebsite = async function(page, url) {
+  await page.goto(url);
+
+  await sleep(5);
+
 }
-
-
 
 
 (async () => {
   const driver = new Driver();
-  await driver.start_server();
 
-  setTimeout(() => {
-    this.stop_server();
-  }, 10000);
+
+
+
 })();
