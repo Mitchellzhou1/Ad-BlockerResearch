@@ -5,8 +5,6 @@ const path = require('path');
 
 const TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
 const SIZE = 2;                 // Number of driver processes to create
-const results = [];
-
 function divideChunks(arr, chunkSize) {
   if (chunkSize <= 0) {
       throw new Error('Chunk size must be greater than 0');
@@ -116,26 +114,26 @@ async function runInBatches(chunksList, html_option, extn, replay) {
 
 const html_options = [
   // 'drop_downs', 
-  'buttons', 
+  // 'buttons', 
   // 'links', 
   // 'logins', 
-  // 'inputs'
+  'inputs'
 ];
 
 const links = [
-  // 'https://en.wikipedia.org/wiki/Main_Page',
+  'https://t.hi098123.com/korean-number#google_vignette'
   // 'https://openai.com/', 
   // 'https://duckduckgo.com/', 
   // 'https://brightspace.nyu.edu/d2l/home',
   // 'https://picoctf.org/',
-  // 'https://rufus.ie/en/',      // scroll down, download, redirect
+  // 'https://rufus.ie/en/',              // scroll down, download, redirect
   // 'https://picoctf.org/contact.html'   // Is application open
   // 'https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin'  //isRequired
-      'https://canyoublockit.com/'  // testing adblocker
+  //    'https://canyoublockit.com/'      // testing adblocker
 ];
 
 let extn_lst = [
-  // 'control', 
+  'control', 
   // 'adblock', 
   'ublock', 
   // 'privacy-badger'
@@ -143,7 +141,24 @@ let extn_lst = [
 
 
 (async () => {
-  const replay = 1;
+
+  const args = process.argv.slice(2);
+  let replay = 0; // Default value
+
+  // Extract the --replay argument
+  args.forEach((arg, index) => {
+    if (arg === '--replay' && args[index + 1] !== undefined) {
+      replay = parseInt(args[index + 1], 10);
+    }
+  });
+
+  // Ensure replay is either 0 or 1
+  if (isNaN(replay) || (replay !== 0 && replay !== 1)) {
+    console.error('Invalid --replay argument. Please provide 0 or 1.');
+    process.exit(1);
+  }
+
+
   if (replay === 0)
     extn_lst = ['control']
   const chunks = divideChunks(links, SIZE);

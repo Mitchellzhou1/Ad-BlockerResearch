@@ -708,32 +708,35 @@ Driver.prototype.find_logins = async function(){
   }
 };
 
-Driver.prototype.find_forms = async function(){
+Driver.prototype.find_forms = async function() {
   /*
     Forms are defined in this study as any element that has a <form> tag.
   */
- try{
+  let elements_general;
+
+  try {
     await this.page.waitForSelector('form');
 
-    const elements_general = await this.page.evaluate(() => {
+    elements_general = await this.page.evaluate(() => {
       const formElements = document.querySelectorAll('form');
-    
       const uniqueSet = new Set();
-      
+
       formElements.forEach(form => {
         uniqueSet.add(form.outerHTML);
-        }
-      );
-    
+      });
+
       return Array.from(uniqueSet);
     });
-  
-    const final = new Set(elements_general);
-    
-    return final;
+  } catch (error) {
+    elements_general = [];
   }
-  catch(error){
-    console.log("Crashed in find_forms()", error.toString().split('\n')[0]);
+
+  try {
+    const elements_specific = await this.specificElementFinder();
+    const final = new Set([...elements_specific, ...elements_general]);
+    return final;
+  } catch (error) {
+    console.error("Crashed in find_forms()", error.toString().split('\n')[0]);
     return new Set();
   }
 };
@@ -794,8 +797,11 @@ Driver.prototype.test_element = async function(){
       }
 
       let element = await this.get_element(this.cssSelector, this.chosen_elms[this.elem_indx]);
-      if (!element)
-        continue;
+      if (!element){
+        if (i != this.tries - 1)
+          await this.reinitialize();
+        continue
+      }
 
       this.RESULT.initial_outer_html = await this.page.evaluate(el => el.outerHTML, element);
       this.RESULT.initial_local_DOM = await this.get_local_DOM(element);
