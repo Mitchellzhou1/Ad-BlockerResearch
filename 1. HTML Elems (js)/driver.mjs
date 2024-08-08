@@ -798,9 +798,14 @@ Driver.prototype.test_element = async function(){
 
       let element = await this.get_element(this.cssSelector, this.chosen_elms[this.elem_indx]);
       if (!element){
-        if (i != this.tries - 1)
+        if (i != this.tries - 1){
           await this.reinitialize();
-        continue
+          continue;
+        }
+        else{
+          this.final_result[this.URL.full_address].push('False - element not found');
+          return;
+        }
       }
 
       this.RESULT.initial_outer_html = await this.page.evaluate(el => el.outerHTML, element);

@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "node",
             "request": "launch",
@@ -9,11 +8,11 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/4. Puppeteer/crawler.js",
+            "program": "${workspaceFolder}/1. HTML Elems (js)/crawler.js",
             // "program": "${workspaceFolder}/4. Puppeteer/driver.mjs",
-
             // "program": "${workspaceFolder}/4. Puppeteer/testing/testing2.js",
-            "cwd": "${workspaceFolder}/4. Puppeteer"
+            "cwd": "${workspaceFolder}/1. HTML Elems (js)",
+            "args": ["--replay", "0"]
         }
     ]
 }

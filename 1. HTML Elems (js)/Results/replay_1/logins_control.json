@@ -1,0 +1,18 @@
+{
+  "https://t.hi098123.com/korean-number#google_vignette": [
+    [
+      "True - Redirect",
+      "<button onclick=\"location.href='/login'\" class=\"xi-log-in\" title=\"로그인\"></button>",
+      false,
+      false,
+      false
+    ],
+    [
+      "True - Redirect",
+      "<a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com?utm_source=challenge&amp;utm_campaign=m\" target=\"_blank\">Cloudflare</a>",
+      false,
+      false,
+      false
+    ]
+  ]
+}
