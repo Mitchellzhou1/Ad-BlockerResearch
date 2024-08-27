@@ -5,9 +5,11 @@ import { Result } from './result.mjs';
 import { Url } from './url.mjs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+ 
 // import {path} from 'path';
 
 let EXTENSION_NAME = ''; 
+let start_port = 11001;
 
 async function sleep(ms) {
   const seconds = ms * 1000;
@@ -18,7 +20,7 @@ async function sleep(ms) {
 class Driver{
   constructor(html_elem, adB, replay, data_dict){
     this.adBlocker = adB;
-    this.page = null;       // current page
+    this.page = null;        // current page
     this.browser = null;     // browser instance
     this.debug = true;
     this.tries = 2;
@@ -188,6 +190,152 @@ Driver.prototype.filter = async function(cssSelector) {
   if (cursor && cursor != 'default') 
     return true;
   return false;
+};
+
+
+/*
+
+  Catapult methods (replay)
+
+*/
+
+Driver.prototype.start_server = async function(extn, chunk, start_port){
+
+  const port_counter = 0;
+  const site_counter = 0;
+  const port_list = await this.get_ports(chunk.length() * 2, start_port);
+  const process_lst = [];
+
+  const go_path = path.resolve('~/go/src/github.com/catapult-project/catapult/web_page_replay_go/');
+  
+  while (true){
+    if (site_counter >= chunk.length())
+      break;
+
+    let curr_site = chunk[site_counter];
+    const website_root = await this.website_key(curr_site);
+
+    let temp_port1 = port_list[port_counter];
+    let temp_port2 = port_list[port_counter + 1];
+
+    let wpgro_filepath = path.resolve(`~/replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`)
+    const server_cmd = `go run src/wpr.go replay --http_port=${temp_port1} --https_port=${temp_port2} ${wpgro_filepath}`;
+
+    const child = exec(server_cmd, { cwd: go_path }, (error, stderr) => {
+      if (error) {
+          console.error(`Error executing command: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`stderr: ${stderr}`);
+          return;
+      }
+    });
+
+    process_lst.add(child.pid);
+
+    for (let i = 0; i <= 10; i++){
+      console.log(`Waiting for port ${temp_port1} to be occupied`)
+      await sleep(2);
+      if (await this.check_port(temp_port1))
+        break;
+    }
+
+    if (!await this.check_port(temp_port1)){
+      try {
+        child.kill('SIGTERM');              // Send the SIGTERM signal to gracefully terminate the process
+        process_lst.pop();
+        console.log('Process terminated.');
+        continue;
+      } catch (error) {
+        console.error('Failed to terminate the process:', error);
+      }
+    }
+
+    port_counter += 2;
+    site_counter += 1;
+
+  }
+  return (process_lst, port_list);
+};
+
+Driver.prototype.find_used_ports = async function(){
+
+  exec('netstat -tunap', (error, stdout, stderr) => {
+    if (error) {
+        console.error(`Error executing netstat: ${error.message}`);
+        return;
+    }
+    if (stderr) {
+        console.error(`stderr: ${stderr}`);
+    }
+    const used_ports = new Set();
+    const lines = stdout.split('\n');
+        lines.forEach(line => {
+        const match = line.match(/(?:\d+\.\d+\.\d+\.\d+|\[::\]):(\d+)/);
+        if (match) {
+            const port = parseInt(match[1], 10);
+            used_ports.add(port);
+        }
+    });
+
+    // console.log('netstat output:\n', stdout);
+    // console.log('Used Ports:', used_ports);
+
+    return used_ports;
+  });
+};
+
+Driver.prototype.get_ports = async function(max_ports = 200, start_port){
+  const used_ports = await this.find_used_ports();
+  const available_ports = [];
+  for (let port = start_port; port < 65536; port++){
+    if (available_ports.length() >= max_ports)
+      break;
+    if (!used_ports.include(port))
+      available_ports.push(port);
+  }
+  return available_ports;
+};
+
+Driver.prototype.website_key = async function(url){
+  try {
+    let website_root = chunk[counter].split("://")[1];
+    
+    if (website_root.includes('www')) {
+        website_root = website_root.split('.').slice(1).join('_');
+    } else {
+        website_root = website_root.split('.').join('_');
+    }
+
+    website_root = website_root.replace(/\//g, '-');
+  } catch (error) {
+      console.log((chunk[counter] + "\n").repeat(100));
+      console.error(error);
+      website_root = chunk[counter].replace(/\//g, '-');
+  }
+  return website_root;
+};
+
+Driver.prototype.check_port = async function(port) {
+  return new Promise((resolve, reject) => {
+      exec('netstat -tulpn', (error, stdout, stderr) => {
+          if (error) {
+              logError('', '', 'checkPort', error);
+              return resolve(false);
+          }
+          if (stderr) {
+              logError('', '', 'checkPort', stderr);
+              return resolve(false);
+          }
+
+          if (stdout.includes(port.toString())) {
+              return resolve(true);
+          } else {
+              return resolve(false);
+          }
+      });
+  });
 };
 
 
@@ -1040,7 +1188,7 @@ Driver.prototype.isOpenApplication = function(html) {
 
   let ret = {}
 
-  const [,, site, html_option, extn, replay] = process.argv;
+  const [,, site, html_option, extn, replay, catapult] = process.argv;
   EXTENSION_NAME = extn;
   // const [site, html_option, extn, replay] = ['https://duckduckgo.com/', 'buttons', 'ublock', '1']
   console.log(`Current process ID: ${process.pid}`);

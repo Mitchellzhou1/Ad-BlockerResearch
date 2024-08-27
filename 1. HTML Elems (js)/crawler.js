@@ -5,6 +5,9 @@ const path = require('path');
 
 const TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
 const SIZE = 2;                 // Number of driver processes to create
+
+const catapult = true;          // testing mode
+
 function divideChunks(arr, chunkSize) {
   if (chunkSize <= 0) {
       throw new Error('Chunk size must be greater than 0');
@@ -13,7 +16,7 @@ function divideChunks(arr, chunkSize) {
   return Array.from({ length: Math.ceil(arr.length / chunkSize) }, (_, i) => 
       arr.slice(i * chunkSize, i * chunkSize + chunkSize)
   );
-}
+};
 
 function write_results(data, html_elem, adBlocker, replay) {
   let folder;
@@ -55,7 +58,7 @@ function write_results(data, html_elem, adBlocker, replay) {
       console.log('Data has been written to', filePath);
     });
   });
-}
+};
 
 function combineResults(results, html_elem, adBlocker, replay) {
   const final = results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
@@ -63,11 +66,11 @@ function combineResults(results, html_elem, adBlocker, replay) {
   return final;
 };
 
-async function runBatch(chunk, html_option, extn, replay) {
+async function runBatch(chunk, html_option, extn, replay, catapult) {
   const results = [];
   const jobs = chunk.map((site, index) => {
       return new Promise((resolve, reject) => {
-          const childProcess = fork(path.join(__dirname, 'driver.mjs'), [site, html_option, extn, replay]);
+          const childProcess = fork(path.join(__dirname, 'driver.mjs'), [site, html_option, extn, replay, catapult]);
 
           childProcess.on('message', (message) => {
             results[index] = message;
@@ -98,26 +101,27 @@ async function runBatch(chunk, html_option, extn, replay) {
   await Promise.all(jobs);
 
   combineResults(results, html_option, extn, replay);
-}
+};
 
 async function runInBatches(chunksList, html_option, extn, replay) {
   for (const chunk of chunksList) {
+
       console.log('Processing batch:', chunk);
-      await runBatch(chunk, html_option, extn, replay);
+      await runBatch(chunk, html_option, extn, replay, catapult);
       console.log('Batch completed. Waiting before proceeding to the next batch...');
       await new Promise(resolve => setTimeout(resolve, 2000)); // Sleep for 2 seconds between batches
   }
-}
+};
 
 
 
 
 const html_options = [
   // 'drop_downs', 
-  // 'buttons', 
+  'buttons', 
   // 'links', 
   // 'logins', 
-  'inputs'
+  // 'inputs'
 ];
 
 const links = [
