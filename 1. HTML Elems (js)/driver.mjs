@@ -6,7 +6,8 @@ import { Url } from './url.mjs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { exec } from 'child_process';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +18,9 @@ const __dirname = dirname(__filename);
 
 let EXTENSION_NAME = ''; 
 let start_port = 11001;
+let port1;
+let port2;
+let catapult;
 
 async function sleep(ms) {
   const seconds = ms * 1000;
@@ -78,9 +82,19 @@ Driver.prototype.initialize = async function(url){
     args.push(`--disable-extensions-except=${absolutePath}`);
     args.push(`--load-extension=${absolutePath}`);
   }
+
+  if (catapult){
+    args.push(`--host-resolver-rules=MAP *:80 127.0.0.1:${port1},MAP *:443 127.0.0.1:${port2},EXCLUDE localhost`);
+    args.push('--ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=');
+    // args.push(`--proxy-server=http://localhost:${port1}`);
+    // args.push(`--proxy-server=https://localhost:${port2}`);
+  }
+
   const browser = await puppeteer.launch({
     headless: false,
-    args: args
+    args: args,
+    ignoreHTTPSErrors: true       // Ignore HTTPS certificate errors
+
   });
 
   if (EXTENSION_NAME !== 'control') 
@@ -206,39 +220,41 @@ Driver.prototype.filter = async function(cssSelector) {
 
 */
 
-Driver.prototype.start_server = async function(extn, curr_site, start_port){
+Driver.prototype. start_server = async function(extn, curr_site, start_port){
 
   const port_counter = 0;
   const port_list = await this.get_ports(2, start_port);
   const process_lst = [];
 
-  const go_path = resolve(__dirname, '~/go/src/github.com/catapult-project/catapult/web_page_replay_go/');
+  const go_path = '/home/character/go/src/github.com/catapult-project/catapult/web_page_replay_go/'
   
   const website_root = await this.website_key(curr_site);
 
   let temp_port1 = port_list[port_counter];
   let temp_port2 = port_list[port_counter + 1];
 
-  let wpgro_filepath = resolve(__dirname, `~/replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`);
-  const server_cmd = 'go';
-  const args = ['run', 'src/wpr.go', 'replay', `--http_port=${temp_port1}`, `--https_port=${temp_port2}`, wpgro_filepath];
-  
-  const child = spawn(server_cmd, args, { cwd: go_path, shell: true });
+  let wpgro_filepath = `replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`
 
-  child.on('error', (err) => {
-    console.error(`Failed to start process: ${err.message}`);
-  });
+  const command = 'go';
+  const args = [
+    'run', 'src/wpr.go', 'replay',
+    `--http_port=${temp_port1}`, `--https_port=${temp_port2}`,
+    `/home/character/${wpgro_filepath}`
+  ];
+
+  // Execute the command with the specified working directory
+  const child = spawn(command, args, { cwd: go_path });
 
   process_lst.push(child.pid);
 
   for (let i = 0; i <= 10; i++){
     console.log(`Waiting for port ${temp_port1} to be occupied`)
     await sleep(2);
-    if (await this.check_port(temp_port1))
+    if (await this.check_port(temp_port1, temp_port2))
       break;
   }
 
-  if (!await this.check_port(temp_port1)){
+  if (!await this.check_port(temp_port1, temp_port2)){
     try {
       child.kill('SIGTERM');              // Send the SIGTERM signal to gracefully terminate the process
       process_lst.pop();
@@ -247,6 +263,7 @@ Driver.prototype.start_server = async function(extn, curr_site, start_port){
       console.error('Failed to terminate the process:', error);
     }
   }
+  return [temp_port1, temp_port2]
 };
 
 Driver.prototype.find_used_ports = function() {
@@ -308,25 +325,29 @@ Driver.prototype.website_key = async function(url){
   return website_root;
 };
 
-Driver.prototype.check_port = async function(port) {
-  return new Promise((resolve, reject) => {
-      exec('netstat -tulpn', (error, stdout, stderr) => {
-          if (error) {
-              logError('', '', 'checkPort', error);
-              return resolve(false);
-          }
-          if (stderr) {
-              logError('', '', 'checkPort', stderr);
-              return resolve(false);
-          }
-
-          if (stdout.includes(port.toString())) {
-              return resolve(true);
-          } else {
-              return resolve(false);
-          }
-      });
-  });
+Driver.prototype.check_port = async function(port1, port2) {
+  try {
+    const output = await new Promise((resolve, reject) => {
+        exec('netstat -tuln', (error, stdout, stderr) => {
+            if (error) {
+                reject(`Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                reject(`Stderr: ${stderr}`);
+                return;
+            }
+            resolve(stdout);
+        });
+    });
+    
+    if (output.includes(port1.toString()) && output.includes(port2.toString()))
+      return true;
+    return false;
+    
+} catch (err) {
+    console.error(err);
+}
 };
 
 
@@ -1211,20 +1232,19 @@ Driver.prototype.isOpenApplication = function(html) {
 
   let ret = {}
 
-  var [,, site, html_option, extn, replay, catapult] = process.argv;
+  var [,, site, html_option, extn, replay, ctplt] = process.argv;
   EXTENSION_NAME = extn;
   replay = Number(replay);
-  catapult = catapult === 'true';
+  catapult = ctplt === 'true';
   // const [site, html_option, extn, replay] = ['https://duckduckgo.com/', 'buttons', 'ublock', '1']
   console.log(`Current process ID: ${process.pid}`);
   console.log(site, html_option, extn, replay)
 
 
   const driver = new Driver(html_option, extn, replay, ret);
-  const start_port = 11001;
 
   if (catapult){
-    await driver.start_server(extn, site, start_port);
+    [port1, port2] = await driver.start_server(extn, site, start_port);
   }
 
   await driver.initialize(site);
