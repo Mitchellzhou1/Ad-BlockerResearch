@@ -118,28 +118,28 @@ async function runInBatches(chunksList, html_option, extn, replay) {
 
 const html_options = [
   // 'drop_downs', 
-  'buttons', 
+  // 'buttons', 
   // 'links', 
   // 'logins', 
-  // 'inputs'
+  'inputs'
 ];
 
-const links = [
-  'https://t.hi098123.com/korean-number#google_vignette'
-  // 'https://openai.com/', 
-  // 'https://duckduckgo.com/', 
-  // 'https://brightspace.nyu.edu/d2l/home',
-  // 'https://picoctf.org/',
-  // 'https://rufus.ie/en/',              // scroll down, download, redirect
-  // 'https://picoctf.org/contact.html'   // Is application open
-  // 'https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page&returntoquery=centralAuthAutologinTried%3D1%26centralAuthError%3DNot%2Bcentrally%2Blogged%2Bin'  //isRequired
-  //    'https://canyoublockit.com/'      // testing adblocker
-];
+websites = [
+  // "https://dragontea.ink/",
+  // "https://xhamster.com/search/knockin+nurses",
+  // "https://www.cib.com.cn/cn/index.html",
+  // "https://gamerant.com/honkai-star-rail-hanus-adventure-page-locations-part-1-2-3/",
+  // "https://72.ru/text/entertainment/2024/08/17/73734836/",
+  // "https://ads-admin.teleads.ai/",
+  "https://t.hi098123.com/korean-number",
+  // "https://lifehacker.ru/vypady/?hl=en-US"
+  // "https://www.google.com/"
+]
 
 let extn_lst = [
   'control', 
   // 'adblock', 
-  'ublock', 
+  // 'ublock', 
   // 'privacy-badger'
 ];
 
@@ -147,7 +147,7 @@ let extn_lst = [
 (async () => {
 
   const args = process.argv.slice(2);
-  let replay = 0; // Default value
+  let replay = 1; // Default value
 
   // Extract the --replay argument
   args.forEach((arg, index) => {
@@ -165,7 +165,7 @@ let extn_lst = [
 
   if (replay === 0)
     extn_lst = ['control']
-  const chunks = divideChunks(links, SIZE);
+  const chunks = divideChunks(websites, SIZE);
   for (let html_option of html_options) {
     for (let extn of extn_lst) {
       try {

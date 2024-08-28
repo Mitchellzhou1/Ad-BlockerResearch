@@ -12,7 +12,7 @@
             // "program": "${workspaceFolder}/4. Puppeteer/driver.mjs",
             // "program": "${workspaceFolder}/4. Puppeteer/testing/testing2.js",
             "cwd": "${workspaceFolder}/1. HTML Elems (js)",
-            "args": ["--replay", "0"]
+            "args": ["--replay", "1"]
         }
     ]
 }

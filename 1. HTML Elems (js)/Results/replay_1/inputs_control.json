@@ -1,3 +1,32 @@
 {
-  "https://t.hi098123.com/korean-number#google_vignette": []
+  "https://t.hi098123.com/korean-number": [
+    [
+      "False - double checked",
+      "<input id=\"hi-num\" type=\"text\" placeholder=\"숫자를 입력해보세요!\" style=\"width:100%;width:calc(100% - 30px);margin:0;padding:12px;font-size:24px;\" title=\"\">",
+      false,
+      false,
+      true
+    ],
+    [
+      "True? - input is required",
+      "<input id=\"hi-num2\" type=\"text\" placeholder=\"한글 숫자를 입력해보세요!\" style=\"width:100%;width:calc(100% - 30px);margin:0;padding:12px;font-size:24px;\" title=\"한글, 띄어쓰기, 숫자만 입력가능합니다.\" disabled=\"\">",
+      false,
+      false,
+      true
+    ],
+    [
+      "False - double checked",
+      "<input type=\"search\" placeholder=\"원하는 툴을 찾아보세요!\">",
+      false,
+      false,
+      true
+    ],
+    [
+      "True - Redirect",
+      "<input class=\"searchtxt\" type=\"search\" placeholder=\"원하는 툴을 찾아보세요!\">",
+      false,
+      false,
+      false
+    ]
+  ]
 }

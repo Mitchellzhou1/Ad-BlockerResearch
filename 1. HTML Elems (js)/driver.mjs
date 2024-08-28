@@ -5,7 +5,14 @@ import { Result } from './result.mjs';
 import { Url } from './url.mjs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
- 
+import { exec } from 'child_process';
+import { spawn } from 'child_process';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename); 
+
+
 // import {path} from 'path';
 
 let EXTENSION_NAME = ''; 
@@ -199,90 +206,74 @@ Driver.prototype.filter = async function(cssSelector) {
 
 */
 
-Driver.prototype.start_server = async function(extn, chunk, start_port){
+Driver.prototype.start_server = async function(extn, curr_site, start_port){
 
   const port_counter = 0;
-  const site_counter = 0;
-  const port_list = await this.get_ports(chunk.length() * 2, start_port);
+  const port_list = await this.get_ports(2, start_port);
   const process_lst = [];
 
-  const go_path = path.resolve('~/go/src/github.com/catapult-project/catapult/web_page_replay_go/');
+  const go_path = resolve(__dirname, '~/go/src/github.com/catapult-project/catapult/web_page_replay_go/');
   
-  while (true){
-    if (site_counter >= chunk.length())
+  const website_root = await this.website_key(curr_site);
+
+  let temp_port1 = port_list[port_counter];
+  let temp_port2 = port_list[port_counter + 1];
+
+  let wpgro_filepath = resolve(__dirname, `~/replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`);
+  const server_cmd = 'go';
+  const args = ['run', 'src/wpr.go', 'replay', `--http_port=${temp_port1}`, `--https_port=${temp_port2}`, wpgro_filepath];
+  
+  const child = spawn(server_cmd, args, { cwd: go_path, shell: true });
+
+  child.on('error', (err) => {
+    console.error(`Failed to start process: ${err.message}`);
+  });
+
+  process_lst.push(child.pid);
+
+  for (let i = 0; i <= 10; i++){
+    console.log(`Waiting for port ${temp_port1} to be occupied`)
+    await sleep(2);
+    if (await this.check_port(temp_port1))
       break;
-
-    let curr_site = chunk[site_counter];
-    const website_root = await this.website_key(curr_site);
-
-    let temp_port1 = port_list[port_counter];
-    let temp_port2 = port_list[port_counter + 1];
-
-    let wpgro_filepath = path.resolve(`~/replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`)
-    const server_cmd = `go run src/wpr.go replay --http_port=${temp_port1} --https_port=${temp_port2} ${wpgro_filepath}`;
-
-    const child = exec(server_cmd, { cwd: go_path }, (error, stderr) => {
-      if (error) {
-          console.error(`Error executing command: ${error.message}`);
-          return;
-      }
-      if (stderr) {
-          console.error(`stderr: ${stderr}`);
-          return;
-      }
-    });
-
-    process_lst.add(child.pid);
-
-    for (let i = 0; i <= 10; i++){
-      console.log(`Waiting for port ${temp_port1} to be occupied`)
-      await sleep(2);
-      if (await this.check_port(temp_port1))
-        break;
-    }
-
-    if (!await this.check_port(temp_port1)){
-      try {
-        child.kill('SIGTERM');              // Send the SIGTERM signal to gracefully terminate the process
-        process_lst.pop();
-        console.log('Process terminated.');
-        continue;
-      } catch (error) {
-        console.error('Failed to terminate the process:', error);
-      }
-    }
-
-    port_counter += 2;
-    site_counter += 1;
-
   }
-  return (process_lst, port_list);
+
+  if (!await this.check_port(temp_port1)){
+    try {
+      child.kill('SIGTERM');              // Send the SIGTERM signal to gracefully terminate the process
+      process_lst.pop();
+      console.log('Process terminated.');
+    } catch (error) {
+      console.error('Failed to terminate the process:', error);
+    }
+  }
 };
 
-Driver.prototype.find_used_ports = async function(){
-
-  exec('netstat -tunap', (error, stdout, stderr) => {
-    if (error) {
+Driver.prototype.find_used_ports = function() {
+  return new Promise((resolve, reject) => {
+    exec('netstat -tunap', (error, stdout, stderr) => {
+      if (error) {
         console.error(`Error executing netstat: ${error.message}`);
+        reject(error);
         return;
-    }
-    if (stderr) {
+      }
+      if (stderr) {
         console.error(`stderr: ${stderr}`);
-    }
-    const used_ports = new Set();
-    const lines = stdout.split('\n');
-        lines.forEach(line => {
+      }
+      
+      const used_ports = new Set();
+      const lines = stdout.split('\n');
+      lines.forEach(line => {
         const match = line.match(/(?:\d+\.\d+\.\d+\.\d+|\[::\]):(\d+)/);
         if (match) {
-            const port = parseInt(match[1], 10);
-            used_ports.add(port);
+          const port = parseInt(match[1], 10);
+          used_ports.add(port);
         }
+      });
+
+      const ret = Array.from(used_ports);
+      resolve(ret);
     });
-
-    // console.log('netstat output:\n', stdout);
-    // console.log('Used Ports:', used_ports);
-
-    return used_ports;
   });
 };
 
@@ -290,9 +281,9 @@ Driver.prototype.get_ports = async function(max_ports = 200, start_port){
   const used_ports = await this.find_used_ports();
   const available_ports = [];
   for (let port = start_port; port < 65536; port++){
-    if (available_ports.length() >= max_ports)
+    if (available_ports.length >= max_ports)
       break;
-    if (!used_ports.include(port))
+    if (!used_ports.includes(port))
       available_ports.push(port);
   }
   return available_ports;
@@ -300,7 +291,7 @@ Driver.prototype.get_ports = async function(max_ports = 200, start_port){
 
 Driver.prototype.website_key = async function(url){
   try {
-    let website_root = chunk[counter].split("://")[1];
+    var website_root = url.split("://")[1];
     
     if (website_root.includes('www')) {
         website_root = website_root.split('.').slice(1).join('_');
@@ -310,9 +301,9 @@ Driver.prototype.website_key = async function(url){
 
     website_root = website_root.replace(/\//g, '-');
   } catch (error) {
-      console.log((chunk[counter] + "\n").repeat(100));
+      console.log((url + "\n").repeat(100));
       console.error(error);
-      website_root = chunk[counter].replace(/\//g, '-');
+      website_root = url.replace(/\//g, '-');
   }
   return website_root;
 };
@@ -437,7 +428,7 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
     return contents;
   }
 
-  const targetVal = this.parseOuterHTMLAttributes(outerHTML);
+  // const targetVal = this.parseOuterHTMLAttributes(outerHTML);
   for(let i = 0; i < 3; i++){
     try{
       await this.page.waitForSelector(selector, { timeout: 5000 });
@@ -448,11 +439,13 @@ Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.
       else if (candidates.length > 1){
         for (let candidate of candidates) {
           const candidate_outerHTML = await this.page.evaluate(el => el.outerHTML, candidate);
-          const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
+          // const candidateVal = this.parseOuterHTMLAttributes(candidate_outerHTML);
           // Compare outerHTML
-          if (this.compareAttributeObjects(targetVal, candidateVal)){
+          // if (this.compareAttributeObjects(targetVal, candidateVal)){
+          //   return candidate;
+          // }
+          if (candidate_outerHTML === outerHTML)
             return candidate;
-          }
         }
       }
       else {  // the selector may be too specific
@@ -593,16 +586,21 @@ Driver.prototype.check_opened = async function(element){
     await this.get_local_DOM(element);
   }
   catch(error){
-    if (error.name === 'TimeoutError' || error.message.includes('stale element')) {
+    if (error.name === 'TimeoutError' || error.message.includes('stale element') || error.message.includes('Protocol error')) {
       this.temp_result = "True - Stale Element";
-      console.log("Stale element error!");
+      // console.log("Stale element error!");
     }
     return;
   }
 
   this.RESULT.after_outer_html = await this.page.evaluate(el => el.outerHTML, element);
   this.RESULT.after_local_DOM = await this.get_local_DOM(element);
-  this.RESULT.after_manual = await this.get_local_DOM(element, 13);
+  if (this.html_elem == 'input'){
+    this.RESULT.initial_manual = await this.page.content();
+  }
+  else{
+    this.RESULT.after_manual = await this.get_local_DOM(element, 13);
+  }
 
   this.RESULT.outer_HTML_changed = this.RESULT.initial_outer_html != this.RESULT.after_outer_html;
   this.RESULT.local_DOM_changed = this.RESULT.initial_local_DOM != this.RESULT.after_local_DOM;
@@ -686,7 +684,7 @@ Driver.prototype.specificElementFinder = async function(elems) {
           'values': ['href']
       },
       'inputs': {
-          'attributes': ['text'],
+          'attributes': ['text', 'search', 'password', 'email', 'tel'],
           'values': ['type']
       },
       'submit': {
@@ -951,7 +949,8 @@ Driver.prototype.test_element = async function(){
           continue;
         }
         else{
-          this.final_result[this.URL.full_address].push('False - element not found');
+          const data_format = ['Element not found', this.RESULT.initial_outer_html, 'N/A', 'N/A', 'N/A'];
+          this.final_result[this.URL.full_address].push(data_format);
           return;
         }
       }
@@ -1004,6 +1003,8 @@ Driver.prototype.test_element = async function(){
         await this.reinitialize();
       }
       else{
+        const data_format = [error.message.split('\n')[0], this.RESULT.initial_outer_html, 'N/A', 'N/A', 'N/A'];
+        this.final_result[this.URL.full_address].push(data_format);
         return;
       }
     }
@@ -1015,6 +1016,8 @@ Driver.prototype.test_element = async function(){
 Driver.prototype.find_and_submit_forms = async function(formElem) {
   if (!formElem) return;
 
+  const tagName = await this.page.evaluate(el => el.tagName, formElem);
+
   // Define values to type into inputs
   const textValue = 'textvalue123';
   const emailValue = 'test@gmail.com';
@@ -1025,6 +1028,26 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
   const textInputs = await formElem.$$('input[type="text"], input[type="search"], input[type="password"], textarea');
   const emailInputs = await formElem.$$('input[type="email"]');
   const numberInputs = await formElem.$$('input[type="tel"]');
+
+  if (tagName != 'FORM'){
+    // if the HTML element is input those arrays above will be empty.
+    if (
+      this.RESULT.initial_outer_html.includes('type="text"') ||
+      this.RESULT.initial_outer_html.includes('type="search"') ||
+      this.RESULT.initial_outer_html.includes('type="password"')
+    )
+    textInputs.push(formElem);
+    else if (
+      this.RESULT.initial_outer_html.includes('type="email"')
+    )
+    emailInputs.push(formElem);
+    else if (
+      this.RESULT.initial_outer_html.includes('type="tel"')
+    )
+    numberInputs.push(formElem);
+  }
+
+
 
   const typeIntoInput = async (input, value, flag) => {
     await input.focus();
@@ -1188,16 +1211,25 @@ Driver.prototype.isOpenApplication = function(html) {
 
   let ret = {}
 
-  const [,, site, html_option, extn, replay, catapult] = process.argv;
+  var [,, site, html_option, extn, replay, catapult] = process.argv;
   EXTENSION_NAME = extn;
+  replay = Number(replay);
+  catapult = catapult === 'true';
   // const [site, html_option, extn, replay] = ['https://duckduckgo.com/', 'buttons', 'ublock', '1']
   console.log(`Current process ID: ${process.pid}`);
   console.log(site, html_option, extn, replay)
 
+
   const driver = new Driver(html_option, extn, replay, ret);
+  const start_port = 11001;
+
+  if (catapult){
+    await driver.start_server(extn, site, start_port);
+  }
+
   await driver.initialize(site);
 
-  if (replay === '0'){
+  if (replay === 0){
     await driver.find_elems();
     ret[site] = driver.chosen_elms;
   }

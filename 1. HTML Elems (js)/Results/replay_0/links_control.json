@@ -1,6 +1,19 @@
 {
-  "https://t.hi098123.com/korean-number#google_vignette": [
-    "<a href=\"/login\">로그인 / 회원가입</a>",
-    "<a href=\"https://webtools.tistory.com/entry/korean-number\" target=\"_blank\" rel=\"noopener noreferrer nofollow\"><div id=\"comments\" class=\"details\" style=\"margin:50px 1em 20px\"><h2>오류제보 / 기능제안&nbsp;&nbsp;<i class=\"xi-pen\"></i> 글 작성하러가기</h2></div></a>"
+  "https://www.cib.com.cn/cn/index.html": [
+    "<a href=\"/cn/index.html\">首页</a>",
+    "<a href=\"/cn/index.html\" class=\"head-icon-wrap\" tabindexa=\"1\" __uuid=\"0\"><img src=\"/cn/resources2023/css/2023/images/new_logo.png\" alt=\"兴业logo\"></a>",
+    "<a href=\"https://branch.cib.com.cn/index.html\" tabindexa=\"1\" __uuid=\"1\">分行机构</a>",
+    "<a href=\"/cn/aboutCIB/about/jobs/index.html\" tabindexa=\"1\" __uuid=\"2\">招聘英才</a>",
+    "<a href=\"https://e.cib.com.cn/app/public/queue/queue.do\" tabindexa=\"1\" __uuid=\"3\">网点地图</a>",
+    "<a href=\"/cn/sitemap.html\" tabindexa=\"1\" __uuid=\"4\">站点导航</a>",
+    "<a href=\"/cn/index.html\"><span>中文</span></a>",
+    "<a href=\"https://www.cib.com.cn/search/index.do\" alt=\"搜索\" target=\"_blank\" class=\"head-select-item-icon head-select-item-icon-1\"></a>",
+    "<a alt=\"客服\" href=\"javascript:void(0)\" onclick=\"window.open('https://www.cib.com.cn/search/onlineCustomer/index.do','','top=100,left=120,width=1040,height=588,scrollbars=yes,status=no,toolbar=no,location=no,menu=no,resizable=no')\" class=\"head-select-item-icon head-select-item-icon-2\"></a>",
+    "<a alt=\"app\" href=\"/cn/header/QRcode/extension/index.html\" target=\"_blank\" class=\"head-select-item-icon head-select-item-icon-3\"></a>",
+    "<a href=\"/cn/personal/index.html\">个人金融</a>",
+    "<a href=\"/cn/personal/wealth-management/index.html\">投资理财</a>",
+    "<a href=\"/cn/personal/wealth-management/wealth.html\" target=\"_blank\">银行理财产品</a>",
+    "<a href=\"/cn/personal/wealth-management/agent.html\" target=\"_blank\">代理产品</a>",
+    "<a href=\"/cn/personal/wealth-management/rmb/\">人民币增值服务介绍</a>"
   ]
 }
