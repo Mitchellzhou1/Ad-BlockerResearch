@@ -14,12 +14,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename); 
 
 
-// import {path} from 'path';
-
 let EXTENSION_NAME = ''; 
 let start_port = 11001;
-let port1;
-let port2;
 let catapult;
 
 async function sleep(ms) {
@@ -27,6 +23,35 @@ async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, seconds));
 }
 
+function run_cmd(cmd) {
+  return new Promise((resolve, reject) => {
+    const full_cmd = ['wrapper.py'].concat(cmd);
+    const pythonProcess = spawn('python3', full_cmd);
+
+    let result = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString(); // Accumulate output data
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Stderr: ${data}`);
+    });
+
+    pythonProcess.on('error', (error) => {
+        reject(`Error: ${error.message}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+        console.log(`Process exited with code ${code}`);
+        if (code === 0) {
+            resolve(result); // Resolve with the accumulated result
+        } else {
+            reject(`Process exited with code ${code}`);
+        }
+    });
+  });
+}
 
 class Driver{
   constructor(html_elem, adB, replay, data_dict){
@@ -61,6 +86,8 @@ class Driver{
     /* RITIK */ 
     this.options = ''
     this.replay = replay
+    this.port1;
+    this.port2;
   }
 
 }
@@ -84,7 +111,7 @@ Driver.prototype.initialize = async function(url){
   }
 
   if (catapult){
-    args.push(`--host-resolver-rules=MAP *:80 127.0.0.1:${port1},MAP *:443 127.0.0.1:${port2},EXCLUDE localhost`);
+    args.push(`--host-resolver-rules=MAP *:80 127.0.0.1:${this.port1},MAP *:443 127.0.0.1:${this.port2},EXCLUDE localhost`);
     args.push('--ignore-certificate-errors-spki-list=PhrPvGIaAMmd29hj8BCZOq096yj7uMpRNHpn5PDxI6I=,2HcXCSKKJS0lEXLQEWhpHUfGuojiU0tiT5gOF9LP6IQ=');
     // args.push(`--proxy-server=http://localhost:${port1}`);
     // args.push(`--proxy-server=https://localhost:${port2}`);
@@ -93,7 +120,7 @@ Driver.prototype.initialize = async function(url){
   const browser = await puppeteer.launch({
     headless: false,
     args: args,
-    ignoreHTTPSErrors: true       // Ignore HTTPS certificate errors
+    // ignoreHTTPSErrors: true       // Ignore HTTPS certificate errors
 
   });
 
@@ -124,11 +151,24 @@ Driver.prototype.initialize = async function(url){
 
 Driver.prototype.reinitialize = async function(){
   await this.browser.close();
+  if (catapult){
+    await this.start_server(this.adBlocker, this.URL.full_address, start_port);
+  }
   await this.initialize(this.URL.full_address);
 };
 
 Driver.prototype.goto = async function(url) {
-  await this.page.goto(url);
+  for (let i = 0; i < 2; i++){
+    try{
+      await this.page.goto(url);
+      break;
+    } catch(error){
+      if (catapult){
+        await this.start_server(this.adBlocker, this.URL.full_address, start_port);
+      }
+    }
+  }
+
   await this.scroll_to_bottom();
   this.URL.current_url = await this.current_url()
   await this.page.screenshot({ path: 'TESITNG AD BLOCKER.png' });
@@ -220,50 +260,30 @@ Driver.prototype.filter = async function(cssSelector) {
 
 */
 
-Driver.prototype. start_server = async function(extn, curr_site, start_port){
 
-  const port_counter = 0;
-  const port_list = await this.get_ports(2, start_port);
-  const process_lst = [];
-
-  const go_path = '/home/character/go/src/github.com/catapult-project/catapult/web_page_replay_go/'
-  
-  const website_root = await this.website_key(curr_site);
-
-  let temp_port1 = port_list[port_counter];
-  let temp_port2 = port_list[port_counter + 1];
-
-  let wpgro_filepath = `replay_1/broken_site_tracker/08-25/${extn}_${website_root}.wprgo`
-
-  const command = 'go';
-  const args = [
-    'run', 'src/wpr.go', 'replay',
-    `--http_port=${temp_port1}`, `--https_port=${temp_port2}`,
-    `/home/character/${wpgro_filepath}`
-  ];
-
-  // Execute the command with the specified working directory
-  const child = spawn(command, args, { cwd: go_path });
-
-  process_lst.push(child.pid);
-
-  for (let i = 0; i <= 10; i++){
-    console.log(`Waiting for port ${temp_port1} to be occupied`)
+Driver.prototype.start_server = async function(extn, curr_site){
+  try {
+    run_cmd(['start_server', curr_site, extn]);
     await sleep(2);
-    if (await this.check_port(temp_port1, temp_port2))
-      break;
-  }
-
-  if (!await this.check_port(temp_port1, temp_port2)){
-    try {
-      child.kill('SIGTERM');              // Send the SIGTERM signal to gracefully terminate the process
-      process_lst.pop();
-      console.log('Process terminated.');
-    } catch (error) {
-      console.error('Failed to terminate the process:', error);
+    for (let i = 0; i < 3; i++){
+      const ports_output = await run_cmd(['get_wpr_ports']);
+      if (ports_output){
+        const [portNumber1, portNumber2] = ports_output.trim().split('\n').map(num => parseInt(num, 10));
+        [this.port1, this.port2] = portNumber1 < portNumber2 ? [portNumber1, portNumber2] : [portNumber2, portNumber1];
+        return true;  
+      }
+      else{
+        console.log("Server failed to start... Trying again\n");
+        await sleep(2);
+      }
     }
+  } 
+  catch (err) {
+    console.error(err);
   }
-  return [temp_port1, temp_port2]
+  catapult = false;
+  console.log("Could not start Catapult... testing on live sites\n"*100);
+  return false;
 };
 
 Driver.prototype.find_used_ports = function() {
@@ -294,18 +314,6 @@ Driver.prototype.find_used_ports = function() {
   });
 };
 
-Driver.prototype.get_ports = async function(max_ports = 200, start_port){
-  const used_ports = await this.find_used_ports();
-  const available_ports = [];
-  for (let port = start_port; port < 65536; port++){
-    if (available_ports.length >= max_ports)
-      break;
-    if (!used_ports.includes(port))
-      available_ports.push(port);
-  }
-  return available_ports;
-};
-
 Driver.prototype.website_key = async function(url){
   try {
     var website_root = url.split("://")[1];
@@ -325,31 +333,26 @@ Driver.prototype.website_key = async function(url){
   return website_root;
 };
 
-Driver.prototype.check_port = async function(port1, port2) {
-  try {
-    const output = await new Promise((resolve, reject) => {
-        exec('netstat -tuln', (error, stdout, stderr) => {
-            if (error) {
-                reject(`Error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                reject(`Stderr: ${stderr}`);
-                return;
-            }
-            resolve(stdout);
-        });
-    });
-    
-    if (output.includes(port1.toString()) && output.includes(port2.toString()))
-      return true;
-    return false;
-    
-} catch (err) {
-    console.error(err);
-}
-};
+Driver.prototype.check_port = async function(cmd){
+  const output = run_cmd('check_ports', cmd);
 
+  // Handle the close event when the process finishes
+  pythonProcess.on('close', (code) => {
+      console.log(`Process exited with code ${code}`);
+
+      // Check if the output contains the specific prints
+      if (output.includes('True: Port is used')) {
+        return true;
+          // Handle the case where the ports are in use
+      } else if (output.includes('False: Port is not used')) {
+        return false;
+        // Handle the case where the ports are not in use
+      } else {
+        return false;
+      }
+  });
+
+};
 
 /*
 
@@ -1229,7 +1232,6 @@ Driver.prototype.isOpenApplication = function(html) {
 
 
 (async () => {
-
   let ret = {}
 
   var [,, site, html_option, extn, replay, ctplt] = process.argv;
@@ -1244,7 +1246,7 @@ Driver.prototype.isOpenApplication = function(html) {
   const driver = new Driver(html_option, extn, replay, ret);
 
   if (catapult){
-    [port1, port2] = await driver.start_server(extn, site, start_port);
+    await driver.start_server(extn, site, start_port);
   }
 
   await driver.initialize(site);
@@ -1265,4 +1267,7 @@ Driver.prototype.isOpenApplication = function(html) {
   process.send(ret);
   console.log(ret);
   console.log(`Finished -- ${html_option} ${extn} -- ${site}`);
+
+  await run_cmd(['pkill', 'wpr'])
+
 })();

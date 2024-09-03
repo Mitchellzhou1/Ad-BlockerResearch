@@ -1,9 +1,9 @@
 {
   "https://www.cib.com.cn/cn/index.html": [
     "<a alt=\"app\" href=\"/cn/header/QRcode/extension/index.html\" target=\"_blank\" class=\"head-select-item-icon head-select-item-icon-3\"></a>",
-    "<a href=\"/cn/personal/index.html\">个人金融</a>",
-    "<a href=\"/cn/personal/wealth-management/index.html\">投资理财</a>",
     "<a href=\"/cn/personal/wealth-management/wealth.html\" target=\"_blank\">银行理财产品</a>",
+    "<a href=\"/cn/personal/wealth-management/index.html\">投资理财</a>",
+    "<a href=\"/cn/personal/index.html\">个人金融</a>",
     "<a href=\"/cn/personal/wealth-management/agent.html\" target=\"_blank\">代理产品</a>",
     "<a href=\"/cn/personal/wealth-management/rmb/\">人民币增值服务介绍</a>",
     "<a href=\"/cn/index.html\">首页</a>",
