@@ -125,9 +125,10 @@ const html_options = [
 ];
 
 websites = [
+   "https://dongjunke.cn/posts/2024/08/22/63066.html",
   // "https://dragontea.ink/",
   // "https://xhamster.com/search/knockin+nurses",
-  "https://www.cib.com.cn/cn/index.html",
+  // "https://www.cib.com.cn/cn/index.html",
   // "https://gamerant.com/honkai-star-rail-hanus-adventure-page-locations-part-1-2-3/",
   // "https://72.ru/text/entertainment/2024/08/17/73734836/",
   // "https://ads-admin.teleads.ai/",
