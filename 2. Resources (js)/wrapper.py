@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import json
 
 def initialize_blacklists():
     """
@@ -40,6 +41,11 @@ def initialize_blacklists():
         else:
             print(f"{filename} already exists.")
 
+
+def write_blacklist(website, data):
+    path = f'Results/blacklist/{website}.json'
+    with open(path, 'w') as f:
+        f.write(data)
 
 
 def main():

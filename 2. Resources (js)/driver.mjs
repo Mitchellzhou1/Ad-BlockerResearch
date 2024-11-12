@@ -2,6 +2,15 @@ import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
 import { initializeBlacklists, FilteringContext } from './blacklist_parser/blacklistparser.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+
 const snfe = await initializeBlacklists();
 
 let EXTENSION_NAME = 'control'
@@ -135,12 +144,10 @@ Driver.prototype.initialize = async function() {
           referrer: referer,
         };
         this.fctxt.setURL(requestUrl);
-        console.log(requestUrl);
         if (snfe.matchRequest(this.fctxt) !== 0) {
           responseData.blacklistRule = snfe.toLogData()['raw'];
           this.blacklistedItems.set(response.url(), responseData);
         }
-
         this.responsesMap.set(response.url(), responseData);
 
       }
@@ -173,23 +180,18 @@ Driver.prototype.navigateToWebsite = async function() {
   this.source = await this.page.content();
 };
 
-Driver.prototype.store_results = async function(key){
-
-  const responsesObject = Object.fromEntries(this.responsesMap);
-  const jsonData = JSON.stringify(responsesObject, null, 2);  // Convert results to a formatted JSON string
-
-  // Write to a file (asynchronously)
-
-  const filepath = `temp/${this.extn}_${key}.json`;
-  fs.writeFile(filepath, jsonData, 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing file:', err);
-    } else {
-      console.log(`Results saved to ${filepath}`);
-    }
+Driver.prototype.store_blacklist = async function(key){
+  const blacklist = Object.fromEntries(this.blacklistedItems);
+  const blacklistString = JSON.stringify(blacklist, null, 4);  // Adds indentation for readability
+  console.log("UPO THE")
+  fs.writeFile(`${key}.json`, blacklistString, (err) => {
+      if (err) {
+          console.error('Error writing file:', err);
+      } else {
+          console.log('File successfully written!');
+      }
   });
 };
-
 
 
 (async (adblocker, website, key)  => {
@@ -206,9 +208,7 @@ Driver.prototype.store_results = async function(key){
   process.send(jsonData);
 
   driver.browser.close();
-  
-  // need to write this to a file.
-  console.log(driver.blacklistedItems);
+  await driver.store_blacklist(key);
 
   process.exit(0);
 

@@ -17,15 +17,14 @@ const catapult = false;          // testing mode
 
 
 const websiteKey = (url) => {
-  let key = '';
-  url = url.replace(/^\/+|\/+$/g, ''); // Remove leading/trailing slashes
-  if (url.includes('www.')) {
-      key = url.split('www.')[1];
-  } else {
-      key = url.split('://')[1];
-  }
-  key = key.replace(/\//g, '-');
-  return key;
+  const parsedUrl = new URL(url);
+  const hostname = parsedUrl.hostname; 
+
+  const domain = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
+
+  const baseDomain = domain.replace(/\.(com|net|org|co|io|gov|edu|info|biz)$/i, '');
+
+  return baseDomain;  
 };
 
 function divideChunks(arr, chunkSize) {
@@ -55,10 +54,9 @@ function subset(jsonArray){
   return commonPairs;
 };
 
-function write_results(data) {x
-  let folder;
-  const jsonData = JSON.stringify(data, null, 2);
-  const filePath = join(__dirname, `./Results/${folder}/${html_elem}_${adBlocker}.json`);
+function write_results(website, data) {
+  data = {website, data};
+  const filePath = join(__dirname, `./Results/resources/${website}.json`);
 
   // Check if the file already exists
   fs.readFile(filePath, 'utf8', (err, existingData) => {
@@ -154,7 +152,10 @@ async function runInBatches(chunksList, extn) {
 
       console.log('Running controls', website);
       const control_resources = await runBatch(chunk, 'control'); //starts 3 control browsers
+      
+      //need to store this value
       const control_final_subset = subset(control_resources);
+      write_results(websiteKey(website), control_final_subset);
 
       const extn_resources = new Array(extn_lst.length);
       const extnPromises = extn_lst.map((extn, i) => {
@@ -186,20 +187,21 @@ async function runInBatches(chunksList, extn) {
 
 
 
-const html_options = [
-  // 'drop_downs', 
-  // 'buttons', 
-  'links', 
-  // 'logins', 
-  // 'inputs'
-];
-
 const websites = [
-  "https://www.uxmatters.com/",
+  "https://www.cnn.com",
+  "https://www.bbc.com",
+  "https://www.nytimes.com",
+  "https://www.theguardian.com",
+  "https://www.washingtonpost.com",
+  "https://www.nbcnews.com",
+  "https://www.reuters.com",
+  "https://www.forbes.com",
+  "https://www.wsj.com",
+  "https://www.aljazeera.com"
 ]
 
 let extn_lst = [
-  'control', // the control is included in each run of the website
+  // 'control', // the control is included in each run of the website
   // 'adblock', 
   // 'ublock', 
   // 'privacy-badger',
