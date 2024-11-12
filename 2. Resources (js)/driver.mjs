@@ -1,14 +1,10 @@
 import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
-// import './blacklist.mjs';
-// import { initialize_blacklist } from './blacklist.mjs';
+import { initializeBlacklists, FilteringContext } from './blacklist_parser/blacklistparser.js';
+const snfe = await initializeBlacklists();
 
 let EXTENSION_NAME = 'control'
-
-
-
-
 
 async function sleep(ms) {
   const seconds = ms * 1000;
@@ -54,13 +50,14 @@ class Driver{
     this.extn = adB;
     this.site = website;
 
-
-    this.requests = new Set();
-    this.responses = new Set();
     this.requestsMap = new Map();
     this.responsesMap = new Map();
-    
+    this.fctxt = new FilteringContext();
+    this.blacklistedItems = new Map();
+
+
     this.source;
+    
   }
 
 
@@ -70,8 +67,9 @@ Driver.prototype.initialize = async function() {
   try {
     let args = ['--start-maximized'];
     if (EXTENSION_NAME !== 'control') {
-      const extensionPath = `../../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
+      const extensionPath = `../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
       const absolutePath = resolve(__path, extensionPath);
+      // console.log(absolutePath);
       args.push(`--disable-extensions-except=${absolutePath}`);
       args.push(`--load-extension=${absolutePath}`);
     }
@@ -103,7 +101,8 @@ Driver.prototype.initialize = async function() {
     this.page = page;
     this.browser = browser;
 
-
+    // Black list parser
+    this.fctxt.setDocOriginFromURL(this.site);
 
     // Capture request details
 
@@ -116,19 +115,18 @@ Driver.prototype.initialize = async function() {
       const requestUrl = request.url();
       const referer = request.headers()['referer'] || 'N/A';  // Capture referrer from the request headers
       this.requestsMap.set(requestUrl, referer);  // Store request URL and its referrer in the map
-      this.requests.add(requestData);
     });
 
 
     // Capture response details
-
+    
     page.on('response', async response => {
       const requestUrl = response.url();  // Get the response URL
       const referer = this.requestsMap.get(requestUrl)   // Find the associated referer from the request map
       const contentType = response.headers()['content-type'] || 'N/A';  // Get the content type
 
 
-      if (contentType.includes('image') || contentType.includes('video') && this.source.includes(requestUrl)) {
+      if ((contentType.includes('image') || contentType.includes('video'))) {
         const responseData = {
           responseCode: response.status(),
           statusText: response.statusText() || 'N/A',
@@ -136,8 +134,15 @@ Driver.prototype.initialize = async function() {
           contentType: response.headers()['content-type'] || 'N/A',
           referrer: referer,
         };
+        this.fctxt.setURL(requestUrl);
+        console.log(requestUrl);
+        if (snfe.matchRequest(this.fctxt) !== 0) {
+          responseData.blacklistRule = snfe.toLogData()['raw'];
+          this.blacklistedItems.set(response.url(), responseData);
+        }
+
         this.responsesMap.set(response.url(), responseData);
-        this.responses.add(responseData);
+
       }
     });
 
@@ -150,44 +155,61 @@ Driver.prototype.initialize = async function() {
 
 Driver.prototype.navigateToWebsite = async function() {
   await this.page.goto(this.site);
+  await this.page.evaluate(async () => {
+    const scrollToBottomSlowly = async () => {
+      const distance = 200;  // Scroll by 100 pixels each time
+      while (document.documentElement.scrollTop + window.innerHeight < document.body.scrollHeight) {
+        window.scrollBy(0, distance);  // Scroll down by 'distance'
+        await new Promise(resolve => setTimeout(resolve, 500));  // Wait 500ms between each scroll
+      }
+    };
+
+    await scrollToBottomSlowly();  // Start slow scrolling
+
+    // Optional: Wait for a bit before considering the scroll complete
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  });
   await sleep(5);
-  this.source = this.page.content;
+  this.source = await this.page.content();
 };
 
+Driver.prototype.store_results = async function(key){
 
-
-
-Driver.prototype.store_results = async function(){
-
-  const myMap = new Map();
   const responsesObject = Object.fromEntries(this.responsesMap);
-
-  myMap.set(this.site, responsesObject);
-  const jsonObject = Object.fromEntries(myMap);
-  const jsonData = JSON.stringify(jsonObject, null, 2);  // Convert results to a formatted JSON string
+  const jsonData = JSON.stringify(responsesObject, null, 2);  // Convert results to a formatted JSON string
 
   // Write to a file (asynchronously)
 
-  const filepath = `temp/${this.extn}_${this.adB}.json`;
+  const filepath = `temp/${this.extn}_${key}.json`;
   fs.writeFile(filepath, jsonData, 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
     } else {
-      console.log('Results saved to results.json');
+      console.log(`Results saved to ${filepath}`);
     }
   });
 };
 
-(async (adblocker, website)  => {
 
 
+(async (adblocker, website, key)  => {
 
   const driver = new Driver(adblocker, website);
   await driver.initialize();
   await driver.navigateToWebsite()
   
-  await driver.store_results();
+  // await driver.store_results(key);
+  // console.log(driver.responsesMap);
+
+  const responsesObject = Object.fromEntries(driver.responsesMap);
+  const jsonData = JSON.stringify(responsesObject, null, 2);
+  process.send(jsonData);
 
   driver.browser.close();
+  
+  // need to write this to a file.
+  console.log(driver.blacklistedItems);
 
-})(process.argv[2], process.argv[3]);
+  process.exit(0);
+
+})(process.argv[2], process.argv[3], process.argv[4]);
