@@ -1,0 +1,2279 @@
+{
+  "website": "cnn",
+  "data": {
+    "https://media.cnn.com/api/v1/images/stellar/prod/c-gettyimages-1228093975.jpg?c=16x9&q=h_720,w_1280,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "141228",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-2181714926.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "15254",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/c-gettyimages-2182526163.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "18059",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/20241112-split.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "22837",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/cnn-headlines-placeholder-1920x1080.png?c=16x9&q=w_1280,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "247175",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/htcnightsection-3.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "55755",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/c-gettyimages-2182390622.jpg?c=16x9&q=h_720,w_1280,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "151416",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/1ryan.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "4765",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/2023-04-25t060042z-740950317-rc28l0aornx1-rtrmadp-3-film-cinemacon.JPG?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "7638",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-510306082-restricted.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "4507",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/thumb-wheel-of-fortune.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "17650",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/still-21119690-26698-621-still.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "68079",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/dji-0021-2.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "91153",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-2157632877.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "32932",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/parsely/samsonite-freeform-lead.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "8066",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/asics-shoes-cnnu-01.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "14439",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/apple-airpods-max-2-cnn.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "14905",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/jack-teixeira.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "34772",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/still-21117260-9736-still.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "11743",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-1157738587.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "12488",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/2024-11-11t131953z-656394718-rc203baj2vfb-rtrmadp-3-climate-cop29-activism.JPG?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42610",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/1539300-5365-cc.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "29216",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/mbari-mystery-mollusc-d0598-02.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "22035",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/jon-stewart-111124.png?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "380004",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/008-103024-ats-alabamacoldcase.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42841",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-2182769609-20241108163853779.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "13291",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/ap24187670223480-1.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "5940",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/best-cordless-stick-vacuums-dyson-v11-animal-inline-cnnu.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "101443",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/bose-ultra-3.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "38708",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/apple-airtag-cnnu-004-20240513200911511.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "58232",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/ree-drummond-my-favorite-turkey-brine-h-s4x3.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "67498",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/wu0501h-peppercorn-roasted-beef-tenderloin-recipe-s4x3.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "96850",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/ci-kohler-strive-sink-16-gauge-stainless-blue-tile.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "34855",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-1231785867.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "67370",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/jmss-unit-03436r.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "46664",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/screenshot-2024-11-11-at-3-16-36-pm.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "9077",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/padma-beach-ejg-00220-1126-final-20241112140522533.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "27870",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-1094563586.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "46194",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/c-gettyimages-2155012602.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "55647",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/shutterstock-editorial-14515424f.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "55776",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-2183724770.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "77955",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/terms-of-service-fullscreen-graphic-1920x1080.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "85559",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/bleacherreport/jirztho1lx3ayod536jq.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "58720",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/thumb-horiz-1-20241111234749363.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "36653",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/thumb-horiz-1-20241108004222725.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "35822",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/videothumbnails/10917992-46846442-generated-thumbnail.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "39319",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/thumb-horiz-1.jpg?c=16x9&q=h_270,w_480,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "26685",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/ap081208013441.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "71790",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/mcbride-fedorchak-alsobrooks-stein-split.jpg?c=16x9&q=h_144,w_256,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "11042",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/chad-24-for-015.JPG?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "81304",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/izzytheenglishbulldog-225-3853wa-d-adobergb-covercrop.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "37701",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/09-gettyimages-2182730702-jpg.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "64172",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/video-icon-header.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "355",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/wl2-0453-copy-20241106083134387.jpg?c=16x9&q=h_438,w_780,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "54940",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/audio-icon-header.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "534",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/live-tv-icon-header.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "136",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/video-dark.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "384",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/video-placeholder.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "696",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/ui-speech-bubble.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "209",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/loops/stellar/prod/video-amsterdam-violence-loop-1.mp4?c=original": {
+      "responseCode": 206,
+      "statusText": "N/A",
+      "contentLength": "1687845",
+      "contentType": "video/mp4;codecs=avc1",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://secure-us.imrworldwide.com/cgi-bin/m?ci=us-204044h&cg=0&cc=1&si=https%3A//www.cnn.com/&rp=&ts=compact&rnd=1731450065095&ja=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "44",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||imrworldwide.com^"
+    },
+    "https://media.cnn.com/api/v1/loops/stellar/prod/2024-turkey-interactive-loop-01.mp4?c=original": {
+      "responseCode": 206,
+      "statusText": "N/A",
+      "contentLength": "3802219",
+      "contentType": "video/mp4;codecs=avc1",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/loops/stellar/prod/raceethnicitygendervoting-hploop-v4.mp4?c=original": {
+      "responseCode": 206,
+      "statusText": "N/A",
+      "contentLength": "431886",
+      "contentType": "video/mp4;codecs=avc1",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/loops/stellar/prod/photos-donald-trump-ultimate-comeback.mp4?c=original": {
+      "responseCode": 206,
+      "statusText": "N/A",
+      "contentLength": "1005817",
+      "contentType": "video/mp4;codecs=avc1",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/ui-search.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "302",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/photo.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "584",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://media.cnn.com/api/v1/loops/stellar/prod/20241108-asis-starmap-to-aminos-16x9-loop-20241111145738915.mp4?c=original": {
+      "responseCode": 206,
+      "statusText": "N/A",
+      "contentLength": "1487784",
+      "contentType": "video/mp4;codecs=avc1",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/gray-caret.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "160",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/media/sites/cnn/icons/video.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "382",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://ads.stickyadstv.com/auto-user-sync": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||stickyadstv.com^"
+    },
+    "https://1f2e7.v.fwmrm.net/ad/u?nw=127719&dpid=127719&token=b8ce708402a6286faf64c964294f2046&gif=1&buid=f0672a2242f93cdd11f288ed1e20c8&_fw_gdpr=0&_fw_gdpr_consent=&_fw_gdpr=0&_fw_gdpr_consent=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||fwmrm.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=imulaFKK0Om9w&v=D&ml=m&sl=Ew_UH&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=1kuXfReIHQNUO&v=B&ml=m&sl=C0dJ8f&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=wPjet9q1ksheq&v=A&ml=m&sl=Bufyn9&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=EIFpI8XnOWRfv&v=C&ml=m&sl=B5yzTT&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=iTivq0S1azi4z&v=C&ml=m&sl=74PZE&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=PaPmZ95ZkDQkN&v=A&ml=m&sl=D1-gAY&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=UOqUhe5CmdXM4&v=A&ml=m&sl=Cxgx25&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://mabping.chartbeat.net/ping/mab?h=cnn.com&p=www.cnn.com%2F&d=cnn.com&u=DlNSp-DLCtt7DQxqbz&c=0&V=147&x=KU0lFqJVMOWTw&v=B&ml=m&sl=DX8n_1&e=-1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://ping.chartbeat.net/ping?h=cnn.com&p=www.cnn.com%2F&u=DlNSp-DLCtt7DQxqbz&d=cnn.com&g=37612&g0=cnn&g1=No%20Author&n=1&f=00001&c=0&x=7199&m=7199&y=10831&o=1845&w=1053&j=45&R=1&W=0&I=0&E=0&e=0&r=&PA=https%3A%2F%2Fwww.cnn.com%2F&b=4239&t=B64CdLC8FawYCm1iNqBjMlrOBQEeis&V=147&i=Domestic%20Homepage&tz=300&sn=1&sv=BCQB-VDamcr_DnG4aLDn4ttiC5Diju&sr=external&sd=1&im=06672ff0&_": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://widget-pixels.outbrain.com/widget/detect/px.gif?ch=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||outbrain.com^"
+    },
+    "https://smetrics.cnn.com/b/ss/cnn-adbp-domestic/1/JS-2.26.0-LEWM/s99716958050523?AQB=1&ndh=1&pf=1&t=12%2F10%2F2024%2017%3A21%3A9%202%20300&mid=25561399104648852293722075928796065213&aamlh=7&ce=UTF-8&ns=cnn&pageName=%2Fhomepage&g=https%3A%2F%2Fwww.cnn.com%2F&c.&cm.&ssf=1&.cm&.c&cc=USD&ch=homepage&server=cnn.com&events=event26&aamb=6G1ynYcLPuiQxYZrsz_pkqfLG9yMXBpb2zX5dvJdYQJzPXImdj0y&l1=16b6&l2=&c5=nvs&v5=D%3Dc5&c8=new%3A1&v8=D%3Dc8&c13=landing_homepage&v13=D%3Dc13&v15=0%3D3268%2C1%3D6032%2C2%3D7880%2C3%3D4702%2C4%3D1331%2C5%3D0734%2C6%3D8242%2C7%3D2318%2C8%3D9013%2C9%3D7165%2C10%3D5086%2C11%3D6690%2C12%3D0483%2C13%3D8195%2C14%3D5165%2C15%3D4930%2C16%3D7812%2C17%3D6798%2C18%3D9227%2C19%3D0357&v22=0&c23=domestic%20desktop%20homepage&v23=D%3Dc23&c26=www.cnn.com%2F&v26=D%3DpageName&v27=D%3Dch&c28=homepage%3Ano%20value%20set&v28=D%3Dc28&v29=D%3Dserver&c30=cnn%20domestic&v30=D%3Dc30&c32=landing_homepage&v32=D%3Dc32&c33=adbp%3Anone&v33=D%3Dc33&c35=launch.cnn.prod.78.20241112&v35=D%3Dc35&c37=desktop&v37=D%3Dc37&c44=section_homepage1&v44=cnn&c46=17314500673972771206687662&v46=D%3Dc46&c48=topics%20available&v48=stellar2.0&v49=cms.cnn.com%2F_pages%2Fclg34ol9u000047nodabud1o2%40published&c51=homepage%3Ano%20value%20set%3A&v51=anonymous&c56=landscape&v56=D%3Dc56&c57=no%20mvpd%20set&v57=D%3Dc57&c59=no%20mvpd%20set&v59=D%3Dc59&c64=cnn%20news&v64=D%3Dc64&v74=account%20not%20verified&c75=nvs&v75=D%3Dc75&v89=not%20logged%20in&v90=domestic&v101=not%20subscriber%3A&v111=no%20media&v112=https%3A%2F%2Fwww.cnn.com&v113=L19wYWdlcy9jbGczNG9sOXUwMDAwNDdub2RhYnVkMW8y&v114=cnn%20news%2Cdaily%20news%2Cbreaking%20news%2Cnews%20today%2Ccurrent%20events&v129=comments%20not%20available&v132=section&v135=standard%20content&v136=paywall%20enabled%3Anvs&v137=regwall%20disabled%3Anvs&v195=4052091756867558744&s=1920x1200&c=24&j=1.6&v=N&k=Y&bw=1852&bh=1053&mcorgid=7FF852E2556756057F000101%40AdobeOrg&AQE=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=utf-8",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||smetrics.cnn.com^"
+    },
+    "https://smetrics.cnn.com/b/ss/cnn-adbp-domestic/1/JS-2.26.0-LEWM/s9611210676719?AQB=1&ndh=1&pf=1&t=12%2F10%2F2024%2017%3A21%3A9%202%20300&mid=25561399104648852293722075928796065213&aamlh=7&ce=UTF-8&ns=cnn&g=https%3A%2F%2Fwww.cnn.com%2F&c.&cm.&ssf=1&.cm&.c&cc=USD&events=event117&l1=16b6&l2=&v26=%2Fhomepage&v27=homepage&v28=homepage%3Ano%20value%20set&v29=cnn.com&v30=cnn%20domestic&v32=landing_homepage&v33=adbp%3Anone&c35=launch.cnn.prod.78.20241112&v35=D%3Dc35&v44=cnn&v51=anonymous&c69=module%20load&v69=D%3Dc69&v74=account%20not%20verified&v89=not%20logged%20in&v90=domestic&v101=not%20subscriber%3A&v111=no%20media&v112=https%3A%2F%2Fwww.cnn.com&v113=L19wYWdlcy9jbGczNG9sOXUwMDAwNDdub2RhYnVkMW8y&v114=cnn%20news%2Cdaily%20news%2Cbreaking%20news%2Cnews%20today%2Ccurrent%20events&v122=google%20one%20tap&v123=cms.cnn.com%2F_components%2Fuser-account-nav%2Finstances%2Fuser-account-nav%40published&v132=section&v195=4052091756867558744&pe=lnk_o&pev2=user%20interaction%3Amodule%20load&s=1920x1200&c=24&j=1.6&v=N&k=Y&bw=1852&bh=1053&mcorgid=7FF852E2556756057F000101%40AdobeOrg&AQE=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=utf-8",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||smetrics.cnn.com^"
+    },
+    "https://ad-delivery.net/px.gif?ch=2": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||ad-delivery.net^"
+    },
+    "https://ad-delivery.net/px.gif?ch=1&e=0.5087872368446487": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||ad-delivery.net^"
+    },
+    "https://ad.doubleclick.net/favicon.ico?ad=300x250&ad_box_=1&adnet=1&showad=1&size=250x250": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "104",
+      "contentType": "image/x-icon",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://aa.agkn.com/adscores/g.pixel?sid=9212295978&puid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||agkn.com^"
+    },
+    "https://dpm.demdex.net/demconf.jpg?et:ibs%7cdata:dpid=133726&dpuuid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&gdpr=0&gdpr_pd=1&gdpr_consent=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "59",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||demdex.net^"
+    },
+    "https://b1sync.zemanta.com/usersync/outbrain/?gdpr=0&gdpr_consent=&initiator=ob&puid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&s=2&us_privacy=1---": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "26",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||zemanta.com^"
+    },
+    "https://match.adsrvr.org/track/cmb/generic?ttd_pid=icco6m5&ttd_tpi=1&gdpr=0&gdpr_consent=&us_privacy=1---&ttd_passthrough=initiator%3Dob%26us_privacy%3D1---": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "70",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://rtb.mfadsrvr.com/ul_cb/sync?ssp=outbrain&ssp_user_id=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&gdpr=0&gdpr_consent=&us_privacy=1---&initiator=ob": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||mfadsrvr.com^"
+    },
+    "https://x.bidswitch.net/ul_cb/sync?ssp=outbrain&user_id=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&us_privacy=1---&gdpr=0&gdpr_pd=1&gdpr_consent=&initiator=ob": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||bidswitch.net^"
+    },
+    "https://dis.criteo.com/dis/usersync.aspx?r=74&p=126&cp=outbrain&cu=1&url=https%3A%2F%2Fsync.outbrain.com%2Fcookie-sync%3Fp%3Dcriteo%26obUid%3Dgxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt%26gdpr%3D0%26gdpr_consent%3D%26us_privacy%3D1---%26initiator%3Dob%26uid%3D%40%40CRITEO_USERID%40%40": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||criteo.com^"
+    },
+    "https://sync-jp.im-apps.net/imid/set?cid=1000047&tid=obid&uid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||im-apps.net^$3p"
+    },
+    "https://cm.g.doubleclick.net/pixel?google_nid=bidswitch_dbm&google_cm=&google_sc=&google_dbm=&google_tc=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "170",
+      "contentType": "image/png",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://pippio.com/api/sync?pid=5324&_=2": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||pippio.com^"
+    },
+    "https://media.cnn.com/api/v1/images/stellar/prod/cnn-headlines-placeholder-1920x1080.png?c=16x9&q=h_540,w_960,c_fill": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "163218",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://sync.crwdcntrl.net/map/c=14516/tp=OBRN/tpid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 403,
+      "statusText": "N/A",
+      "contentLength": "49",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||crwdcntrl.net^"
+    },
+    "https://loadus.exelator.com/load/?p=580&g=2&j=0&buid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 302,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||exelator.com^"
+    },
+    "https://u.openx.net/w/1.0/cm?cc=1&id=00df9f64-6f67-4cae-aeb2-d951da52047c&r=https%3A%2F%2Fsync.outbrain.com%2Fcookie-sync%3Fp%3Dopenx%26gdpr%3D0%26gdpr_consent%3D%26us_privacy%3D1---%26initiator%3Dob%26obUid%3Dgxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt%26uid%3D": {
+      "responseCode": 302,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||openx.net^"
+    },
+    "https://ice.360yield.com/ul_cb/server_match?partner_id=1863&r=https%3A%2F%2Fsync.outbrain.com%2Fcookie-sync%3Fp%3Dimprove_digital%26uid%3D%7BPUB_USER_ID%7D%26obUid%3Dgxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt%26gdpr%3D0%26gdpr_consent%3D%26us_privacy%3D1---%26initiator%3Dob": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||360yield.com^"
+    },
+    "https://c.bing.com/c.gif?red3=MSOB_pd&uid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "/c.gif?"
+    },
+    "https://creativecdn.com/cm-notify?pi=outbrain&obUid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&gdpr=0&gdpr_consent=&us_privacy=1---&initiator=ob&tc=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||creativecdn.com^"
+    },
+    "https://pxl.iqm.com/i/ck/outbrain?cid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&redir=https%3A%2F%2Fsync.outbrain.com%2Fcookie-sync%3Fp%3Diqm%26uid%3D%7BIQM_COOKIE%7D%26obUid%3Dgxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt%26gdpr%3D0%26gdpr_consent%3D%26us_privacy%3D1---%26initiator%3Dob": {
+      "responseCode": 302,
+      "statusText": "Found",
+      "contentLength": "205",
+      "contentType": "image/avif;charset=UTF-8",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||pxl.iqm.com^"
+    },
+    "https://cm.rtbsystem.com/usermatch/ob?redirect=https%3A%2F%2Fsync.outbrain.com%2Fcookie-sync%3Fp%3Drtbsystem%26gdpr%3D0%26gdpr_consent%3D%26us_privacy%3D1---%26uid%3D%7Buserid%7D%26initiator%3Dob%26obUid%3Dgxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt": {
+      "responseCode": 302,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||rtbsystem.com^"
+    },
+    "https://id5-sync.com/c/164/164/9/1.gif?puid=gxp5PvaLo7ETOxi1Qvskutck4Eh-SfzxwIZb6zJlz8ZNZzcIw1cXfKzFIpiDHPUt&gdpr=0&gdpr_consent=&us_privacy=1---": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif;charset=UTF-8",
+      "referrer": "https://widgets.outbrain.com/",
+      "blacklistRule": "||id5-sync.com^"
+    },
+    "https://widgets.outbrain.com/images/widgetIcons/achoice.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "990",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||outbrain.com^"
+    },
+    "https://widgets.outbrain.com/images/widgetIcons/Close.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "765",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||outbrain.com^"
+    },
+    "https://tpc.googlesyndication.com/simgad/16659051995646446026?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "201960",
+      "contentType": "image/jpeg",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://www.cnn.com/wbdotp/consent/3d9a6f21-8e47-43f8-8d58-d86150f3e92b/01923021-e353-7e1f-8733-817b168c3e44/logos/static/powered_by_logo.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "2058",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/wbdotp/consent/3d9a6f21-8e47-43f8-8d58-d86150f3e92b/01923021-e353-7e1f-8733-817b168c3e44/logos/9651e1f6-c35b-4377-be7f-5a0c93f0ecb8/fd2c628a-153d-49d4-b7b4-92a834c64b28/507420f5-a79f-4038-baea-bb890032307c/CNN_logo.png": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "3721",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://www.cnn.com/wbdotp/consent/3d9a6f21-8e47-43f8-8d58-d86150f3e92b/01923021-e353-7e1f-8733-817b168c3e44/logos/static/ot_guard_logo.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "336",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjssAqGlJA60rHVz64tx34ApT2UekKWD-uS0HOIfToA4Shs_uglgORPl788SSmUimUDiflnXCTmKdBZ-wlnxYkGKVutMpprMfeEirWIr3UpUuFMmHkQN_I0cgeFWnL77uqthFV0CZYWzc9wECypOwGs-qIh_jdzvOZq3nPo6lWTgWFZRJ3JUTyLo6i6pUq4yYjge7zZUOKg8otxaTyTrn8AM3OohVI7PkQHOLi3hBUcdeYUIJ754CMkuw9kcQHWHVMuN6xCRRCcEbZpgdSsDz7Sk5Ct7JWr--UcgSuSoJZflaZRqPQNeFU8J5hnP6NwWmUt6hFmuIEXEXSXit8ytk4-hMWpQitzIlHrPOOXsEt_Ks8XpbTubfapw6kwLlWCBw5Ky_E43xaOmVuVb9ycV3HBxc9Y_qNnG8JPEUjZXWqBo&sai=AMfl-YR9tN1_qxVqlCF76PVTjt3TqeyqvlQ1qMamJSUCx77lsPKJMHuReBZBjtYkYbFXpMey3mriajzSNMYq2PKru8rZQW37tkzcwXEFu_T_q8hGKSdHHJovCNm3-VGr9p1YKneMImwxsECj-e539tMizw&sig=Cg0ArKJSzAXLfBSeYqA3EAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=av-js&type=fle-fetch-start2": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=av-js&type=fle-fetch-fallback2": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://tpc.googlesyndication.com/simgad/5601490077565394234?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "288875",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=av-js&type=colleague-executed&name=4": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsu81ampunr7O0sujC2yji4L5QzZU-OpeKiOiuwVE-8tCQhn0vQVgw5VBiwiD7kzKOGDwXudUcX2alGqBgfCozUpf6QlMls4uzTHEEmszwTHOCyFNna2iRaywYviW1f-6Ca0g7jzFz1BWnuuQAp4miSwvSELky7rm_YE9RmWoY-eGEU5ZwnAF1DxChQqfZdy9xuIyCVRWyPsHVHxeCBmrJZ3iZwiCuB_1tsSqzJeaHQE4PU8yobRquGK_628RmBAOytrBHSQipberKZIrs4bIImFuyXCciswtqzte9UpTAFoWYxYBuH-MkVVK1SaacwkHV2Rng2wUo3hzYfF-JZ42xW4hu90le7dbuTCQJTOeUYcvkzhrTINvJhbc6Dy6hWHV5Fn7sH1x4N1GKGPxxSPafvy9iQ&sai=AMfl-YTwn7Dc8bbvsYzlBOu8Ukhg-2rrLKohfdAEBHaIkzY5BYZ3iVMGiUlswxjB75s4QHNmt1RC46SeSb1upE0xabmd8XHSzrDt7nBSr6kkUYIdLdBWibHPtERijPHpc-zvneQFn5KDS3wyeCe88Ga6PA&sig=Cg0ArKJSzPvAcydsf5n9EAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB9SURBVBjTbZBRDsAwCELxBt7/tF1F0KQz/SgZo0+A/wnOvSBGIetrIjOXKgfohJV8CR4pu/2P3M7Old1v29skmuEgNwjN1CARX2/3PYJq5ODG6AXsNk1ty9B2Wy0S1fJwQ6WsLSGMCncL5Fl9szMCi3u5MURPg00zJG7lux4k8QWoM4xoLgAAAABJRU5ErkJggg==": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB6SURBVBjTbVEBDgAhCKIf8P/XXimQt2Wt5SQEA96xOuoyMrCq++SOZKtgY1V2KkKdS7LUfQQdbgxu9Q6zlDguVrohfG1gGXZlo1qYu2UEPPAxqR5N2n1eSkTeDqLbgvCfIOkXJH4TlJHXBGX0ohtun5NbD4kxQYz/+QCL/wYCvlVh4QAAAABJRU5ErkJggg==": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://tpc.googlesyndication.com/simgad/5471485808502551851": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "71040",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=xbid&dbm_b=AKAmf-AYZBHPUwacpm5sNafZxMq_N9SQg9HNFUvBL39Jh_seEu-UMqCbpawpFzA_TR5BMuD7fwMoX40-7A96HE5Pp4d5k76P1sjmLO6ZxZdtmUr9oJ20-qQ": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pix.pub/t.png?l=DiSC-OODisplay&u=30632505_406869525_225844068_6589049375&u1={VariationName}&t=3385134057": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "68",
+      "contentType": "image/png",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||pix.pub^"
+    },
+    "https://s0.2mdn.net/simgad/15152495836602241798": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "66268",
+      "contentType": "image/png",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||2mdn.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=av-js&type=reach&proto=CAlgAWACaAM%3D": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ad.doubleclick.net/pcs/view?xai=AKAOjsuE39veBWjJiVhnqDyckev_p83ZyCDVX1RfkqoSnXNDM2feYWdAw6ujJyJ0Jm50eSvMGgTW9XoHIGfo4nBZEYuMmfLNGAjxUdlCqZxIxuo61k5_HFEk6fuJSqvd51oskq9ajzXb7qNouto_z02N8GQm64BO8A2K0VM1MK8wK_tctg-VLz4mX09RvPfsSg2_0pAFePEvAqW6BE9WuOcOLE3dceEpniLD-8TOJbka9PYRZz2bO5ibBNUWfcyzMRHbqZ1jS_wvDEkFBmhfgPtuNqWXMBLwkR7oLjLc_GS-SVMYq6dRJ1MB1SiDtdGWhxDKpORYlHrOh72tgAg2UHHOjLZCmx0-difYacZC8Q0nOHu-7WqVb5zjOcy-VTIflk-Bo2cSXEe-UMe2ujMii7M6Xl3MqjFvYNgsUZyNMmv1h33qr5GG7FGxymH2oqmLkXJ4sjxqxrhRAaK921mZD0WKAy1fD7nw7A8ELX5VjR9qT7UhhsOyvQQmEYAGL6DEfZVHct8MtSgwcUamOo9Ppcz3zf2olRPGYH261juyStExOVslf8z-g4KitPwXrEdgoyoac1_EBHso3f35p2k6HmPHFBX79NtbPqcl1PxqiNON3mtYTw0GBIeNwuMN1jgTXdj1DFBqqXwzjJE5ibtYq4ectvGCNgXxnRA0ROnOyWGxpE-qL4Rz5c5dSJrWop21pTb1TbXM1MyJ8xQ6ITouRXW6YjoZXdTET4FriWM-yBIU2WSL_WVOjZ1-UTXZJHrwQuyypNGR_q3N6JHEczqqOZDFq_lmWCFgGZsvwL5UFQDtpQF2N0U7QwsLWL88FLbq-kOfd4cE30jVXXnyaJ3E9OaxySYjuFKV_E7rqPGOEAceIyxiReoSzsl92-ccTY81yOCn_nprHtHiuFXaiajUTT53bjbTVBvsKvoWJH1Ua6jEfbENXE8ihhwhFfKoQ1Mp6L9NLjeDrcNcT-qdvuJJssWV1FRWuwUBdDwo0UfH2rfNq6Sax8nBhdTCJ2JmhRE7B23sjs6wJCK158nhUTKGOvjYy9W4JJ7cukrDL5oNRZJOIlfTaRemwTPfvzAu6Aa-zusM6stDQmuXvuxrhwm_Hj6E4wivC72fuC8wm15pAIq01LJCUPLyhlFL2Xa4bEyh_IfWkIC242u0fXK7LO7IgNIp7r1oj42IMn7oTaPf78RDdO00yMzNAdMkCjJIlyV36n_1CThc0ezqwZC8pTKf2O1Vii1-jJgEsWn7HOYWnA6UjD1fNpycdZoHIZIjfEwC-STcgXwDKd_NUkMyEKA4KSchMK_658-cGMaaqh2KCP2dGfP0-yak3B91FKLpDdYxSrGKGi4wQ-HRl7TqdzuXQsO6DCKvKS9bFQFnkpiGO2xbNDC40F9c9swh8cSd9NzYyKE-LuhIUzgEvIIHlgHNXtJVzPLi7nC9ufg2lDrhnIO5TS2t-NEyObaZ-alwRZ2rj201of8jBAfIpG--lBKHV6jHtCwafFco_sR1UnKledTV8xoaiT3x45mBN6i_0c1SKnYXjt0vAZBmej__dIJ7Vk0He_5pei7bd2qU_eAgu5Y6F4Oe0o8zWYzMFFnffMCIS_SYWC4k0f6MlkOdvyqXqRh4kWcY3nknWIVb2t-58TxmFOYqIgjxybcYLgf_ovCXkKyhJHPGMkRDJpXslx_D4_BScf7pdLxqhOOPobprXLTtk8tx3VPZTGoXZGp_NXgt9SzWELghGyUN-N8kR_aZqGC_5v5o-Lh6cY5otUdAgkfhHee52JdOovO2zP5npacTEw&sai=AMfl-YTS_PLatBKtbOc_vp1iTuWIZU2cl6U1cZwjTvHB0zq4tivnFqyOiKdtDCmpWIxXJ5HSOhZfOZg_WtbNR3qlRXekuDOKZJv2sKXPGd1-Lz5DEcg1lccA83VCSAMRuxe0ZuPnspOGSLpbamxyXkTatPcjL2YY5JVc3o06wQIYAdyN67aUVgK5rcV2LilHE4HeXaOZW68pOnbmKVhy44xUDaAbx9TML0yqos01nsjl4LtGQSzFvkGD_2gB_n4uIhuzkmmtab6RSVCvx7tbN-HUDZYOzzBl3gcepcHVLmIyKvfZg-PXOVA5Pu3GkwhjQ3i-YtjbKToN1AEm1L2PReoK7TGZWaFzUyGrSTVh_3el_Py5fxbwdMGbFf-h2c_JB6JKNZUf8nHuVY9UdAUGN646NE5UZAQhGfsOHvwBHl4b2VTume4yFl680hDgwTpzQFCe0FRfz-Xq956MryXWjL12d1QrAJPjPVt9Xal6ooZ0jKle5_3Lc0RnckdA7pmNZo2UK5vkZ_BGnS5HXg&sig=Cg0ArKJSzAVbKjffxpj6EAE&uach_m=%5BUACH%5D&crd=aHR0cHM6Ly9jbm4uY29t&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&omid=1&rm=4&ctpt=4&cstd=0&cisv=r20241107.62855&arae=1&ftch=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/png",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB+SURBVBjTbZEBDoAwCAPLD/r/1+qgFFzEOMS17MKA/4iK9+NTgblL51rjKJDqzKqOjsy1PFXNfsjSarSHq7fO1mOSCfLihiRtctsUs+hPNnFIrMaEUG3KQ8IsA/7lINDWpY2e4p4ZVuOZggcTG5tomgKy+qLg7ck/Q+Jret8HeLEGE46ErJcAAAAASUVORK5CYII=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB7SURBVBjTbZABDsAwCALxB/z/tcsELWvmGlcjpVeB/yiFtlGxu53JrVqBOv/Ob4dS9Zpq+4VLbW8yvX33+g+Xo32TG6NH66QlDWAobcoQ4y0oeUqtpMPJgWFJErvrusMNU3wn6BnKPieXMGeCWG+kGst8eXO/nKDe26cfmM4F996syYIAAAAASUVORK5CYII=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjssePmJzwzKwRasavMlZZ8ePXXzCHBLPGuHp_GrBFUPz4OjJRQBZ7bQSwpwhHih-ScuWy7RvKakwtv4gvTDmW00zXAbQMoz1o6hQ0w6bTZ3vW3JtnufQ_iPZiypcjilzvi7Qr_8VqcZc94-bSp8u6pPLUT_kZwWcEsFQ9KZyhXPbKF4AENATYdWuAv9oqVk1Hxfg1OaKb32LrO_HqzevFr0L-zYluOvCyOQUOUoMrzrVUt52qnvbRG0tVW1pq48zp82dEwnRVzGFUWTk-lg2r06Q30yU9wAGTzcdeiRbOw4zNHydDOKXTMJABA4qU3yiyunSJd7z9lz7JZsxAPvMQDEFXFAK1IunGJs-StIRdf-aVBjv7Fld2KuVoyViFjF84PEn-KIssSxTSI0OTmAGRX923baVKiHsXXTgrzSpoH8&sai=AMfl-YSz-7mOUvofAYWPXgOolvMK7gcZA4v8GCUNlE6_Q-2T4uhM7GcRxeRSZGzfI8LJX7_PO-qOn84nqV4Vsx-mmEVieXWlodAdIVwIwvQf4QKayWfKdTRlrLYjKnj43evnrcSLWhh47bsMh2ktrikabQ&sig=Cg0ArKJSzCW3u7BxYBAgEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsseb9guZgmbU8OaGxXrH7ls_BCAU-s3l6PFPkoExawgieBFTFUTp7RCXBuWYUtKWAvO2rqz8cqFDCMc49XvSqNxFkYUS_oHAo798m2_Sc6mldJIEkXA8d571WJUtuqXx0le332VysHmo7dHXY28QyhNmtcTZRUXcheZuwsFTTaEyTaHs0m9IBnQxufP3vnuth3buH0JnuyGf9DAwsrv-8cKnEARzx4mAlTNOnm8nNdXzSKI7hDXWIk34lKxtLZdvDIzHirbT-IBIDJRh0HBlTZqZfDtnE76sEdVey5yK1jv5mBJrlFUuefZbVAGi0SGImMT5UEkgTDWcOukFWmjX_Kz9Hh8bcRxucGIjMzBMsvXftXEQNAUUgweT5z0upeeLzIS8LLfMDtPDc0ABw3vq1mYtXAX3SNbHAz-XwcMORlpSyBBNvcAKBCjwKzmeBn4X4Gr&sai=AMfl-YRK_MXZzSJjUD_RZmDpVGRpCOMtpFGI690onfeAgzitXdMkEEYTDJdy1i3MqBA4RvS9XDL25yOUS_Nz8juBp_yU032aawePyiJ1PEtXnxBL9Vm22AhL5u_iKiv0DTx_zZje_Rmkd92-uRKlpzft&sig=Cg0ArKJSzHZJaMk4NMcoEAE&uach_m=%5BUACH%5D&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=xbid&dbm_b=AKAmf-CBpj7Qx8yR1qY6zrZO4lXek3mSJDTumGho7lwhdSBTtkn0BOa97YOIbvAtKiXE2UFBHnPFZhPNDylp4WedRR40NbAARS2nMmwxqeRMmVqqI3IwpYk": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://a5675.casalemedia.com/impression/v2/288429/85/cspt9lms0c19uuju1h90/509b0e90-deb3-4402-a11a-3918ad1cef59?verifieD=1&userID=&cmpro=0&deviceType=2&expiryTime=1731450671&profileIDs=&creativeID=157776f&pubID=187781&format=banner&channel=site&ap=ZzPU1gANy-EITyaeAAUP3Pkw-OLeB7yXsdyB7w&ee=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||casalemedia.com^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB7SURBVBjTbVEBDgAhCNIf8P/X3gxB3c7VXUwCqoj/SlatDsLr4k0YZTGKqQ9RMQAzhdSv/2VbG0u7vbVDSVwo9uRmXCZpLNrQOV7b+gwTCqEzNiadU0Fksh2g9Fs32ynWKdHBuWluwfo2RseBTbZqdPK82n6l2DeYQ/4APZEFnlBnu8cAAAAASUVORK5CYII=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsvRWmqbZiWucskC3Op9RKirm01vIVL3egZEsMoYR5H_O8zKwbTU-jwns-__D9VXTbomD4bkh8Xi6HhSQNOpnfnQfoaSgpyS6lxt05NEkcvaESA6WvAFwXl57yAtIGHY2s8YDAbY4qrXVH2Ex4kFTA44EZ8zEomHf8JWW2SOeaNs-ZKMOoRv8g2nqJBUv88fUF090UkKYY5UTmjJweTRQQZM6LcbJW0NupL7C19IR6zMzLZGDcvBLowpX4n-8J3huReSzwlimOUqUFxkQCgLvVhIi7vmnddL2t6pEh6C5QiHsKAFCYW2wDL3Z0KE388_aXHo4SyfHiUcphE-xHE8BPpEZ8S2tfsIgPRiUGOrKjWS2hy6Z8mqQDV_yTaKKdis-6rpCqYT8JJg5yZtbGHS2F4iX4RJqOFA4f2RGiGuazyuv7idh4EdBOjh&sai=AMfl-YT3USGWQpTJAmsDdeaGj_gcphlhhPwIB6CyZeN2UE_Ul8VE3Z3HbjjXe-SrLwu9FEA1K7CNxxl2Rj-l0IGs56uCB2H7GeR5w0NZUhZN77XVQjyk7K2yptEwRoiXHidr5Qs_JwWciZ_929JOlZWx3A&sig=Cg0ArKJSzKnaWOqzp4FOEAE&uach_m=%5BUACH%5D&urlfix=1&uach=WyJMaW51eCIsIjYuOC4wIiwieDg2IiwiIiwiMTI5LjAuNjY2OC4xMDAiLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxMjkuMC42NjY4LjEwMCJdLFsiTm90PUE%2FQnJhbmQiLCI4LjAuMC4wIl1dLDBd&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=dv3-render&msg=running&ord=861732072&version=m202410070101": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=dv3-render&msg=tlbr&ord=861732072&version=m202410070101&ct=76&x=13&cor=3068063396101490700": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuxrGT0XqPtMasKZdO5a2o-AEgI7_QUHLg7_pGg7pNrzB0uP7CHDOgf2p9CtSxx-yTLBfrm8k6JRUEdC-z7wvKNQzageXlXKW5eQ1gY_JNBdInRcWCX743N-_rB9NgrzJuXqYt4ckoF0lCeVgD6jvqWCnEqus-7u2sz8bKKoosF08L7dYNY7ZClRLhFpRdHhBsSz1Y0nGDa-ORiJuiYF_JU1wFHp36JV0H3i1pzAfN7ocP7Shl5M-_02iLslYlaydVymKptuv--MCzShtUjECKt2DY8fSDQw8IXbDlZpsepaxQvi7KJfDta-DIYDTQGCQdMAuqF9fPg8LXlJQOC9dBoP8H9d3_cYBK7pwGqDtAgAAhdJYCasfya6u7weLuUdsxeYMVmxP_mp7iFdItFA6sit6i8PZkwTU8F2-qC2h5Nwg&sai=AMfl-YQkBorL9btn1WAkHwOFAEHhJty9AymtRGMEgH9kyf4e5YBES2hwsEUsSpSuZSKdUptxkS8yYcT1TdTD4fpHGuZ-bsLEm8Z8e0ZHNF45_07_ZkYPMy79J0U4xQ9tjAvH1JWila2YNdi_1FqDzHbn0Q&sig=Cg0ArKJSzIuTvao8zVV1EAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/d6244f48-57ac-401b-86e1-3faf44fce322._QL25_.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "12791",
+      "contentType": "image/jpeg",
+      "referrer": "https://aax-us-east.amazon-adsystem.com/"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsvLmHj2xRYPCEy6gNgGDcbIqzM4f2gmHKa3-XpGVtPBFkQjg_4hGpRb10C2m8k85QRHO_QVmYwHUku1ePiq9jJf86iwnhRY5uCjdZf_-Vb1Bglxx4N98i3tQdq8eB814zhGubCzhP0GL1RztAJpXLkpcy7SzqW8iXxjfBRl6jhVEXZDQKhkAk-_z2DIirWOkRfeI4It7eL9Nvpbu5rRC96AhzZD-TQ-tvybzUYA83kNfjZkuf-7F-e4GlzI-oz8JnqCebYriHYYQ8Rj99enQvQh6e6JHuZ9gRVjiBtU6ggixEcIuBnh-4qlg_FZmt6n0Ys6TVAtvv1qILKUvQ88bBBauD7Stu_eMMOTJyJKryELv0wH1QOce3kyRqE5w3QP-MaJNwQ1nujHkCybWmG1NJG4BIQmrfwbFIgTD5UFy3RGN2RqLJYV&sai=AMfl-YSa0guH8oB1xlftFWMvZmPJ9yteAcd3NbFRYrim7gispCVwyeQPLcpk026O_ju5vRti7u3TMpBsNw7WTJBjO-TebVowcLNqxjDihK3fd6Gxt1Z9QOnhczhCRraiXpaOcBLoajTVNhMsWdCMM3Ms&sig=Cg0ArKJSzDKIMWmT28_sEAE&uach_m=%5BUACH%5D&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAACBSURBVBjTbZELDsAgCEPxBr3/aaf0gybDSIbW+nBV/7EY/L4q9AqUXLVi53JitXcAVA9M5f2MqO3NM/LW3dGGS4HjOtyEb6nrUcE81UQt1O1HaTVe0z4ENhbz5XYfkPZml+EWidzdl5TEqpeDZHW9YJBgkHlvtXF7hx3Xv1wRnvkBd6QF/odVg4MAAAAASUVORK5CYII=": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://images-na.ssl-images-amazon.com/images/G/01/da/adchoices/ac-topright-sprite.png": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "1711",
+      "contentType": "image/png",
+      "referrer": "https://aax-us-east.amazon-adsystem.com/"
+    },
+    "https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/d6244f48-57ac-401b-86e1-3faf44fce322.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "31520",
+      "contentType": "image/jpeg",
+      "referrer": "https://aax-us-east.amazon-adsystem.com/"
+    },
+    "https://aax-us-east.amazon-adsystem.com/x/px/RDQTrBH1pSbDyv_HcZy3jGMAAAGTIndr8QEAAAakAUIzcHhfdHhuX2JpZDMgICAzcHhfdHhuX2ltcDEgICDlXVID/atf/%7B%22atf%22%3Afalse%2C%22f%22%3A0%2C%22vs%22%3A%22visible%22%2C%22ah%22%3A600%2C%22aw%22%3A300%2C%22ts%22%3A1731450072398%2C%22bn%22%3Afalse%2C%22pixelId%22%3A%22yxs867ksj18%22%2C%22ver%22%3A%22r-1.35-tpmv1%22%7D?cb=78008": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://aax-us-east.amazon-adsystem.com/e/is/bb8e6d0b6c85b2b1fc673047a9802fc9/creative?b=JDQTrBH1pSbDyv_HcZy3jGMAAAGTIndo0gEAAAakAUIzcHhfdHhuX2JpZDMgICAzcHhfdHhuX2ltcDEgICDlXVID&ct=https%3A%2F%2Fbeacon-nf.rubiconproject.com%2Fbeacon%2Fv3%2Frs%2Fiad3%2F0%2Fe81d064c-d2f1-4b8a-a5ed-4edd4023015a%2F0%2FEONzWuFNMhJBKa5bt-a9MNF9NPM%2F&bi=VW-6.puPamLfXe3rcUjwjEBfrxUplxgM3.y-xsF7yF5Y91UNPxUMx2.eEYeiTgWQqhtmJIVtNtkR59SbP1GqvrLJYrViL2Na20jxq2HyffBsuuHmc7PMF390KzgWeJviNywX3dQzz7VaGYBCNsGBCJpdTmqSmIUXImzSXriCGVFPIruVrQrx3XaxKDBDb4h35ERIk1VKR4SzFNTjju3e.9AykQuY1O-duYG0bZ6sI7bNmT6Z8rAElIWn5Ujj3ydtJ7Bn0lTbQc3PKzC0O15wLrzch3BfYUWAk4ZY4BCx8cwL4HW0DY3lYTxq3cjWBa-LUBCa7CTxqaOvfBNo91-tewIOUHXwTEnpjd8d2irSCgNCygaL5W-tACEkjlbrXXu0UFXHb2PEz8TuhwqA1-V7-sZFZGCXX0Ve1I5YTZDgMRx8r0ZNx7nDNKCnnSdl6ieQYcWshCNwx-MXTtk9tl.qvp-v73qVcWSKfT-SNdtBjtlhdItRSVkXGWqtH59AnHWad3uvzFEpeH5ajLi-bHd3HZw8TV3I.5IoN0MxJCJ-KkG6DqOeesNUKmB2tGdd2rcM.o2lY1SwdmzUixKCJPYRhtlwCF502sQRY9inv6ZuoTU_",
+      "blacklistRule": "||amazon-adsystem.com^"
+    },
+    "https://js-sec.indexww.com/ht/htw-pixel.gif?0": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://ssum-sec.casalemedia.com/",
+      "blacklistRule": "||indexww.com^"
+    },
+    "https://pixel.adsafeprotected.com/mon?anId=925660&campId=0x0&pubId=100473157&chanId=70626757&placementId=6440239173&pubCreative=138495096126&pubOrder=3290915897&cb=1320160023&adsafe_par&impId=6afd078a-a144-11ef-bbff-6e71c567471e&custom=nat_atf_01&custom2=&custom3=&custom4=&custom5=stlr&custom6=landing_homepage&ias_adpath=%23ad_nat_atf_01&adsafe_url=https%3A%2F%2Fwww.cnn.com&adsafe_type=y&adsafe_url=https%3A%2F%2Fwww.cnn.com%2F&adsafe_type=ce&adsafe_url=https%3A%2F%2F159fae163492be21964394db019eb466.safeframe.googlesyndication.com%2F&adsafe_type=f&adsafe_url=https%3A%2F%2F159fae163492be21964394db019eb466.safeframe.googlesyndication.com%2Fsafeframe%2F1-0-40%2Fhtml%2Fcontainer.html&adsafe_type=bd&adsafe_jsinfo=,id:620af6b7-793d-92ba-7a46-c5ca958ce680,c:tRWdqo,sl:na,em:true,fr:false,thd:1,mn:jsserver-primary-697c97bfc-qpfnm,rg:va,pt:1-5-15,mu:10000,br:c,bru:c,an:n,oam:0,scm:publ1.grpm1,mtim:341,mot:0,app:0,maw:0,tdt:s,fm:utXe39e+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j*.925660%7C1j1%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o1%7C1p1%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2,idMap:1j*,pl:CV8L.CV8L.CV8L.CV8L.CV8L,rmeas:1,rend:1,renddet:env,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,tt:jload,et:401,oid:6c5655a0-a144-11ef-a53b-baf57b9423a8,v:19.8.552,sp:1,st:0,fwm:0,wr:1920.1200,sr:1920.1200,ff:1,ov:0": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?length=968&loaderinit=1731450070712&nonreq=1731450070712&nonload=1731450072584&srvcstrt=1731450070701&srvcend=1731450071010&lid=1&sdkv=h.0.0.0&palv=1.25.0&e=44731965%2C44772139%2C44776494%2C44777649%2C44781409%2C44785453%2C95322907&id=pal_html5&c=442546185096611&domain=www.cnn.com": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://events.bouncex.net/track.gif/pageview?wklz=A4Qw5gpgbglhDuAuArgJwDYF4AWAXXwAzgKQDMAgsQEwBi1N8jAdAMYB2brA9gLb0BkoSLASIWyQrl5QQqGCABG6CIUzEA7ACFqVACYqA1lOAB9ELpOxCMJRB1lKVKgDMQ6QnafUAwjtm4YFmUTIU8qBx1XdzCfSPRwQmwYU11eEBg2ewodXFRkGKpfJx4uNggATzNUAKCIEPAY7Kcoj3tCnQ8WANKTNhAeRscqbF4IULaiqikSLyaXN1avdqcWXmBlXAgLazA2ZGAsoZaCydh9LhD48oywQ8iFk50FVAgQAxvehEIQl482XDuzQeEx0JTKlRAyFwI1QgPCS0mhGAEBY8nQVRqyjhxxBTnikhMHkI1h6Z2xwIRHRUJLYJlWyH+cIADLiqAoQCwDM4YOh0fp1lxygNGbMhqzdM5gFQTPpNl04WwuLgTC9zOVWYRkAoeDB8FsTAz9KhCKsXrpydENVqdXqLPoFhbFvDEdbdZsLPBXtCILDRfdLZSnJrtW79d7gFwMgC-UCA86Oq7bSZXC8toQwOguOz0M84Ny2LcY-M47Eg4n3SqVMh0LhCLIIBlHY8yyGk9yoBBoTcZuE5jjA1RgzaK+gYM4IAooWBU2Vfb2jhT4y3h-rzNXoVwuLpJ7gFJ3NnOIrGnaXB+X9S9R4plIQuGgWCom1bWxXgKguFAuAYxj7NeZBv6J7LMMIDfEOoYWGU8CEBsB5PgO4FJmAm66JIyDOM48FLmeL76gArKsdY9kexZAZMqz-BA-wmLg5TIlhp6ISOMAdmcEBcAxwFMfqGS6PIbg+rWnEurhFh7s4XAvN6e68sJOhUboLAgKY6wchAwrKiw2AogYcK5Pkz4rhYMA8MiHLYBpcnLhBJgDCAbDwEkWJFv22HcRYdkOU5Db-NpOq6LoyivJIVk4UZJjPK87wFlBxF9oujHnhYEDKF0MClA+lGHvFJZcUldKSaUICwHkcULrlInhY5IDKjwNUHmVgHNmFNnsGwACMLIuQleWiSY8CSUYqD2YQEmoAM5rdRVCZ9WwMBgHgSkHFNZEzeFk7WGUxKhe5hJBct85NYZNmSL8jXHs1u26m46orZd+UDAAHoEHF3cdSYRqYo7jjt+XcrgW3naR919bkxUpf1EAQAY6C3YdF3vRWJpwGwD6-X1WkZCA6Phe+5RuJ80E4zZw1o29CH5QAVrum4GEEWrE0msiKIEEWqtFYCE0DrmJX1Xq2VsjMVvANVaXSHChcYrMwKhcKshko5lCY6npOiEniB4k3w8DrISB8cAmJJyu6JAoXyAoNFcMArO4AkcsIVRypSywNF20W7UAGyaB7rLPKNlvWy7ttgEDrJtQVX5wNzPWTIqdKZh49QEgEAzOMNAx6XkzXh8hhIjPAAS4M52vPiach7pBXywT6O2bLysiXDVY18EW+mXSi3S0rR9FFqkAySIErIcgEHaEhAYCWeTbn5Z6NXaagCg7RGbC3maGKBMXJE88Bhq-qa+pIqUq+JMkoVWynMAAF4pZUb4qI7oWZmAkDGZkU+ntAPomE-L8mI27-AX8BvOozx7J8QLKFF4YBNgElWDwDSHxh4sQAgjAcKJRxEDqEA2oO06rVGARHd4WDUKGzYLDXB2DgirEjsQ74YCzDIACtAHaXBUQExeOOVAw10S3nvCg+E2Fw7BjLjYGuADyIcEJFqERe5UAmAAI7Y3EToUA5QRa8h+PfEU2sebqAACKCAaCIJA1CiHWGvpgdq6gAAc7VDHCDgCY+ypRAhuBwPgIgR46C0EYPAVgHBuAtxoPY6AjixC0wNlIC48RUCQEwMcEJxjwk0JonRCAlj1iEESWE0xBtzHpIACwFPagATn4HA4AYhTKYCZOUtYiBcAsGcJYuppkUBIhaRUxAYBgDABqa0ypEhKmnRuJYgAtBM-gl4uDmG8P0UA80V4ADUqD9JKPofpnoFDWE2DLTApACm1KsLqPZVjSDtQKXhJkTJ1BUDwgUj21j1BlP0LAB8eznk2I9vc0gVB1BMg9uoUgeFHmkHUNkhApz+AeHkfkVGDZdCdNHI7FOKhbbVLORcq5Ny-kFPBUEFGttrYdmNOlNgmBg6kH4K8wI6TdD8C7KgCwoBqiVEkJJBoMoYB1lsIituDLL5cH2dc6Fd5UAPkwFs-gDR-iYAkD6IAA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://events.bouncex.net/track.gif/visit?wklz=G4SwziAuBcCuYFMBOBDA5ggdpAvAWQHsAvEAG1JQFIAmAMQFYA6ABhuYAoANARm8oGYAQmwAyITLAAebSQA4AbAH15AFgCUbAIIAHbaQQB1BACMA0lBoN+Adkb95bdqYASAFTwiaAYTakQAawQ2AHEEAGN-Ag1qZi8ACyQCAFsgum5qAE4WbNYYgGUUADMUJBBLehs7eQAyUAgYJARC5EakHFrwKGgKTAATcTRtdARYJFIcOMhIbTAaCs05ukXaAHc1xjDMTA3k5Y766EawAlJYSBACTEkcbll6an2uo5Ozi8wATxvmCseYMPhIMlgCUQChjPowDhKNZhNRqL0EGB-IDtIoUL1FHUQODUtQBAs4cVSIgaHjqD44SVzmF9IohhhSfjSUSSXDvMyKGgwHEQKjeskUOJGfwCdRIEhYLj2XCkpcEO80UhqbT6VKRcyUMSpeTSYgwudLopMCgUsLRXFkghVYydXDAbM2erCZrWWSKdQwsk9AhIAgMRA0BJtGaNVqbe7QAiCHSKO8BiHnWG2bbqMZGih-AMjQgVmA6UcsJAE9QWdr3bLMPK0WcLUhi+HddpwqDSIrlWrRaWG3CKGBIIpEGAIIbI8Wu8n3YPh5hFJ7YNhi7k3aTjCgIoUyK2EXoCO8UgvHaLu-DCtpqIoEb79cXMAR++neu9j2BYMYklBfRj5wikGBPY1ejHF0y11V93ymP0LwQF0gKTZc4RfN8P0glZoMgOJkFg11pWoRDwM-RR0KtAhxCLQ9Q2wlM8OQjFikaP0wDQUgCFXUg0xAJp43IxNKMnMCaMUI5YFISAwBKBAhW4ktgOffiINokBgB9HlMC5LCQIQuSCL8ZpjDONB6MrOspPHeDcK0yD0WE9CCAIXo9MgYwfV9Yy8SdaS4Jw6j5MEhA-DBCECFGMJEXU2SkJ87REmAAhAibX9YHRDsKI06g4hQPNvIIytc30CDXKZHjUqyyC0Fs3o+1gQpCjCidQIigj6E9MSHTczsZLquFPWwQtCPeJtarMkqMT8JTIwQAhBq8iyMXEfoUE1ZBRKmqiZsUJzCgIRoiKc8gVvdLBejCFBUT0NcEH3fswgwiJi3FSVwvwyCQCSJs1ziS79vqp6MRSFBMBWHl9C+zSGsgv6AaBiTsAw99el6fRoL7EHzLBjE02gzNVJy1rCo83jvoEvzwgNTAQp6gr3NM6a0dnLbLhQUAJVxqmOqGtbAZQfski5lyWfazzVtpzZMG4Jc8epoWfsUFYtuRVBMDATakBSQCTLZmnpcwEA0EmY7g3VwW+NpvSIErIcUeGgdEYNtqUsegS+yOfn7c61HpagTUn0NgnQellJJBAT1LbW7QCFRHTkqKh2fI3SBzZd6O3at8VGb8mWEAQfxSG9u2k-Z2m-w4smo-x4q1uu8QqB98vacSd5NWzXMQ7r86W+lgArRzbP8GlX3bgSSjBIP1vTLG0CbxOy5jgi0MUVWB58lYueu2cthRlER5ACr6zd8Q-ErRQLsFVtNv+RA1bz6e3fgLMOMULaj96Bka+PUFjEI8OR8gdAp+fXrN5hEIr-Ys3B5CCAcG7NMStP7aG-iAqSx4RZ01ihxKekt3S3lnMxRAdIMr9nOCkQoqBTRSXuqlZBZUBwWhWOcSAwNEHJ1fH+UoTkMQ4zyi5S2vpyAlBjFzZWSQ7oSmKiTN4fUBpSX5CkPsQdjxrnOEpAcCA0CfVfkw2mqEuYYSQMYS2YdFZbUskqIODCr4YNJN+ZAf4jH+gMccX8PJbYSw1imcOhCQBED8gqKKiJCwo2YmgDAs1MAowQEpJAihAnBMUJJcxrj3RUlMQgUe-1+iqRRo0NAvo+x0ySJdLMCjFKlwsXCcIfgZgpKSTSEpCTdQ8xMTUlBmYqkVQfpgHOlsGntmaffdEeY0nVnhuEy2BAwgtl8s0JAqBWzHGCqXJBWwBzMLCKwzC6izLIMQiw7EyBFAAEdq7xKNqSIY7xl7kHzH4g8xzsLWAACK-GgJ6VBCAoQwl1CsYAZpxzun6JfPG1gMjWAUPQFQ-BqDWGYPIaw-B6DyFkDYY8o5DzcFhdwFQ9BmDMGsNQMFCKgU4W+eRD5DycLaF6LQEAv5IAiAIOiM05CcLPxDB8uE4AAAKjRQBBTAF4AElpKaaF+aScAeQVlrKFSK9lYBXAIEkJAcVxgdlOSlR1d0x1ropOWqi9FmLsW4pUEa6E9ycKFGAGRNqaL+AYqxTisyKBJqHlyO6Ugzj3KTGmA6eYyxlhrBWBsLYOwhF4qWG7DKZoXWkmANoYlVrmXFgBSmIVNpNkWrNNa21BqhrbzNAAWj4CmNAqyzT8BUDhENbUo09nTbqm1+r7UmuqPAZAwxsDQDTAQXMyAcDxESCkZtiBUAYHbRE6cNxMg5BYIO1tI6YBnUgIInAYgJCSBncOws0AESgBCpAfqbyERIhRNUc+gIUhIGgOlGxmAImfhwMwaoGACDPKCtgJA7xPQIhwAAVTyI+iaL75zig-XZBA-Af15E0P+59c433vGNCkH92tPxsDyD-HJ0HDgqLeDgDlUGn1YbQG8BDbyOVYEVu8UgwJtYoEw+MvduGPxgD0kgXWmGw59k1J+t53B7gQswxQOhsAv0qGYIwegAnLhEcgMJt5eagWMAyHRy45xKzYG4zgAAclBxozF0ReBNEMHWisABq1B73VFlF+h9qFlVQAkr0HAZaH1YnOI5zNDbcX4tkEC6o26g4OZwECkF8gwUQqhTCuFCKbDVFVKAHM28bjVEQPsyUJdEsPppMXKYL1EQ-1ejcPVdrcWwok1lwsJ1im-hwz-NA-A-PhICzgXo1R0LUoxEMJUCo+xbWGBecAAU-Q4HIa1ogBAnPYuS0FJAIUcC2eqG23ALakBAA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=620af6b7-793d-92ba-7a46-c5ca958ce680&tv=%7Bc:tRWdub,pingTime:-2,time:635,type:a,im:%7Bsf:1,pom:1,prf:%7BbeA:364,beZ:367,mfA:705,cmA:708,inA:708,inZ:717,prA:718,prZ:759,si:765,poA:766,poZ:780,cmZ:781,mfZ:781,loA:913,loZ:918,ecZ:971,ltA:998,ltZ:998,mdA:370,mdZ:557,idA:781,idZ:825%7D%7D,sca:%7Bdfp:%7Bdf:4,sz:1376.300,dom:body%7D,eng:b,tss:%7Blts:2024-11-1217.21.12,tzo:300,tzn:America/New_York%7D,bdp:%7Bcdp:1%7D,exr:%7Bexs:objectExternal%7D,mob:%7Bori:0,ges:0,tch:0%7D,prp:%7Bnot:1,csi:1,msl:0,hdl:1,aps:0,hae:1,ito:1,sec:1%7D%7D,env:%7Bgca:false,cca:true,gca2:true%7D,clog:%5B%7Bpiv:-1,vs:n,r:,w:0,h:0,t:399%7D%5D,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,slTimes:%7Bi:0,o:0,n:636,pp:0,pm:0%7D,slEvents:%5B%7Bsl:n,t:399,wc:0.0.1920.1200,bkn:%7Bpiv:%5B288~1%5D,as:%5B288~na.na%5D%7D%7D%5D,slEventCount:1,em:true,fr:false,e:,tt:jload,dtt:0,fm:utXe39e+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j*.925660%7C1j1%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o1%7C1p1%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2,idMap:1j*,pd:CV8L.internal-pdf-viewer,rmeas:1,rend:1,renddet:env,siq:402,nmsd:-1,nph:-1,sis:607,sinceFw:231,readyFired:true%7D&br=c": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pixel.adsafeprotected.com/mon?anId=925660&campId=300x250&pubId=100473157&chanId=70626757&placementId=6440239167&pubCreative=138495088488&pubOrder=3290915897&cb=1891276786&adsafe_par&impId=6afdf158-a144-11ef-a0b7-2ebc98b647c0&custom=rect_atf_01&custom2=&custom3=&custom4=&custom5=stlr&custom6=landing_homepage&ias_adpath=%23ad_rect_atf_01&adsafe_url=https%3A%2F%2Fwww.cnn.com%2F&adsafe_type=abcedfq&adsafe_jsinfo=,id:f09da161-9673-f297-fe56-4e5b22ebb57b,c:tRWdyC,sl:outOfView,em:true,fr:true,thd:1,mn:jsserver-primary-697c97bfc-z85wj,rg:va,pt:1-5-15,wc:0.0.1852.1053,ac:1164.-10476.443.250,am:sp,cc:1164.-10476.443.294,piv:0,obst:0,th:0,reas:l,mu:10000,br:c,bru:c,an:n,oam:0,scm:publ1.grpm1,mtim:541,mot:0,app:0,maw:0,tdt:s,fm:utXe3e4+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j1%7C1j2%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o1%7C1p*.925660%7C1p1%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2%7C1r3%7C1r4%7C1s%7C1t%7C1u%7C1v%7C1w,idMap:1p*,pl:CV8L.CV8L.CV8L.CV8L.CV8L,rmeas:1,rend:1,renddet:env,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,tt:jload,et:611,oid:6c824741-a144-11ef-9bca-0287e4adf518,v:19.8.552,sp:1,st:0,fwm:0,wr:1852.1053,sr:1920.1200,ff:1,ov:0": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=33&t=2&li=v_h.h.3.2.2&sid=1tQzZ4PIMPXMnboPqLSW2Qk&bg=!tLelt_jNAAarj73Qi487ADQBe5WfOPqUPdhvjTe_Tv2-nhGepH8zDfxOFtY2ndyBqKER-JD45hrOfFkB5gHaVeZQx5aFAgAAAq9SAAAABWgBB34AK0FtQSqrjnCUEUqV6wCfbagrHOn5hX5tmZ2Oe9wdkvnLsYyx_Z1YwlrdNScKATZBtctaqmVlgxwJ-xDdq1dYm3CWB0_v7Dd3KK5gvSsG9wo6IoeCFTqlYPX9u-M01EqpQW7hsG0cBd4dD6eA2tioCR_QLlskdeODRHiD_CLHAaLESOuLq3OBV7QbpGvbebGNjpuYjhF8tzir95r2yJteqQ95Q8P3jWVfP1vJTffe4HIrMrp5XcvS2zoJVE15GXMeblCA7ggafvViycmYKYcvWzirl1KS-yF8ojWKHNI2WfwZ5Q_eJ0oE5I_jUuzxXXY9LIpIPcMvn1cRnedci6dj1xah0jm8JBVBNv3Kl2d1EhUOJiLAKTBXbkH8Xsvc1tN0JIAgVm02IN8I_KC48f0uFlHyKST9LMrwuZCAtCz2Q0Futom-RiIeCh7ewNyd1SoTKXYWvRL6FS-WOj6LrCkXmIVnUboGmQH9LaKzgkK6viDSoMetQ71uXxyxOFSw2CCB7yszB-zHAmUuUuZSvG8FkQRi46z4EryApLKIChHQoLdvl08YFV_C1r-6SrjZGAW_y6xlErC9YsumOV_Ekyc2wABJTh3M86NVfJAgGPZ5GVBF3IRBb9FJN10JzN3wtSAlOUSfB4J7zr84sF6Bvbr37mo_ImDcbfGDnpriW3hr7cuMycSQ4Uwnqyy0W5Wt-fyLrXL9TZAkycaJBs317pkp1f1QEEWX6teIWUkIbUnmuwfeXoWo6LA_9ufTYmPo74Z8S-wJUZgZBLnmy8I5avNAy0PYrQX7S_mSUelog26WXXeHNcnYI23jgIVrhzzITk9zvL2iUi5nWsQVYRyf_N-_o2yJ2w5Ze5UTVD90ftjLMin5QDsJQaNeiQ0RVvIMEbAtdbdRycIw7AKYI6qNrFxEEgCdPlcKsEeIM7hbh59xLVeFL7M9LKe3DbgWrn3lwQkGXERetoctia5g-UdZMMlXO5fo-EeN_toXOMZ0GXVMzP4aub_Vow0LQ90uR1GXQy4Mc9F-WdHoo7kPBPPfy5b0zXWANygh9BOn6qToiYMv76LXt1yW3MTQwEFHxkBC7KFrY3aKxI8AuiTDC-UhaThIA8itRlAD_TNkUIHFwqoKxfgrg00sq3DZPdPFGnOUC4dsBQ_SX4c": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=33&t=2&li=v_h.h.3.2.2&sid=1tQzZ4PIMPXMnboPqLSW2Qk&sc=3064517782836280&bg=!NTalNnnNAAarj73Qi487ADQBe5WfOPqUPdhvjTe_Tv2-nhGepH8zDfxOFtY2ndyBqKER-JD45hrOfFkB5gHaVeZQx5aFAgAAAq9SAAAABGgBB34AK0FtQSqrjnCUEUqV6wCfbagrHOn5hX5tmZ2Oe9wdkvnLsYyx_Z1YwlrdNScKATYTOwPFugTun2tbypf6nEqdtS6jWBrjr_J_v8IXWaFNj5oB5CcYQWMVC4SSMxk9Q1VA3suzEBQACwTGqi0uOk25GBzfEahi9u4hd0aGo81G7pWEpFC4d7hCBCt1YDH5FRw3p01piHrMSespQDuh9oJnpqpPISzzrDX-VuJIkDQo5MHpZDb6eXER3XHs0KH-46yJ8RKuqM0VZAZ7AtyCnjNmA-z6i3MO12RUFZ83yp-3E0d2IoUNhZoY4upSP_UMh-WXRZ3DI-XcWuZrmEHTMqs_sjl9HabspxA7cXw4vzUQsBjOrk0wT7jEW55qk23qKKaGHfoHhSCib7o_lA_cxMFVOLcOMKktMj8QEVNvsf5Z4Hms9d5jYetNl-5cNh92JHG8V3dNkH0iSILxI2hamr-WNvDN3HbimQH9LaKzgkK6viDSoMetQ71uXxyxOFSw2CCB7yszB-zHAmUuUuZSvG8FkQRi46z4EryApLKIChHQoLdvl08YFV_C1r-6SrjZGAW_y6xlErC9YsumOV_Ekyc2wABJTh3M86NVfJAgGPZ5GVBF3IRBb9FJN10JzN3wtSAlOUSfB4J7zr84sF6Bvbr37mo_ImDcbfGDnpriW3hr7cuMycSQ4Uwnqyy0W5Wt-fyLrXL9TZAkycaJBs317pkp1f1QEEWX6teIWUkIbUnmuwfeXoWo6LA_9ufTYmPo74Z8S-wJUZgZBLnmy8I5avNAy0PYrQX7S_mSUelog26WXXeHNcnYI23jgIVrhzzITk9zvL2iUi5nWsQVYRyf_N-_o2yJ2w5Ze5UTVD90ftjLMin5QDsJQaNeiQ0RVvIMEbAtdbdRycIw7AKYI6qNrFxEEgCdPlcKsEeIM7hbh59xLVeFL7M9LKe3DbgWrn3lwQkGXERetoctia5g-UdZMMlXO5fo-EeN_toXOMZ0GXVMzP4aub_Vow0LQ90uR1GXQy4Mc9F-V45GkroovmgcMoIkYKVahZE7Komo7z2_hkKS3ugXtEdCUvDHg_4FRUilitchrJHy0CZziNvlcmXfVne_m-sRWIWUU5hbizCGbfLqip84KgoSUyjvQ-hpj_cEHtemy6majMI": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=33&t=2&li=v_h.h.3.2.2&sid=1tQzZ4PIMPXMnboPqLSW2Qk&sc=3064517782836280&bg=!gIOlg8zNAAarj73Qi487ADQBe5WfOPqUPdhvjTe_Tv2-nhGepH8zDfxOFtY2ndyBqKER-JD45hrOfFkB5gHaVeZQx5aFAgAAAq9SAAAAA2gBB34AK0FtQSqrjnCUEUqV6wCfbagrHOn5hX5tmZ2Oe9wdkvnLsYyx_Z1YwlrdNScKATbxUbwwmR_EBIa-gPAnfM2XiQ_XZ0cKz4xseimYQ2EzVnrROB55UsPWVjeP8OcoS-b8u_Bmal6jnIH7wDj-aMtzmKEy0CMVbUzlD09bsV03n6gE0VIHk58cokzmVBK7GPdwte3q-0nvrxO9bkaYx-9IQoRjcS4U5-BJEkJMZqwfGT16OFM85eYSBc-04QfLVwOnM7wuuvNkCCPJab1zFJWYQBXrzs5ulpcw8mw5vu4mbJP4S8pY2sUXnwQ0SfU1WCbyrHdQ6bQpfec3n56TRoZ5sqpPRXK70KaxSe0Qm0x__uLplGQ8xpiDjWGygcGnFrdUMrgYLNZKf3JJNvr5Ovs8mFAPwv4o563ZT2dIKsVfNHD2QNWXGVcq7neW3YCrgfLcdDc8NY1nWsM4dfRRX8gRtAf93gpsmQH9LaKzgkK6viDSoMetQ71uXxyxOFSw2CCB7yszB-zHAmUuUuZSvG8FkQRi46z4EryApLKIChHQoLdvl08YFV_C1r-6SrjZGAW_y6xlErC9YsumOV_Ekyc2wABJTh3M86NVfJAgGPZ5GVBF3IRBb9FJN10JzN3wtSAlOUSfB4J7zr84sF6Bvbr37mo_ImDcbfGDnpriW3hr7cuMycSQ4Uwnqyy0W5Wt-fyLrXL9TZAkycaJBs317pkp1f1QEEWX6teIWUkIbUnmuwfeXoWo6LA_9ufTYmPo74Z8S-wJUZgZBLnmy8I5avNAy0PYrQX7S_mSUelog26WXXeHNcnYI23jgIVrhzzITk9zvL2iUi5nWsQVYRyf_N-_o2yJ2w5Ze5UTVD90ftjLMin5QDsJQaNeiQ0RVvIMEbAtdbdRycIw7AKYI6qNrFxEEgCdPlcKsEeIM7hbh59xLVeFL7M9LKe3DbgWrn3lwQkGXERetoctia5g-UdZMMlXO5fo-EeN_toXOMZ0GXVMzP4aub_Vow0LQ90uR1GXQy4Mc9F-Ut8OHljM6wghoEfHMlECJneLDDiywkykrku1z8AB1RSD7UYAtQBYzPsvCNEiEUU9nId690IyO8bSqcbgKNf02-FDtOZUX3fhvx5cnru3AVGY3iWpoG6TrQswilBVJTEXpx8": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pixel.adsafeprotected.com/mon?anId=925660&campId=970x250&pubId=5650094397&chanId=70626757&placementId=6835168729&pubCreative=138496845890&pubOrder=3580523475&cb=1994337017&adsafe_par&impId=6afdf15c-a144-11ef-a0b7-2ebc98b647c0&custom=bnr_btf_01&custom2=&custom3=&custom4=&custom5=stlr&custom6=landing_homepage&ias_adpath=%23ad_bnr_btf_01&adsafe_url=https%3A%2F%2Fwww.cnn.com%2F&adsafe_type=abcedfq&adsafe_jsinfo=,id:291374b9-f8d5-ffc1-464b-dfa0cd51c3c7,c:tRWdzu,sl:outOfView,em:true,fr:true,thd:1,mn:jsserver-primary-697c97bfc-sz5xl,rg:va,pt:1-5-15,wc:0.0.1852.1053,ac:231.-8562.1376.250,am:sp,cc:231.-8562.1376.294,piv:0,obst:0,th:0,reas:l,mu:10000,br:c,bru:c,an:n,oam:0,scm:publ1.grpm1,mtim:629,mot:0,app:0,maw:0,tdt:s,fm:utXe3eb+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j1%7C1j2%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o*.925660%7C1o1%7C1p1%7C1p2%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2%7C1r3%7C1r4%7C1s%7C1t%7C1u%7C1v%7C1w,idMap:1o*,pl:CV8L.CV8L.CV8L.CV8L.CV8L,rmeas:1,rend:1,renddet:env,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,tt:jload,et:657,oid:6c826e42-a144-11ef-b3a5-7ed0769dea99,v:19.8.552,sp:1,st:0,fwm:0,wr:1852.1053,sr:1920.1200,ff:1,ov:0": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=44&t=2&bgai=BYwrx1tQzZ9rnLf6prr4PoePvqA8AAAAAOAHgBAI&bg=!lZalltnNAAYQZ9WPMGc7ADQBe5WfOAFI8JteRiVo3j26lnMxqa69X-kTmVVoC76RXpM7d-l8PrQHH1hbKW9F-Pvs7cTfAgAAAsdSAAAABWgBB34ANS7HDb55qIeRTf41hVPz95b-boEnPqxYdsSjQqSCMDAZ7hnrJHnEhfGlMt_bmG1apHmmK_YDmQK8XNjyPDpOpQMWx5bCG-owB3uGrUFSzoeRtQFxTkOeffrQigTvqb2VABavVkCw_kh4Bu_LjzTBybH5DqVgWGVllKNSNXlW-glv-NAaxlT1lbpZtsUCXD0TcMtnLIiZPdJKoH1o3IV6prEFQtvpLZmi3XlTI5TcE_yCMlANU8mxr4iwMU-klgEkScedzyDk_1ufcE0yjGj8xK_N1eW3nFxm1PFyEkt9WEfj7sVHBCV4ZwPKzoDh3HnysoAbSBgnoZEswnRsEU9d1SEtgAbGBw8DqSW0daeqQuUYIKZPWb6S0e2s8ywR9CgoqD_l3GmYm54TWhNXf7Bm0NzPNi223FNGWtVDHEV0I3nQgCWdBlRycwfIrz5ewqeu7Y6zn50yXU3B5xpMFze4h267176F2GmkqZTnVwMqSoylM8hQVo3DOdo4489bEkDj9XzYY0hNeL4LEFGqAk7sIUnWMXv-qQmLyCGLdEGNqoM6cFzFdHQZNE2LWhrHtxd-Dgp9W20sT4mVfuMavnr9lnRW_0ftO42YUx1zrwM4s3SOqYTWhahgtz6bokRdf_NH9y7obJemTYA661oid-A0jYdVZQ1MVWr37hsuNdp5WHRC_DrUrEVxlb74sZ0LrztY7CPPxjP2GWQydfjSZ9VkFubetMaN7LiTUSbiOcykCsGmh8geK8xIpPsjK5wy855g4iq1dUcLleK4huqwev99nESCpZ0T42cfXa0hI71ceNCnhYVBnCUUTd_OyI6aQPjIh8GFnJGjMl-19IxfdW6a98Nusn3BZaq9q8DFnrIteSnfFI90RJrAeZUjHbUMYGeH-S8uDnwA12o0-yIPVuYJAbhNlH6ISSdYanwEda8-hEG3tknV2HSw8wcjM8gFxUBJqp2jtaqdH8ZbTTTb6REeLILaeiwxV58iDKlVOWvnRcT93_ovxw": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=620af6b7-793d-92ba-7a46-c5ca958ce680&tv=%7Bc:tRWdAB,pingTime:-10,time:1033,type:s,mvn:ZnNjPTEzLHNkPTMsbm89OCxhc3A9MQ--,sd:MTcuNi40djEyMDB8fDE5MjB8fDF8fDF8fDI0fHwxMjAwfHwwfHwwfHwxfHxsYW5kc2NhcGUtcHJpbWFyeXx8MjR8fDgvNXx8OC81fHwwfHwxOTIw,no:MTcuNi40dk1vemlsbGF8fE5ldHNjYXBlfHxufHxufHwwfHxufHxMaW51eCB4ODZfNjR8fEdlY2tvfHwyMDAzMDEwN3x8MzAwfHxNb3ppbGxhLzUuMCAoWDExOyBMaW51eCB4ODZfNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMjkuMC4wLjAgU2FmYXJpLzUzNy4zNnx8MXx8MXx8R29vZ2xlIEluYy58fG4-,ch:n,fsc:17.6.4v222222220002222202222222220222222222202222222220222202000022000220222222220000222202002222202222222220222222220000020022222200022222220200000222200022220002022022022222202002220222022222022220000220200000022220222220222222222222202222222222222222222222222222222222222200000022022020020000002022202022022022222222000000000020222202022022222000000020000000000000000000022220202220000022200222202220022200200222022202220022220222200202222020002200002222022222202222000002002002222222202220022202200222002220222202,asp:1731450073201%7C%7Ce127f855a6b586761ad269481aed6312%7C%7Ccd70ceeb4a1768030b1882c90242a428%7C%7C81cb4d24d4e0c15e2003c6cd7a5e254c%7C%7Cbece816f4b070a5abd74923e057a5c35%7C%7C79080510e2afb940f03c0134affd41ff%7C%7Cf73f549d448c1b175f7b04ff5aec8ef1%7C%7Cc991131f3c1287095289eb860ea5be62%7C%7C1715618633%7D": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=291374b9-f8d5-ffc1-464b-dfa0cd51c3c7&tv=%7Bc:tRWdzv,pingTime:-8,time:658,type:l,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,slTimes:%7Bi:0,o:658,n:0,pp:0,pm:0%7D,slEvents:%5B%7Bsl:o,t:657,wc:0.0.1852.1053,ac:231.-8562.1376.250,am:sp,cc:231.-8562.1376.294,piv:0,obst:0,th:0,reas:l,bkn:%7Bpiv:%5B29~0%5D,as:%5B29~1376.250%5D%7D%7D%5D,slEventCount:1,em:true,fr:true,e:,tt:jload,dtt:0,fm:utXe3eb+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j1%7C1j2%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o*.925660%7C1o1%7C1p1%7C1p2%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2%7C1r3%7C1r4%7C1s%7C1t%7C1u%7C1v%7C1w,idMap:1o*,rmeas:1,rend:1,renddet:env,siq:657%7D&br=c": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=44&t=2&bgai=Bl8qZ2NQzZ_fPBaGcoPMPxdvhqQgAAAAAOAHgBAI&bg=!sbKlsv3NAAYQZ9WPMGc7ADQBe5WfOBRao1cRCuN2ZRlDjmf-VO-C91nF0D3F3_sqG4w60-l0zpdlT0EIumBFIS-LsMwHAgAAAoRSAAAAB2gBB34ANZ4mA-h7j5UVtK28qMbyBr_IdENDUpcuXBbitb9lSoLSEmbRKPqRTpsKcnqqgkTOl8_na-O4CgCINAzqakIwIV33cCryU4rs8aW5yWK9bg8rJkvzAmqIG5C2mjqLxoRz5Ublf4mSTTNoxOFtj3kEFFC5htP7R2hoBFs2fXkrqhSBjvFPChha1ImbOxYmM8icSr_893c98aUn2S-mpKaF0UHrbydf0x50sXxdBv1qUyvzyNNQPyb6Y8uJk-l-SUXjzpkCtLWXjqV3tPzc5yD4O2ke0ytWolNp_JU8i91CQhqhAvSVn2mRqsAv-7bU-g7jUjHjcrmIRnBAoLNIJYDLjAbVHo82EomkAaKgsd02ERiyhKvVuhlBoQHjmMFxbSjkZrlYseHvK43ttLlToV5VsJnRorhrymPXCXKZip8Bwc8e4ugvqgURNIBWQfhquoBWDulNwqNk9A6eJ7h1ULJUpj9SQRKVCGHtLNGulUhxs24tkBadpTqN4X4jyo2AgAE-JENdKX9vmHb_7oOaZPenKOzro7D8pv1UJcHWWdhm8e8D_DlqA2t2iz1ZaXnt5QOT1KDjl6efHyqab7-6_ntXBf9MJchFxybFzzOvxWmvBjznF5mY11VJRgz6OWrfk5kob8LTh2XFNZuJiNalYps8gOzQSu7Vyaf5jwbcYeFchbLPYlN29oh_Rz-NUzwxu5-tRMcgfkl2Fv8BsHUk7ps69X3NswrIs2fklvehbNvcVaLFvjEn7G18V1qi8yQbm0O6HntdtXzceqKKNQGJcd5l8tspcyCDKAx1n1rcIX-w5snJQebJoK7TmYU_yaI_Q7Qz5NE8MNK56mOBi7E4m7fMPlepT0j_ZsQYkSFgrinf4x57DyAVmLTr42BLRqBISZ8QzDdPNDukCnULXk5156IsAXbEDKOo0qfbYQyv1RSe4toP1SGALW61RnF4aaHlKhVjtVGuvb60pUccvbDG15KevIfjlO0fxokstfA8p40nwbmEMfYAdpDQAjBc4L8D7vxAs54ffne9TRgD4JNRyi46GVXjtNioW64o6dUiHljwhoeYN6ZlxWDfH6e7VJAtydWtneqEOJoM018IiJXzRixhQvVj9bakHQfqgWdXICwcLcvTXPl62rLcyKiGhfXM3trmMOi6qjSk5DqwquE9hW2iX8n3Gm6ItCuA": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=f09da161-9673-f297-fe56-4e5b22ebb57b&tv=%7Bc:tRWdEv,pingTime:-2,time:975,type:a,im:%7Bsf:0,pom:1,prf:%7BbeA:329,beZ:332,mfA:870,cmA:873,inA:873,inZ:881,prA:882,prZ:925,si:940,poA:942,poZ:956,cmZ:956,mfZ:956,loA:1132,loZ:1142,ecZ:1162,ltA:1303,ltZ:1303,mdA:335,mdZ:493%7D%7D,sca:%7Bdfp:%7Bdf:4,sz:300.250,dom:div%7D,hbs:%7BcdcP:0,cdcA:0,cdcS:0,cyp:0,wd:1,uaHC:0,chHC:0%7D,eng:b,tss:%7Blts:2024-11-1217.21.13,tzo:300,tzn:America/New_York%7D,bdp:%7Bcdp:1%7D,exr:%7Bexs:objectExternal%7D,mob:%7Bori:0,ges:0,tch:0%7D,prp:%7Bnot:1,csi:1,msl:0,hdl:1,aps:0,hae:1,ito:1,sec:1%7D%7D,env:%7Bgca:false,cca:true,ccd:%7Bversion:1,uspString:1---%7D,gca2:true,gcd2:%7Bappl:0,cnst:na%7D%7D,clog:%5B%7Bpiv:0,vs:o,r:l,w:443,h:250,t:610%7D%5D,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,slTimes:%7Bi:0,o:975,n:0,pp:0,pm:0%7D,slEvents:%5B%7Bsl:o,t:609,wc:0.0.1852.1053,ac:1164.-10476.443.250,am:sp,cc:1164.-10476.443.294,piv:0,obst:0,th:0,reas:l,bkn:%7Bpiv:%5B429~0%5D,as:%5B429~443.250%5D%7D%7D%5D,slEventCount:1,em:true,fr:true,e:,tt:jload,dtt:0,fm:utXe3e4+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j1%7C1j2%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o.925660%7C1o1%7C1p*.925660%7C1p1%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2%7C1r3%7C1r4%7C1s%7C1t%7C1u%7C1v%7C1w,idMap:1p*,pd:CV8L.internal-pdf-viewer,rmeas:1,rend:1,renddet:env,siq:612,slid:%5Bgoogle_ads_iframe_/8663477/CNN/homepage/landing_4,google_ads_iframe_/8663477/CNN/homepage/landing_4__container__,ad_rect_atf_01%5D,msd:11844,ph:12897,sis:833,sinceFw:361,readyFired:true%7D&br=c": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://widgets.outbrain.com/images/widgetIcons/ob_logo.svg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "7647",
+      "contentType": "image/svg+xml",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||outbrain.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=291374b9-f8d5-ffc1-464b-dfa0cd51c3c7&tv=%7Bc:tRWdFo,pingTime:-2,time:1023,type:a,im:%7Bsf:0,pom:1,prf:%7BbeA:364,beZ:367,mfA:992,cmA:993,inA:993,inZ:996,prA:996,prZ:1018,si:1021,poA:1023,poZ:1034,cmZ:1034,mfZ:1034,loA:1180,loZ:1184,ecZ:1235,ltA:1386,ltZ:1386,mdA:370,mdZ:521%7D%7D,sca:%7Bdfp:%7Bdf:4,sz:970.254,dom:body%7D,hbs:%7BcdcP:0,cdcA:0,cdcS:0,cyp:0,wd:1,uaHC:0,chHC:0%7D,eng:b,tss:%7Blts:2024-11-1217.21.13,tzo:300,tzn:America/New_York%7D,bdp:%7Bcdp:1%7D,exr:%7Bexs:objectExternal%7D,mob:%7Bori:0,ges:0,tch:0%7D,prp:%7Bnot:1,csi:1,msl:0,hdl:1,aps:0,hae:1,ito:1,sec:1%7D%7D,env:%7Bgca:false,cca:true,ccd:%7Bversion:1,uspString:1---%7D,gca2:true,gcd2:%7Bappl:0,cnst:na%7D%7D,clog:%5B%7Bpiv:0,vs:o,r:l,w:1376,h:250,t:657%7D%5D,es:0,sc:1,ha:1,fgad:1,fif:1,gmnp:0,for:1,b11:0,cnod:1,gm:1,slTimes:%7Bi:0,o:1023,n:0,pp:0,pm:0%7D,slEvents:%5B%7Bsl:o,t:657,wc:0.0.1852.1053,ac:231.-8562.1376.250,am:sp,cc:231.-8562.1376.294,piv:0,obst:0,th:0,reas:l,bkn:%7Bpiv:%5B393~0%5D,as:%5B393~1376.250%5D%7D%7D%5D,slEventCount:1,em:true,fr:true,e:,tt:jload,dtt:312,fm:utXe3e4+11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C1a%7C1b%7C1c%7C1d%7C1e%7C1f%7C1g%7C1h%7C1i%7C1j1%7C1j2%7C1k1%7C1k21%7C1l%7C1m%7C1n1%7C1o*.925660%7C1o1%7C1p.925660%7C1p1%7C1p2%7C1q1%7C1q21%7C1q3%7C1q4%7C1r1%7C1r2%7C1r3%7C1r4%7C1s%7C1t%7C1u%7C1v%7C1w,idMap:1o*,pd:CV8L.internal-pdf-viewer,rmeas:1,rend:1,renddet:env,siq:657,slid:%5Bgoogle_ads_iframe_/8663477/CNN/homepage/landing_5,google_ads_iframe_/8663477/CNN/homepage/landing_5__container__,ad_bnr_btf_01%5D,msd:11844,ph:12897,sis:871,sinceFw:364,readyFired:true%7D&br=c": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=dv3-render&msg=tler&ord=861732072&version=m202410070101&ct=76&x=13&cor=3068063396101490700": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://cdn1.lockerdomecdn.com/uploads/1e7730da934c3e41d390878ed7a640534b34740e03ee3ca72a92a797a9fad29e_medium": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "32320",
+      "contentType": "image/jpeg",
+      "referrer": "https://custom.lockerdome.com/",
+      "blacklistRule": "||lockerdomecdn.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=f09da161-9673-f297-fe56-4e5b22ebb57b&tv=%7Bc:tRWdO1,pingTime:-10,time:1565,type:s,mvn:ZnNjPTEzLHNkPTMsbm89OCxhc3A9MQ--,sd:MTcuNi40djEyMDB8fDE5MjB8fDF8fDF8fDI0fHwxMjAwfHwwfHwwfHwxfHxsYW5kc2NhcGUtcHJpbWFyeXx8MjR8fDgvNXx8OC81fHwwfHwxOTIw,no:MTcuNi40dk1vemlsbGF8fE5ldHNjYXBlfHxufHxufHwwfHxufHxMaW51eCB4ODZfNjR8fEdlY2tvfHwyMDAzMDEwN3x8MzAwfHxNb3ppbGxhLzUuMCAoWDExOyBMaW51eCB4ODZfNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMjkuMC4wLjAgU2FmYXJpLzUzNy4zNnx8MXx8MXx8R29vZ2xlIEluYy58fG4-,ch:n,fsc:17.6.4v222222220002222202222222220222222222202222222220222202000022000220222222220000222202002222202222222220222222220000020022222200022222220200000222200022220002022022022222202002220222022222022220000220200000022220222220222222222222202222222222222222222222222222222222222200000022022020020000002022202022022022222222000000000020222202022022222000000020000000000000000000022220202220000022200222202220022200200222022202220022220222200202222020002200002222022222202222000002002002222222202220022202200222002220222202,asp:1731450073201%7C%7Ce127f855a6b586761ad269481aed6312%7C%7Ccd70ceeb4a1768030b1882c90242a428%7C%7C81cb4d24d4e0c15e2003c6cd7a5e254c%7C%7Cbece816f4b070a5abd74923e057a5c35%7C%7C79080510e2afb940f03c0134affd41ff%7C%7Cf73f549d448c1b175f7b04ff5aec8ef1%7C%7Cc991131f3c1287095289eb860ea5be62%7C%7C1715618633,sca:%7Bspg:620af6b7-793d-92ba-7a46-c5ca958ce680%7D,env:%7Bar:self.0%7D%7D": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://events.bouncex.net/track.gif/reloadcampaigns?wklz=E4UwNg9ghgJgxlAtgBygSwOYDsDOAuOAVxwBcJEA3KYNKAIzBBwF4BSAdgCFWAmHmJgGsyyAPqxRFNDjQMQvHqwDMAQQUAzKGBzy+vAMILqJNHEajUGXYtUatOhQY1goGHAAs0YmOXRZHtnwkwITWTnyIEFggAJ7iwCZmIBauYYE8mtphPIZ8OnAmUaJYSGlqfO7kIJbZuTxkOAHlGfa1CnDkyIwkIDCiMtiEyE12WY45ClICEBYuMWhYGCN8mQ56E3x0oFCCCxjFIADuOBagOlgkyy1j63WR0XFQhCSVwFfjdTjIIHC0YPGJRhXVZtPguUj9JgyIpTK4ARnYSjhABYAKwABnR7B4qORADYABzsACcHwUOhw0Kwog6hAu8LJmygcEE6jQYH+Ai6EBiiBA9L06UZ-HUyB4ogEPQKVywEBIom2MBiwpwhDoiDQJB6fTpAmAOA6oBgwNaKrVGq1vQlIHsJpuig2PFV6s12tEhxtLxAb0FzRBZpdlr6XuQEAWl19ozWDs+5tdVs0oF6OAwkDoWi2aBAbMWduj4SdcaDCqYhDAJBw1BACzzoMLgbdbIoIBee0akZWptu5KLbrAaHUIDozwwSeiPpsfq7MZ7DatsDLLwgEBgw5IdBbPQnyin9oLzotbtA-fojBwEEIwDgTFrAcPVuQwAgFAggmq3tVsDKUbr7igJwPeM+miY5ui3W9uzyXsrQwZcYFIQh1HUCCZyguc+lRDpK3bScf2FDoLn5eUSBib4UP3aC+n7ZsphACByMdQDiwWGBaC0b0KwY2N0NEDd1AgUAvQ3DkuIUfl4CgMQumZEA+QuGl3B+QQrmCUI7yA0Q0BQG04HcOSI1wzs90YyjRD5KAsEOTwgQ7a58xMnjzMs6zqwuRSNRgGBGBtUhRLQ+8+i2G1dkWECcJ3PDIPrALRHAH5Ciwa9CO3dJ-Sipi3UNKIoCkEJwtS6cKJ4qyoHlRBSq3fLd3s7iYrgLAsDhdE-OijTDgE4RgAsnB+OAPljVstLUNa4ssEwdwSAQYZBsKhyYuHGRokpFqMqtHBvOmwy7LrVa+lIM4qsi4bds0kgtGVGbjNqjS+QAD1MejLpq2cYtDMR+0HFbTLZEglsOoznv8jTghy8B3RAEBBDAC6tqGoqYoNLNEu-AGdtM3SFigL6eKfGItAOY5sZirrryJjSACt12XQQzDVMni2oehTF47YQv2ML6bdT0zN6TmrUOUrdJpBqWpEZm0Hg94ooWftoli8r2VEfiiB0AbYdmupiD2TTkgE2KYCsFraDoUQxbgU3XH+h1jqI02IGQZmzrceE8U4PFhS2Hq7Yd82nat-CGppamsytuHHVlGlIB0FIIRMPl1C6vkVJCOt6upWD+kqQ4TBIGytoDA0aA3YCjnWzdvSl46eg5ahZlK3rEGTtT0vitAihIsjbJ8PlSFMYVmRMZtIQwfS+b6D1SsU4A6BW0NcAE+cElMPOItR4VdQ-Q01rn899U8TbV+24V7bjtAAC9wDiR8mCIlrIAwKw+hrJ66xAZtgFEe-H80-wX-7pekgswsqxXMf8oqgAwD0CEHRED6W1gPNAzYWo-H7MgaOxhl4oyPulcqADzAdFfFmcQ8FRBRGhitXBgJkgEN2MkWAJxgHiEIJ5N+K0IC-HxqAQcwAur-HPJeUmtkA7UmdIXWQFcwHDTTv0NUYiNwfwAI5Y0kQWVAMQBYclODfAU6s9zsAACIADJjzQAkigdA2B8AlD5MwKgNBTwgGMeAUxCBzGYFwHgDuIBmDqBcG4feEpfDP30PkBKxRSgGHuLEJhS4fT6BgKKcUkp4oGHElNOu159IKSUgYM2mlJY5GNt7R2lsDDnGIvbEpzscie3UMU32pScjSIzh4CA2dNQ2RCdXFwH9pIkAbmU1u7dSK6BCewv4JZuG8P6BeK8oyKRUiDnSCM+hwTygWW3aksIciiLgEXK0YUwLeicZAWA+gkCoHcTgAAajwZg6JDGRAEPcwxHo6AyB6BLZgShkQPKkB8r5CIkRokxNiXEhISSGIEFIa8XySTsAJHiXESgeDsHRHiREqJCRKHYIYmoUgjiAsMToBRoRkZfJ4IYswSMtRaSYGdFAzAgUogxFiX5qIlBUv7ERSSiCPybOYE7Tl0LTDeJgIY1swA+ioASHEUgAlUgSmkA4mAgqU4SrPhAb5mJiWzOvMwN5hjUgXGYMQY5551DygpRAMA7gADKUr0QACkMAAE1rnRHYAAeSgAAWSwE6gAGsAGIrqACSAAZL1hi-xSvycwHgNr7WHAAAoUAwIIW6UB1AAFU8R4jPgAJRgPUdQ5MMAOoAFpAA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://www.dianomi.com/cgi-bin/pixeltrack.pl?cf=1904.2263.CNN%20Test&geo_ccod=us": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "77",
+      "contentType": "image/gif; charset=ISO-8859-1",
+      "referrer": "N/A",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://pix.cdnwidget.com/hash.gif?md5=none&sha1=none&sha256=none": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "68",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||cdnwidget.com^"
+    },
+    "https://saambaa-static.azureedge.net/sidestage/300x250_iceland_v500.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "18897",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "/300x250_"
+    },
+    "https://saambaa-static.azureedge.net/sidestage/300x250_vancouver_v500.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "22608",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "/300x250_"
+    },
+    "https://saambaa-static.azureedge.net/sidestage/300x250_singapore_v500.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "21412",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "/300x250_"
+    },
+    "https://a.jsrdn.com/creatives/site_logos/dslogo_sm.png": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "2119",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||jsrdn.com^"
+    },
+    "https://eb2.3lift.com/getuid?ld=1&gdpr=0&cmp_cs=&us_privacy=&redir=https%3A%2F%2Fcs.openwebmp.com%2Fcs%3Faid%3D40028%26id%3D%24UID": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "37",
+      "contentType": "image/gif",
+      "referrer": "https://sdk.openwebmp.com/",
+      "blacklistRule": "||3lift.com^"
+    },
+    "https://dt.adsafeprotected.com/dt?anId=925660&asId=291374b9-f8d5-ffc1-464b-dfa0cd51c3c7&tv=%7Bc:tRWdTP,pingTime:-10,time:1918,type:s,mvn:ZnNjPTEzLHNkPTMsbm89OCxhc3A9MQ--,sd:MTcuNi40djEyMDB8fDE5MjB8fDF8fDF8fDI0fHwxMjAwfHwwfHwwfHwxfHxsYW5kc2NhcGUtcHJpbWFyeXx8MjR8fDgvNXx8OC81fHwwfHwxOTIw,no:MTcuNi40dk1vemlsbGF8fE5ldHNjYXBlfHxufHxufHwwfHxufHxMaW51eCB4ODZfNjR8fEdlY2tvfHwyMDAzMDEwN3x8MzAwfHxNb3ppbGxhLzUuMCAoWDExOyBMaW51eCB4ODZfNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMjkuMC4wLjAgU2FmYXJpLzUzNy4zNnx8MXx8MXx8R29vZ2xlIEluYy58fG4-,ch:n,fsc:17.6.4v222222220002222202222222220222222222202222222220222202000022000220222222220000222202002222202222222220222222220000020022222200022222220200000222200022220002022022022222202002220222022222022220000220200000022220222220222222222222202222222222222222222222222222222222222200000022022020020000002022202022022022222222000000000020222202022022222000000020000000000000000000022220202220000022200222202220022200200222022202220022220222200202222020002200002222022222202222000002002002222222202220022202200222002220222202,asp:1731450073201%7C%7Ce127f855a6b586761ad269481aed6312%7C%7Ccd70ceeb4a1768030b1882c90242a428%7C%7C81cb4d24d4e0c15e2003c6cd7a5e254c%7C%7Cbece816f4b070a5abd74923e057a5c35%7C%7C79080510e2afb940f03c0134affd41ff%7C%7Cf73f549d448c1b175f7b04ff5aec8ef1%7C%7Cc991131f3c1287095289eb860ea5be62%7C%7C1715618633,sca:%7Bspg:620af6b7-793d-92ba-7a46-c5ca958ce680%7D,env:%7Bar:self.0%7D%7D": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsafeprotected.com^"
+    },
+    "https://events.bouncex.net/track.gif/id_sync?id_sync:id_type=sid&id_sync:id_source=graph&soft_id=2olhSrd0JgYVne7OaMnJXryYILO&source=web&agent=cjs&deviceid=7978654327067356837&visitid=1731450072546879&websiteid=340&pageviewid=1&sequenceid=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://www.dianomi.com/img/YAC_Icon.png": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "184",
+      "contentType": "image/webp",
+      "referrer": "https://www.dianomi.com/smartads.epl?id=42667&numAds=3&cf=1904.2263.CNN%20Test&unitId=dianomi-42667-ZzPU2pDszD_A9vfSznWZkwAAADY0&responsiveHeight=1&contextfeedFrameId=2263-738&gdpr_consent=null&gdpr=null&canServeAds=true&canCookie=true&partner_tcf_status=2.0&partnerTcfStatus=2.0",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://www.dianomi.com/img/a/sav2/339874/2/442x249.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.dianomi.com/smartads.epl?id=42667&numAds=3&cf=1904.2263.CNN%20Test&unitId=dianomi-42667-ZzPU2pDszD_A9vfSznWZkwAAADY0&responsiveHeight=1&contextfeedFrameId=2263-738&gdpr_consent=null&gdpr=null&canServeAds=true&canCookie=true&partner_tcf_status=2.0&partnerTcfStatus=2.0",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://www.dianomi.com/img/a/sav2/337929/4/442x249.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "11256",
+      "contentType": "image/webp",
+      "referrer": "https://www.dianomi.com/smartads.epl?id=42667&numAds=3&cf=1904.2263.CNN%20Test&unitId=dianomi-42667-ZzPU2pDszD_A9vfSznWZkwAAADY0&responsiveHeight=1&contextfeedFrameId=2263-738&gdpr_consent=null&gdpr=null&canServeAds=true&canCookie=true&partner_tcf_status=2.0&partnerTcfStatus=2.0",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://www.dianomi.com/img/a/sav2/341007/2/442x249.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/jpeg",
+      "referrer": "https://www.dianomi.com/smartads.epl?id=42667&numAds=3&cf=1904.2263.CNN%20Test&unitId=dianomi-42667-ZzPU2pDszD_A9vfSznWZkwAAADY0&responsiveHeight=1&contextfeedFrameId=2263-738&gdpr_consent=null&gdpr=null&canServeAds=true&canCookie=true&partner_tcf_status=2.0&partnerTcfStatus=2.0",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://products.gobankingrates.com/t/": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://products.gobankingrates.com/pub/ced4077e-d313-11ec-8570-0e0b1012e14d/",
+      "blacklistRule": "||products.gobankingrates.com^"
+    },
+    "https://i.jsrdn.com/i/1.gif?r=58tf&k=ZQlpbQlhCTMzMQlkCXVzLWVhc3QtMWIJaAlpLTA3MjIxY2FmOWZlMzkyM2FlCXUJMmVlODcyMzItOWI3Ny00ZWFlLWFhMWMtZTA2OGE3ZTA4YWI4CXYJN2QwYzZkNTEtODM2OS00ODg5LTk5NDUtZmMwNmY4MDNlZDcwCXN2CWpzcmRuCXZsCTIwMjQxMTEyLjIxMjAJdnQJMjAyNDExMTIuMjEyMAl2cwkyMDI0MDgzMQl2YwkyMDI0MTExMglzdAkyMDI0MTExMi4yMjIxMTQJaQk5MGJhMzQ1MS1kMWM4LTQxYTEtYjJlZS1lOTMwZjJkNjUyMjAJZglodHRwczovL3d3dy5jbm4uY29tLwlxCTY5NzQ0MjBhLTI4MmEtNGMyNy1iMGEyLTE2NWUyMjE2NjMzNwltCTIyMzQyCWIJMjYyCWcJNDEwCXQJNjE0OQljCTYyMDUJbAkyMDk1Nwl6CTIwMDA0CXMJNzA2MAlwCTIzMDUzCXcJZW50ZXJ0YWlubWVudAljcwlJQUIxCWN6CQlnYwlVUwlncglQQQlndAlwaXR0c2J1cmdoCWdkCTUwOAlnbglDYWJsZS9EU0wJbmUJaXYJbmQJaXYJc2QJY25uLmNvbQlzZQkxMzY5NzIwNDAzCW1jCTg2NjM0NzcJbmYJaXYJcXAJNTAJcXQJMjUwMAlwbgk0NTA5CXZuCTIzNTg0MTMJaHYJMQ": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||jsrdn.com^"
+    },
+    "https://pixel.quantserve.com/pixel;r=689514815;labels=campaign.22342.262.410.6149;event=refresh;rf=3;a=p-w9vzu-sGKCA0U;url=https%3A%2F%2Fwww.cnn.com%2F;ns=0;ce=1;qjs=1;qv=6cdb9339-20241109062824;ref=;dst=1;et=1731450074388;tzo=300;ogl=title.Breaking%20News%252C%20Latest%20News%20and%20Videos%20%7C%20CNN%2Ctype.website%2Curl.https%3A%2F%2Fwww%252Ecnn%252Ecom%2Csite_name.CNN;ses=e54a9bb2-a68c-4419-954a-14e8d6500abb;d=cnn.com;uht=2;fpan=1;fpa=P0-1978719788-1731450074392;pbc=dc619f2b-34ef-4fc7-8e79-4113bc61ed74;gdpr=0;us_privacy=1---;mdl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "35",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||quantserve.com^"
+    },
+    "https://pixel.quantserve.com/pixel;r=2084613264;rf=0;a=p-TWKb6gH_3MnFX;url=https%3A%2F%2Fwww.cnn.com%2F;ns=0;ce=1;qjs=1;qv=6cdb9339-20241109062824;ref=;dst=1;et=1731450074365;tzo=300;ogl=title.Breaking%20News%252C%20Latest%20News%20and%20Videos%20%7C%20CNN%2Ctype.website%2Curl.https%3A%2F%2Fwww%252Ecnn%252Ecom%2Csite_name.CNN;ses=e54a9bb2-a68c-4419-954a-14e8d6500abb;d=cnn.com;uht=2;fpan=1;fpa=P0-1251404055-1731450074372;pbc=dc619f2b-34ef-4fc7-8e79-4113bc61ed74;gdpr=0;us_privacy=1---;mdl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "35",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||quantserve.com^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N2992.1970501CONSUMERTRACK/B31004839.403826147;dc_pre=COWVl5Xq14kDFTk2iAkde-0skA;dc_trk_aid=596119792;dc_trk_cid=221674022;ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=$%7BGDPR%7D;gdpr_consent=$%7BGDPR_CONSENT_755%7D;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://products.gobankingrates.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N3282.520089GOBANKINGRATES.COM/B29807144.401224681;dc_pre=CJKdl5Xq14kDFRwAaAgd1dwFtg;dc_trk_aid=593226415;dc_trk_cid=218192018;ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=$%7BGDPR%7D;gdpr_consent=$%7BGDPR_CONSENT_755%7D;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://products.gobankingrates.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N3282.520089GOBANKINGRATES.COM/B29760667.405907389;dc_pre=CMGRl5Xq14kDFSpnRwEdgdgmCA;dc_trk_aid=597577619;dc_trk_cid=192563039;ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=$%7BGDPR%7D;gdpr_consent=$%7BGDPR_CONSENT_755%7D;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://products.gobankingrates.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N810774.520089GOBANKINGRATES.CO/B20995705.283430868;dc_pre=CIadl5Xq14kDFXppRwEdWsIovQ;dc_trk_aid=477133544;dc_trk_cid=138484667;ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;ltd=?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://products.gobankingrates.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://x.bidswitch.net/ul_cb/sync?ssp=adaptmx&user_id=dd76088c-a125-45f5-84d1-1c1264d015d9&gdpr=0&gdpr_consent=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://prebid.a-mo.net/",
+      "blacklistRule": "||bidswitch.net^"
+    },
+    "https://aax-us-east.amazon-adsystem.com/x/px/RDQTrBH1pSbDyv_HcZy3jGMAAAGTIndr8QEAAAakAUIzcHhfdHhuX2JpZDMgICAzcHhfdHhuX2ltcDEgICDlXVID/?p=%7B%22adCsm%22%3A%5B%7B%22ns%22%3A1731450071957%2C%22st%22%3A%22328.00%22%2C%22re%22%3A%22380.10%22%2C%22ldTot%22%3A%2252.10%22%7D%2C%7B%22lteu%22%3A%220.10%22%2C%22ltut%22%3A%220.00%22%2C%22ltpq%22%3A%220.00%22%2C%22ltvd%22%3A%220.20%22%2C%22csmTot%22%3A%221.40%22%7D%5D%2C%22pixelId%22%3A%22yxs867ksj18%22%2C%22ts%22%3A1731450074919%2C%22ver%22%3A%22r-1.35-tpmv1%22%7D&cb=5178254": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://aax-us-east.amazon-adsystem.com/e/is/bb8e6d0b6c85b2b1fc673047a9802fc9/creative?b=JDQTrBH1pSbDyv_HcZy3jGMAAAGTIndo0gEAAAakAUIzcHhfdHhuX2JpZDMgICAzcHhfdHhuX2ltcDEgICDlXVID&ct=https%3A%2F%2Fbeacon-nf.rubiconproject.com%2Fbeacon%2Fv3%2Frs%2Fiad3%2F0%2Fe81d064c-d2f1-4b8a-a5ed-4edd4023015a%2F0%2FEONzWuFNMhJBKa5bt-a9MNF9NPM%2F&bi=VW-6.puPamLfXe3rcUjwjEBfrxUplxgM3.y-xsF7yF5Y91UNPxUMx2.eEYeiTgWQqhtmJIVtNtkR59SbP1GqvrLJYrViL2Na20jxq2HyffBsuuHmc7PMF390KzgWeJviNywX3dQzz7VaGYBCNsGBCJpdTmqSmIUXImzSXriCGVFPIruVrQrx3XaxKDBDb4h35ERIk1VKR4SzFNTjju3e.9AykQuY1O-duYG0bZ6sI7bNmT6Z8rAElIWn5Ujj3ydtJ7Bn0lTbQc3PKzC0O15wLrzch3BfYUWAk4ZY4BCx8cwL4HW0DY3lYTxq3cjWBa-LUBCa7CTxqaOvfBNo91-tewIOUHXwTEnpjd8d2irSCgNCygaL5W-tACEkjlbrXXu0UFXHb2PEz8TuhwqA1-V7-sZFZGCXX0Ve1I5YTZDgMRx8r0ZNx7nDNKCnnSdl6ieQYcWshCNwx-MXTtk9tl.qvp-v73qVcWSKfT-SNdtBjtlhdItRSVkXGWqtH59AnHWad3uvzFEpeH5ajLi-bHd3HZw8TV3I.5IoN0MxJCJ-KkG6DqOeesNUKmB2tGdd2rcM.o2lY1SwdmzUixKCJPYRhtlwCF502sQRY9inv6ZuoTU_",
+      "blacklistRule": "||amazon-adsystem.com^"
+    },
+    "https://cm.adform.net/cookie?gdpr=0&gdpr_consent=&redirect_url=https%3A%2F%2Fsync.a-mo.net%2Fsetuid%3FA%3Ddd76088c-a125-45f5-84d1-1c1264d015d9%26bidder%3Dadform%26uid%3D%24UID": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://prebid.a-mo.net/",
+      "blacklistRule": "||adform.net^"
+    },
+    "https://li.cnn.com/baker?dtstmp=1731450075000": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://events.bouncex.net/track.gif/reloadcampaigns?wklz=E4UwNg9ghgJgxlAtgBygSwOYDsDOAuOAVxwBcJEA3KYNKAIzBBwF4BSAdgCFWAmHmJgGsyyAPqxRFNDjQMQvHqwDMAQQUAzKGBzy+vAMILqJNHEajUGXYtUatOhQY1goGHAAs0YmOXRZHtnwkwITWTnyIEFggAJ7iwCZmIBauYYE8mtphPIZ8OnAmUaJYSGlqfO7kIJbZuTxkOAHlGfa1CnDkyIwkIDCiMtiEyE12WY45ClICEBYuMWhYGCN8mQ56E3x0oFCCCxjFIADuOBagOlgkyy1j63WR0XFQhCSVwFfjdTjIIHC0YPGJRhXVZtPguUj9JgyIpTK4ARnYSjhABYAKwABnR7B4qORADYABzsACcHwUOhw0Kwog6hAu8LJmygcEE6jQYH+Ai6EBiiBA9L06UZ-HUyB4ogEPQKVy+URwEDet3JhDoiDQJB6fTpAmAOA6oBgwNawpwKrVGt6EpA9iNN0UGx4ptV6s1okO1peIEVNmaIJNZpdls9yAgC0ugt9xqVeQDFr6mlAvRwGEgdC0WzQIDZi1ta3tn1jrrOhDAJBw1BAC1zoMdhctbIoIBee0aEdGefCtedcdEYDQ6hAdGeGET0W9ykjds7TvNrtgJZeEAgMCHJDoTZ64-SfujXdnltAffojHlhGAcCY1f93ddyGAEAoEEE1S9ptgZXbNfcUBOM8DfWiY5uk3K9dz-HsMCXGBSEIdR1FA-NlRvS1UQ6ctWx9T9hQ6C5+RIUQSBib4EOnOs+j7RsphACASIdcDXQWGBaC0L0y1ogtkL6dd1AVJt3EHcAwHYhR+XgKAxC6ZkQD5C4aX4lkrmCUJr33Po0BQa04HcGTw0wlYo0QmNONEPkoCwQ5PCBNt9KnOiyJM61zMsysLn4tUYBgRhrVIYSjNU0QtmtXZFkAjCJywsD7PAH5CiwC9cK3ScOzs4z9SiKApBCMLtwM0jjIsqB8MQQrN2ypKa3oy04CwLA4XRXy93-N0FWEYAzJwHjgD5Q1rOuZKOP8rBMHcEgEGGXqd0MxqeyHGRokpBrKr6HAvPGvS+oq+zSDOMqIqmpbRHVLQYkW+y+QAD1MGiJtylL-JDMQ+wHU7jLZEh5t2mz+qQ-zggy8A3RAEBBDAE6btsgamr1TM4o-L7NtSzwShe-z7xiLQDmOFGmrai9sZ7AArNcl0EMwVXxuc2roUwAu2YL9lCinLQ9ByevWya8v8w5Cq0mkaoakQabQaD3l3BY+2iURpPQf4eKIHQ2fC+HhWIPZDuSBUpZgKwGtoOgCIgZAaZIVxPvtfa8INo24AI034TxTg8WFLYOqt427d67CappEnMzNjmHSwGYzAgHQUghEw+XUNq+UUkIa2q6lIP6SpDhMEgrPW689RodcAKOFaNy9UX9p6DlqFmQrOsQOPlLAmK0CKQjiN6nw+VIUxhWZExG0hDAdKZvp3UK-jgDoRaQ1wXi+mMUxM6VjaVawHU9Wn-pJ-lXVPDWheA7qQ3I7QAAvcA4jvJg8IayAMCsNT-HB76+BARtgF7CAb8tKsH5rWeklpsymI5m-sKUAGAegQg6IgHSatu5oEbA1H4fZkBh1-vPHKENyTFQSHPZIHQnyZnENBUQURQaLSwYCXBvtkiwBOAA8QhAPLP0WhAX4GNQADmAG1f4p5zxw3Np2RO-QVQ51kMXYBu5BFOhEeuV+ABHKADVUAxG5hyU4F8BTs1yuwAAIgAMkPNAMSKB0DYHwCUPkzAqA0GPCAfR4BDEIGMZgXAeBm4gGYDAUU4pJQxTsZAWA+gkCoGcTgAAajwZg6JdGRAEJE3R7o6AyB6MLZgShkRRKkEklJCIkRokxNiXEhISS6IEFIC8KSSTsAJHiXESgeDsHRHiREqJCRKHYLomoUgjjZN0ToWRoRYYpKULoswMMNTqSYCbFAzAckogxFiDE7B2mjLwuJOBr5G5YGYCbDAwzSmmHcTAXRzZgB9FQAkOIpAFSpAlNIGxMBtnx2OUfCAqTMS9IgGeC8zAEm6NSBcZgxAvQfPUPhFJPAIBgHcAAZVOeiAAUhgAAmqE6I7AADyUAACyWB4UAA1gAxCRQASQADLot0d+U5h0HkQqhdCw4AAFCgGBBDnSgOoAAqniPER8ABKMB6jqAJhgWFAAtIAA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://a.jsrdn.com/hls/23078/distrotv-entertainment-update-2/poster_20220812_165644.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "72988",
+      "contentType": "image/jpeg",
+      "referrer": "https://distro.tv/",
+      "blacklistRule": "||jsrdn.com^"
+    },
+    "https://server.prebid.dianomi.com/setuid?bidder=grid&gdpr=0&gdpr_consent=null&gpp=&gpp_sid=&f=i&uid=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "86",
+      "contentType": "image/png",
+      "referrer": "https://www.dianomi.com/",
+      "blacklistRule": "||dianomi.com^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.403625837;dc_pre=CNW60pXq14kDFR0QiAkdr70FhA;dc_trk_aid=595551875;dc_trk_cid=222457017;ord=cb=757634;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ads.stickyadstv.com/auto-user-sync?pbs=true": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://ads.stickyadstv.com/pbs-user-sync?gdpr=0&gdpr_consent=null&us_privacy=&gpp=&gpp_sid=&r=https%3A%2F%2Fserver.prebid.dianomi.com%2F%2Fsetuid%3Fbidder%3Dfreewheelssp%26gdpr%3D0%26gdpr_consent%3Dnull%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%7Bviewerid%7D",
+      "blacklistRule": "||stickyadstv.com^"
+    },
+    "https://vad-bid.adsrvr.org/bid/feedback/rubicon?t=1&iid=175003c6-8dd4-4bd0-921c-fb70ddddff96&crid=oew3x0v8&wp=C9CA22F8DF9A4354&aid=1&wpc=USD&sfe=196b54db&puid=&bdc=93&tdid=&pid=h7w985s&ag=epgxr5n&adv=8l1y7r0&sig=1jNCKfv0k_73n0ZQvTtSssGYuegkU_w_xucn-GLfaw3Y.&bp=0.241395&cf=7676625&fq=0&td_s=www.cnn.com&rcats=&mste=cnn.com&mfld=4&mssi=&mfsi=&uhow=65&agsa=&rgz=15217&svbttd=1&dt=PC&osf=Linux&os=Other&br=Chrome&rlangs=en&mlang=&svpid=24022&did=MGNI-AP-13823&rcxt=Other&lat=40.432400&lon=-79.924700&tmpc=10.129999999999995&daid=&vp=0&osi=&osv=&bx=120&bffi=41&testid=%7Cfcaw%7CCRE2519T%20TTDContextualTest%20%20&c=1~KLUv_SNa1XJFsV0CAGPCB60viP-Q_M_zf4__d6aWrxHP9eJ8lF-jLCOPsCtkuj8O_FB691DuKkpmz_NOz0lUgQS1ZzAvEX7oyQo-aJD2IFO885tCHg90BA..&dur=1~KLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.&durs=OtySav&crrelr=&fpa=427&pcm=3&said=a52bead56a7f8bd4657775727b0cfc2260a6cbe9&ict=Unknown&auct=1&im=1&mc=0c516118-4bf7-47ff-86ff-2934cd6927d8&abr=13cd4f0c-596f-43e8-8c02-612bd17a650e&tail=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/551c3ec2-6aa2-4a0e-8f85-420a1346fa37?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563BD380BFCB80EB2D032D3720921602B77F70C5212DEB30EF34715B08B6EECBBB0D906C865CA7F7EA458DD58AEA29E17ABAAE06CFB07573F3E022D71FB551D1FD91A1613A2E4E63BE982C0D6E69A4619E5D2B9040036D50F3F32FDBC20646BD037B5CD3C57A702A7859128904E9B796511B3B89C77CC045B50BA4807159A91CEC88B5401986E7EC383F2AEE145B3C896AE435E162840683A49DBDE8EE00957B8255DD2FBF753BB3EDAAEABBF5A0B5688FB7": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/e2a300bc-6f7a-4181-9577-a422feec857e?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563B3ADD893FA3C11B185664CAF08584E7A4747F1615441EF504603F3597C6BDDFD4C43E979677E1ECF9EB71D202B4738D5C9812C8A76129DAD993C9696AEBADEBCEA1613A2E4E63BE98ECED286E457FC7DCCC9BE520D78D639F2FDBC20646BD037B5CD3C57A702A7859E855A76B9C4517EF9F52C68AD81B84AFA4807159A91CEC88B8EAD443741E4E9DF96F07768351D54DE75623D829CF5E4AC75BB123FD16518C46D490E3E64234065AE1D5FCE8E2684F": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsvraEJ6NUPAtAjGdB6nTb-9_M100phepdGZmiaRSIebuEw_J-wpWk_nHag8USQMjvr250JmtlYxQtdOmQKrWNzAQzG9qXnynP3LakW2zaiguMbQmdvMaibje0zA3MXbQnP88vQ8EF76PkjzTmoyzuDZg0dRRtftM3Bn2_dFaupKqwsgN7Q1LtsINLQd9A5gRZ7JoHWOMyJSVv151c5BHW5Q3sdslqfICPKWFavVvbNxLfk7CotVoEz-Z4b6xSPcUcOqEFuG3waqxD0XHoGIsA1EnQFnVd5Ve6uHyLDgL0mDz7WAE0ACX1xIKFAYZ9s3yALyGkEC_JdKQz0tu-XYQ__Vuzi5YzoBFhXgdKYtoqOEm0P5Lqlvsecpp3vAp7s1on0OFqgWvNLQZz5UQMyFcl7ZC3ewjIchWsn9_q3rVKtDr2Yicf9Yl-g&sai=AMfl-YQwhjTxXh3-FhgwTz6M8i9cmjMndQHqpE7XJJV4dnRtOUJIB7_xQ48ynNUmjcKHK5RfKh01mAlVw1YdArrLhNb98Dds1fRAp88qYCdzLmxQP40DVRVvhcA__42dNG3y53wAGkZsT9C01iaDuqlIVQ&sig=Cg0ArKJSzKfP9wJ5R_IpEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/6ad82b74-6425-40ad-8cf9-f2d717b796ba?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563BB812C5406FE5FDACD3D8F643BF0EAC1D82805FD6F3DC6878250359234A8A8DA7142677739AAED2471C084CBD9223F08FF1A74149896BB7129DB0617E333B02B62BF1413A4F9F9EB18B1A41C62B983C80E10A256D407A02E6AF6999C98F70CA9A621BCEFD3C15C4B34AC1B1AEAF1CF11CBAA4E65B0226318097F998B6BFBB089BE904F2F26DE5F0EEE361131AB972B817CE7F646819873B9E221F407BDFFD16C0A3ECB9742F755F42099C33F1CA8D583E": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://vad-bid.adsrvr.org/bid/feedback/rubicon?t=1&iid=1d41df7b-d9a7-4372-956c-b75a39172e24&crid=a4a3vpen&wp=C9CA22F8DF9A4354&aid=1&wpc=USD&sfe=196b54da&puid=&bdc=93&tdid=&pid=h7w985s&ag=epgxr5n&adv=8l1y7r0&sig=1iBuDxlhfpRK_aAETI9eg_Pa9PfLvDaJK9qvEe7wZFl0.&bp=0.241395&cf=7676625&fq=0&td_s=www.cnn.com&rcats=&mste=cnn.com&mfld=4&mssi=&mfsi=&uhow=65&agsa=&rgz=15217&svbttd=1&dt=PC&osf=Linux&os=Other&br=Chrome&rlangs=en&mlang=&svpid=24022&did=MGNI-AP-13823&rcxt=Other&lat=40.432400&lon=-79.924700&tmpc=10.129999999999995&daid=&vp=0&osi=&osv=&bx=120&bffi=41&testid=%7Cfcaw%7CCRE2519T%20TTDContextualTest%20%20&c=1~KLUv_SNa1XJFsV0CAGPCB60viP-Q_M_zf4__d6aUrxHP9eJ8lF-jLCOPsCtkuj8O_FB691DuStHtynne0HOKKpCc9gzmJcIPmVnBBw3SHmSKd35TyOOBjg..&dur=1~KLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.&durs=OtySav&crrelr=&fpa=427&pcm=3&said=b80c99d86ba935fbd93f965b2706f107a8b3b8dc&ict=Unknown&auct=1&im=1&mc=0c516118-4bf7-47ff-86ff-2934cd6927d8&abr=b18d57b5-de94-4241-9a6d-9ee980dff53c&tail=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.404481585;dc_pre=COeH25Xq14kDFZUuaAgd_oQTqw;dc_trk_aid=596099056;dc_trk_cid=222436823;ord=cb=667163;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://cm.adform.net/cookie?redirect_url=https%3A%2F%2Fserver.prebid.dianomi.com%2F%2Fsetuid%3Fbidder%3Dadform%26gdpr%3D0%26gdpr_consent%3Dnull%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%24UID": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.dianomi.com/",
+      "blacklistRule": "||adform.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.403625837;dc_pre=COnQ35Xq14kDFcFvRwEdYEI5GA;dc_trk_aid=595551875;dc_trk_cid=222457017;ord=cb=681691;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB9SURBVBjTdZFRDgQxCELxBtz/tJOiUJvs9sPW+EScAX6f6qPHykBVOcFZCat7K54KyYDOUncIbdlDRXtmR3+c+LTq8g3zENcsLSd5qoWY1UTO1U6aaIppLNez5etELTLO7Vvo7Hm3vHueCfVo/vmCM2DTeH1Hm24kXif5Sx9thwYqNhDKGQAAAABJRU5ErkJggg==": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/png",
+      "referrer": "N/A"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuIE1POL41GyZhfYtpoSA6UCdLFKped0AH8xRcnpMgScsyZAIVZxk3Al_dWAXkAH9uLpJS_xr_YRL2gThvTDC0_bDh9NlegCGQ_QX5vDdWJoBeFyf3k6npfB0gV5PzOfuTnLP83ouYncCcQ2ksqUPd53UfPo8XOJKmafMsanXV39DbmPsaa59irQOVmhCG0ECguq6OKL3wP1T0f_hSWdekaHLHukRKDb9q3u6ZVCQvnHxgesAI1BkGltIykuzmw2-ZgXDtSsVnn972Hw5zACP1P6Mw6QOUquK7uy_NBFTM9RJFeL9gS08UyuOrbTAUfvuIHIza58OAuOfxWp0ENEnvVpAHx2NL9g5hjeqbxGYE24wswA7lhlS7vPjDYgS1cR8CdrZrU0tpiTz_3mWNRDZK--sCGosGqjzjkDKTGNXbp2GqnnsSiF-8a&sai=AMfl-YTRCrD2Kybw3xbXiD-jiE1wBfcqTNE5fEpM_cGTSPLo8GjlncfBstsc9kyo4CkiWm7F-gZQ0A-wPK40Qh5vFcubkfMLPYX5AqDSOPacqNlLwaOVodmO9Bi8k8JydCju9my9jpeVKt7e9etLAaWuqQ&sig=Cg0ArKJSzE6_BfUG7bSbEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ssl.connextra.com/resources/MGM_Sportsbook_Casino/2024/Web_CAS_ACQ_US_NJ-PA_3CardPoker_Sep2024/300x250.jpg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "49448",
+      "contentType": "image/jpeg",
+      "referrer": "https://ssl.connextra.com/servlet/controller?service=DDM_CAS_ACQ_US_3CardPokerSep2024_300x250&pubhost=www.cnn.com&tclk=https%3A%2F%2Finsight.adsrvr.org%2Ftrack%2Fclk%3Fimp%3De2e4d68a-b1ff-4baf-b849-2791a96764e1%26ag%3Depgxr5n%26sfe%3D196b54da%26sig%3D9oD14eUlEWvmdjlFzxLJH-PHYZiL4heM4MXg23t7GYw.%26crid%3Da4a3vpen%26cf%3D7676625%26fq%3D0%26t%3D1%26td_s%3Dwww.cnn.com%26rcats%3D%26mste%3Dcnn.com%26mfld%3D4%26mssi%3D%26mfsi%3D%26sv%3Drubicon%26uhow%3D65%26agsa%3D%26wp%3DC9CA22F8DF9A4354%26rgz%3D15217%26dt%3DPC%26osf%3DLinux%26os%3DOther%26br%3DChrome%26svpid%3D24022%26rlangs%3Den%26mlang%3D%26did%3DMGNI-AP-13823%26rcxt%3DOther%26tmpc%3D10.129999999999995%26vrtd%3D%26osi%3D%26osv%3D%26daid%3D%26dnr%3D0%26vpb%3D%26c%3D1%7EKLUv_SNa1XJFsGUCAKPCCK0viP-Q_M_zf4__d6ZeI57rxfkov0ZZRh5huDjs0blCpvsDDfzQefdI7krP7cp13qR7ZQKJiu9gXtIKFDSoPchq7_xcITQHcAI.%26dur%3D1%7EKLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.%26durs%3DOtySav%26crrelr%3D%26npt%3D%26bdc%3D93%26testid%3D%7Cfcaw%7CCRE2519C+TTDContextualTest++%26fpa%3D427%26pcm%3D3%26ict%3DUnknown%26said%3D168174751cd7757937adba80b3f09b955521a1c9%26auct%3D1%26tail%3D1%26r%3D&client=MGM_Sportsbook_Casino&dspid=124a303aef&placement=DDM_TTD_CAS_ACQ_US_PA_3CardPokerSep2024_300x250&bidid=e2e4d68a-b1ff-4baf-b849-2791a96764e1&_cb=507379",
+      "blacklistRule": "||connextra.com^"
+    },
+    "https://cm.adform.net/cookie?redirect_url=https%3A%2F%2Fserver.prebid.dianomi.com%2F%2Fsetuid%3Fbidder%3Dadf%26gdpr%3D0%26gdpr_consent%3Dnull%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%24UID": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.dianomi.com/",
+      "blacklistRule": "||adform.net^"
+    },
+    "https://odr.mookie1.com/t/v2/sync?tagid=V2_2739&src.visitorId=&gdpr_consent=&google_error=3": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=UTF-8",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||mookie1.com^"
+    },
+    "https://a3703.casalemedia.com/impression/v2/1074066/39/cspt9mral70vdbrffia0/e743a4a8-5bb9-41f9-8f14-5f1a6565acd2?verifieD=1&userID=&cmpro=0&deviceType=2&expiryTime=1731450675&profileIDs=&creativeID=329f8b7&pubID=188146&format=banner&channel=site&ee=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||casalemedia.com^"
+    },
+    "https://va6-bid.adsrvr.org/bid/feedback/casale?t=1&iid=a41beb39-1ef8-43a5-bcb5-9b5f6b453fa2&crid=t3z548xd&wp=ZzPU2wAAAAAyYH7d2FJ5yipZv3HaLxNx15kV-A&aid=1&wpc=USD&sfe=196b54db&puid=&bdc=71&tdid=&pid=h7w985s&ag=epgxr5n&adv=8l1y7r0&sig=1WWsEBKq2jSr-yyCpF5ORqhh37jbxZEi3Zot1rsc5eXg.&bp=0.241395&cf=7676625&fq=0&td_s=www.cnn.com&rcats=y29&mste=cnn.com&mfld=4&mssi=&mfsi=&uhow=65&agsa=&rgz=15217&svbttd=1&dt=PC&osf=Linux&os=Other&br=Chrome&rlangs=en&mlang=&svpid=188146&did=&rcxt=Other&lat=40.330002&lon=-79.720001&tmpc=9.810000000000002&daid=&vp=0&osi=&osv=&bffi=41&testid=%7Cfcaw%7CCRE2519T%20TTDContextualTest%20%20&npt=3&c=1~KLUv_SNa1XJFrl0CAINCCK0viP-Q_M_zf4__d5-SKeZrxHO9OB_l1yjLyCMMFyWwvQ38WzGAueOeZHPPj6SMYhRIVtODeXAvyMQIxSvfg7jxzhuFqEtuCw..&dur=1~KLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.&durs=OtySav&crrelr=&fpa=809&pcm=3&said=366d1d1b-bf6d-49d8-98a3-2e2d2e91391c&ict=Unknown&auct=1&im=1&mc=0c516118-4bf7-47ff-86ff-2934cd6927d8&abr=740d3fe0-c803-437c-bca9-5dc15adf9798&tail=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.407937524;dc_pre=CNLA8pXq14kDFcAjaAgddQcjYw;dc_trk_aid=599885309;dc_trk_cid=225630885;ord=953551;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstTMTYwJZ11ieBZUlkFjSay4QrUXk4PP36ynpL-oJ6AZNoWI-nrqyfU1JPLQQZiE00-_UcMYxrYEIgpOHBhAx8KEjG5nNInAUZWOc6zd-0tOr0temqbAqI57Sqt4sCKM_cpLImFWxQ8Y4sUcejjgP9dGXEEddr07kjCMLf7GOOiz6rwKtTLy5B5Y7sdBasvl8Z3vEgzvUk3XhEH3ZgG_Hm3woE3kVDAHvxT8mfmfd6nbwni8afhL3vrc71yG7-ptlWs3s8ej1QMy8-d_AMHfqOteqV1a5ol5RoqueWXByqtn1z8qpI6v-j47Q3uBZV7RBhL2DubImKXVaO9V5Bi_zHb_q56F--OW8Xnw1j1fHtVFi_6iGgdOtgZvmXd_fdJ9kkVt7GN3fbdjmFLwC3gk3nAXePrKYaw6KPtMTsMdk8bHrFmH4ekfd5i&sai=AMfl-YQqraSu5w522LTrUxke_hZqFqSILQgLhOfn_Fz3Bq0rP5GJfz2rQBF3ZZCjcg6h31yR6XN_PKrIptnDXYNxPqmcDpLBNJFwSvM0ymHKfXhVK-iqG2rMDvUUCEQFb-RtxrGzNFc6Ay_ZDLqhLdWoYw&sig=Cg0ArKJSzFRGGrIwgxw8EAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstUGUtHf2ZS-azPc66PJmOgEJqG6VQWKkHuV-iq3jKcfQebftpHrNmEo0ZZTTi-N0w6syTQUI5YDLiGiY8CSKFQ7zNmjPErdF62Jed0HpLqnYy02IS_HwwG9kWcdAY9KCC5WmrTEQWOnpBUgOATcJ7pjoExYCsGIKL1zM0nTsSi3-yA2qoR_lyI7c75UEzGqJXAu_nnQuRVjw_-XrqSqp_OILd9_7wq6anO97t81drN6W9rGK6YlDrJsF9ha783dA9QF7YyWWjHVN5532ok6S-9MEcy3w10BgYuqV3eTw7cDBk-rVQl9UnakKt0Ty9mJImh8XvE9VmSevF5W5b5Cf8agZam7JX2wntknIp0wkrocLyloqtP4v--rkDCejnUJhbHSj0gP9iDC5o2wQrsV6eVJs8DZl9bph2qkyIspTWLWMK8ABRjCETcMQ&sai=AMfl-YQAkxBOYb2iwo4I1t5tvX-sxt-5mVDVBsYodDcOBhPsJE74W3wsrKPGO9xUXUvk2AGX8gSkIIP3luAvH0p6QWrgGHGuImAbdbftaRFyrFRkCLt5rrNH-Ik1zIEiPq02E4vZGrRolju9Xe8X2sPNvg&sig=Cg0ArKJSzOtzKxXzvkczEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsupka9hMOsg2IbCOtaauzPSHLISymOorJekjGCHq91QReQp4MUcMnDUBmMlg-GNsQsv5we2kdmC-Ij9VIcK3orP0I6gSMm5CXf_gb_stSBKQ5R1qeqXnMCiVU4kbV3W-gDvN9nnjiFoVFHs6hxEwZcJUa71TQunkMjVhhKdULdTbsiQ8pZgbCWa3Z05ErQp1j6F3_D8rXAFhNvRBK7GtkSn1-JPlDHv_ZdRUClKbv-yJpqumiGPqFuD8HZ5GlZpquJggeQo_R_UuCsdFZotGf0oOiUK89X_vJxlSScHaRipAV01AuJPT0eGaVuxUUgyKkGKufT7q18MXF-uQHcLOx5y6RqNCW8y7Jivwr77G94VtF9HMSDy4lQPwJr2B9jMdfKXxKvQHhm6lkhu3a402_nrqliTOqWGd6UgR9tWqKjYTBptIdCrj4CSww&sai=AMfl-YQDbkB1CqLu1zMIrC39IdqZZR1dc5laC-CazgBuFLoSJ4IQLPVYYSSzAzqQ0YMIUsWp-8pEWlH6vbH9hPMX7oM6aU0sjGwREhNj-j4vkn6WtAqJPF0XdCpEhFVK0sJipzbkqNVwXW6saa03V1R9NA&sig=Cg0ArKJSzC77VFFerdAHEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstqY3Un0r_yMTqWX30LJW-_WCy1X3eIYWb06s-VDlNZ3QBUDhY96S3XhCZx61J20ag-835m1GMTsOJ-GTyO1SSqzfIIXQXoPQmCqQuKV52PmFBIAvq5uIbVPeS0P2jhxzOshpBx4stXp0rvJGR1_lsv1fO69NpBBdICNlBOk1-HLIwggXE_TqUrI2PavneI1U3RwbTmw7P2-ndu1yCDRsneh7dln-lZ9tBDWCqqfivCrdAjlR6f_tzY4CbnN59QeFm3ixT7fnQONnnuX1ktDephgVCAqmFw1yYyymqRD08l_EazBQkEqMRnfkwxYDhB1wDR4a1-UHmwTCn65TKtDcyvZa_HK-GzVdtGx-eZ9VnZPGDfeI6h_c3UsH0rLB8OrRdBWvoWQhypakpYfchWCMGj6uToChdZFrVYD16cQoYtgQ7cCRMbUdimt1M&sai=AMfl-YTtDO3MzB4teGrCbBOnCfnqmPUPHz8ltgM-b8rJI25MY9csy0cFJxtNT7N6QZ_Rld6te0DGkG535217x6c3tD8uT6EW4ZQJM49nULxQWZsEHnRD5Ab4wJXwlcyQ1AIKW0cl-4jtXX4HeVxCYM6btQ&sig=Cg0ArKJSzPcEi3F3UJ0AEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsvuCTYpKJG715lIcOjZBe4xpvaxSzwU7CB5h_NGX9qZjSZh5VWqtbqNEAvvdmG8jr15wZRYDJLtmOTLZ-eljl4DVyyR3fUmWOU1CyRMQcxgLZi1bbALkotr0Qydvx8FOzOJijWTmNsPIGgAIvyFgw1g8MePsnX60tynkNRcwyEXMUYM4l6v4zSjkAY7dtcVfpP80rVxSRynbFLnGW8qcra43SkWXqlqsZCila4ezCl9viJH-GkqKtGlUBo-irEQvkfxOhoSnmkwKgB_0KWYWkmBdeXgPur-3dMcVDGunPuIz-8YH2Pmc_aj4eeDYHcpPxMnaR0zc0W0e08jIObbEpzYqePnGVSVkwsHPKt03py7MzCQTe6pyj6IAe8Sbk0O0yXA3LEdjYhIICse8hsVp2xCOFj5UWb6hidCGp7TIU-yV0sDwxfOSG4fFFM&sai=AMfl-YSxX1xM4sm1MEN37hasH5IOxP5bA1i1DvllABKtxKH0-C9l4CaVg8myyxw-Ap6lUulsEW5srKg-qCNyW1mylWMLqixXPxGm9wjHLDvqWIGpOIOA2XScSSLsZQBi6ZlruOR8gyPwZCXBJ-qOodTL7A&sig=Cg0ArKJSzODTLGxyj855EAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://vad-bid.adsrvr.org/bid/feedback/rubicon?t=1&iid=e3d8f2f6-93a1-4dbe-a433-4c87b2ef4246&crid=t3z548xd&wp=C9CA22F8DF9A4354&aid=1&wpc=USD&sfe=196b54db&puid=&bdc=93&tdid=&pid=h7w985s&ag=epgxr5n&adv=8l1y7r0&sig=1EHqewwYCMchP52YjuKoNlkim2G6HoZRPmN4joPQ4Q7o.&bp=0.241395&cf=7676625&fq=0&td_s=www.cnn.com&rcats=&mste=cnn.com&mfld=4&mssi=&mfsi=&uhow=65&agsa=&rgz=15217&svbttd=1&dt=PC&osf=Linux&os=Other&br=Chrome&rlangs=en&mlang=&svpid=24022&did=MGNI-AP-13823&rcxt=Other&lat=40.432400&lon=-79.924700&tmpc=10.129999999999995&daid=&vp=0&osi=&osv=&bx=120&bffi=41&testid=%7Cfcaw%7CCRE2519T%20TTDContextualTest%20%20&c=1~KLUv_SNa1XJFsV0CAGPCB60viP-Q_M_zf4__d6aarxHP9eJ8lF-jLCOPsCtkuj8O_FB691DuKkpmz_NOz0lUgQS1ZzAvEX7oyQo-aJD2IFO885tCHg90BA..&dur=1~KLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.&durs=OtySav&crrelr=&fpa=427&pcm=3&said=0742800accac89ab37ee7af0117de522745d2e38&ict=Unknown&auct=1&im=1&mc=0c516118-4bf7-47ff-86ff-2934cd6927d8&abr=43070b7c-12df-49ea-80be-5b99f496a38d&tail=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/fb5b4d18-5e0d-4dab-bbaf-890c2498cc2f?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563B40D144347FDE031D229782001E69B7FE2DEA5BBFA14F3B86BA8EBFBCBA713FA1E1FF3897B00EEC73E9F89206FC79094AE52D39AEF2DF6083F4F5E6E743ED29812BF1413A4F9F9EB11F0CF174DFBED46F53471CCA1C34D16CAF6999C98F70CA9A621BCEFD3C15C4B32BB1AC5C619F10FCBF8BC27906496A6D39C80475A490F8C25B473CBBD9EC467063ACB451B52F47DEB5A330890F58A8836861CFBA2F025A92EF71ED887C2C0A7DBFAED846B726C9D5": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://i.jsrdn.com/i/1.gif?r=2kle&k=ZQlwdglhCTExMzIJaQk5MGJhMzQ1MS1kMWM4LTQxYTEtYjJlZS1lOTMwZjJkNjUyMjAJdQkyZWU4NzIzMi05Yjc3LTRlYWUtYWExYy1lMDY4YTdlMDhhYjgJdgk3ZDBjNmQ1MS04MzY5LTQ4ODktOTk0NS1mYzA2ZjgwM2VkNzAJbHQJNDAuNDUyMTAJbGcJLTc5LjkyMDEwCWlwCTcxLjYxLjE0My4yMzAJZ2MJVVMJZ3IJUEEJZ3QJcGl0dHNidXJnaAlnZAk1MDgJZ24JQ2FibGUvRFNMCWJnCTkJZglodHRwczovL3d3dy5jbm4uY29tCWdkcHIJMAljY3BhCTEJZHBuYW1lCXZtYXAJZHYJd2ViCW0Jdm1hcAlwCTIzMDc4CXNob3cJMzI4MgllcAk5MjgyOAlmMAljdy1lcGlzb2RlLmh0bWwJZjEJP3Nob3c9ZGlzdHJvdHYtZW50ZXJ0YWlubWVudC11cGRhdGUtMg": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://distro.tv/",
+      "blacklistRule": "||jsrdn.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuHgg8k7H0UWrjItYTpgd2IQPwT0LYp2ORALHCsgZ2w1Oi6QEsHIOnd7sYBMrTx8Z0nKMhCvnaMorOufdA6gYYFX5Fl5O_XZoEhk1ok6MrYU-AzzSdfk9qL5Ur-neq7u9aAupp_-paf-IwUJ0GNkbVlLOoVTex_MWYNHzh3XMw8LaTduVxUVBfzWg7Gfo1eXhUmdGoRV2QH43Ekgh56sGoddmP_xf8aD0Y0IPseWjLy7EM15_G750eQ1z4Aj2mwasL7OUP9459w0TtXrHJDrGspV5vTjhjHOhQCpvsDe5ifECOJMb0ePI1yT2S8f1823qU2400PKZwiVxjJMC08m9PCuRUWcWA5JEDES79zNUA3ic7SAjtll5vOTnsIAAwlbyQ05m6R_a0eH86r2bUgB4l0kd9tDwopYsYLjJ0lIzdAGkbKZJbgLi3oOUlB&sai=AMfl-YRBNaMSMUvVzdd249aB6nzRUB8CBUkFWUsIu1-DUgFOFcM7iadv3faQ_QaO6oHPuo6YPYpcib4e3Rw0b6Vpl_ykhW2R0YJ3Wt48R0yiCAB69AltLwoT0XIMRERa6nNfpOEpPm3hUdD_gFVlw5vdJA&sig=Cg0ArKJSzDEd9tuOTLXpEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.407937524;dc_pre=CITbkJbq14kDFYRmRwEdme8MAw;dc_trk_aid=599885309;dc_trk_cid=225630885;ord=767300;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstP_PTlZlzYVxDi4GV6iCNQ32j1odbZd37AdWjZ15MQiIHgg_LlIwINC1YEgBd62FDyJf4cQqIOnrzR6ZCytA6N6FqWcHLwPdbtIAKXDpqV7fq4d6rg9eOw7lEygswhC4eSV_gcZQ3K1Cjxp2B29K3B_I4rZbl3tUPYa-j8BFJfkQVg8I84TFLQ415gUl9JOpvwpjBVzzkGXwFQgDIDIh0bCOFuUG5mNU9yyrAQshKVgHN6y2a2TYDrJY-wSVFE2UhJkUIrI2jzS9hf4nBW-JKwSe-U8sXP_zmyx_Lvisb-dz5U1ZKxgF1Wq2zsH9W1MJwobQ8YHZ7ndJ30QbupVg1j5-g7zMVKtZp_Jlktv4QNiVeQp1LxD-zKJl1ISogmdm30E7RYZidDQUIxQenqj9PHVoGdIR79oRykmjCzNcTjOq4i-KmJ0zmm&sai=AMfl-YRKZcnRj57wX72Cdy45b48nWYIc5UCwaq9v4AyNN9s7KnZ0rlFrtSOGdDJyZqz53Ykj6yebi7kAnxWRrBZy4JTKH8ejzqhgHyvmfwVPAxk3y60aixMF-wkwtSFR2AYXTMxIVpgGk1RM31NRrkEZNw&sig=Cg0ArKJSzPd-UoJLN5IiEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/360p-30fps-1000kbps-init.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "684",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/8bccb3ce-9145-4085-a16e-881d3addb559?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563B68C174862B0286D6999AD628A68F997E58156206DFD30DCB25906D8E86D02012AB317158397F9A878ABC3F0A865E01EC962603AB7C389FA7F4F5E6E743ED29812BF1413A4F9F9EB11F0CF174DFBED46F53471CCA1C34D16CAF6999C98F70CA9A621BCEFD3C15C4B3DC52FD9C6E65F26E5E40813CFDEC809039C80475A490F8C26B817C4C8201F79A6FF97D643A4DB063B1DC0FEBA2033F596C5111EBF277D2A437AA6567B73B40BFDA9F2F51647E06E1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsu8b6CSigwIRrgo_f2VazGFxyROnDAEIUXKJDzzI3zPa-2DNfPqNXxYTZ-seDQOvtiJApBX7JsxsoPus0OxMI3i3tfsG0AjA3n2McTMNAsxG5ll_nC2MFxrA7I1pcJ3ZUANrnEFTN7D220rnmrqQg4H9iFO72-6LDYXwDyPmiVwAzbT4G2FitilcX3mee6yfZTXzeyLvhO0wklx9Nu3allsSJWMFk5h0KkhFw--Zq22By2ef6aMpoZPz0HBwVHTG4nXn5dURx70q8Pj1ErN2lzP6JWbPB26YpEmn1iQIzmMayvydZeIjiwZRorjCa_X5Bvlf1ze8IraiVuOOpTP5BBSp9U6ra3EqQObMQ2tz0ef0wiTGu6KBNJq3tdfddOXIdcEXzKgPbmKCGbeOXreIGDhvk4ivzfh8qqFSdJeoO6vulNR65oDDZfd5vw&sai=AMfl-YQIWkD-JoDbE22lr2MpOwSg5LbmtlXlQ75OtzQraO_Ga1mZvmnT-p1ngmCKCxt35WBOs3on7QJZNsK_TycHQFqg5dDC-56FUS_X5nu71Smm4r-hdEKqaHL9iLY4JTy_UfGANbvRvI8jgrARY3JO4A&sig=Cg0ArKJSzNjjGE5M1gRNEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsv2VBp10dEulUitzudwrSAFwYJLYclTnn-53LwbST2YEij_YDg86SmUE6Vlsw3SDjgDV30OnE6nfzkYNLGLGlu2VzU0m3Lqu5HciUXzTXg-fCrgBoao9sT6F9BufuqPYo-2jvoe3qJyTGeWJ7nQAJHkXBrOSj2ZEKn_f6aMb2p5mOVOC-kV4QRla1LNOW3ot-ItBpapGlDVeXZhSktfo0vqFxAdg4e-gZKnYscxodKCNEwM7e5Le97MwWXR5oEk9Rop6rHYn3xEYnsm9uChxECkSBrTESIsR0UjQJYYCVE8oN1xI7xZ7sPRIliah8Ru5hctOjG-z9ZzHTKx1leOGvVi7KEpPTBeJh0mdBGDP81bVuIt54XpLDJOD2VJiRYEIqisUf9MrgG7Jirx3baoeswQbJsxSlFsmF7ZBhFHf4mUpMSW_LiOML50&sai=AMfl-YRrL5t6Mn428b-wj_oJ93VmY5jOURXP3L7qCiQGPyp37jjnKsP1iu7WK1Hb_ln0STXWWVuVdPUXgOstQ5PAalJc5BeCu7uCsDCLZw_D2U3ZrIQIBlG0YelWyCBfWrogqzwdOwdjkvX3Vd7LLLntQg&sig=Cg0ArKJSzAombc9WMejKEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.407937524;dc_pre=CKyNpJbq14kDFX43iAkdhLAQ_w;dc_trk_aid=599885309;dc_trk_cid=225630885;ord=179906;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/360p-30fps-1000kbps-174238.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "765549",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://beacon-iad2.rubiconproject.com/beacon/d/157bccfa-60f1-4b9c-a37a-472a74cdcc88?oo=0&accountId=24022&siteId=530286&zoneId=3214844&sizeId=15&e=6A1E40E384DA563B2CDC2F488AC1B9BA39B7C6B029507AC1C79978FE3DFBC43849F72ECB0EDE8624483289C45E2CA1882346CC623AFB4E391F88FC9CA426D57462E1DEB86A093F832BF1413A4F9F9EB11F0CF174DFBED46F53471CCA1C34D16CAF6999C98F70CA9A621BCEFD3C15C4B3F9E5FC9D44AC35A88633CD34498A73B439C80475A490F8C256493F4AD60C2F532363CAEEA97AF23B43AC886060ED73A4F8277A55DFD664EE53EECA6DAEF3C854F667556AA869A537": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/avif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||rubiconproject.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstlUZS6Rku0qh8x4Pfa60rlsjSDmN8tWU2vmmWRi5NrjPGpcnDLjViswue_Xv-TmF7gNpaZRpRftzWtI7ZuL8Ci4gRE9scwOKtP-Qgbb-5ZNiBFFdUK82srT2iTsme2ew7HjkIQEboB0NxtRWiJxNvL5UYYN-YC1Egq4O0ii87cnyV-42Cif26_GOq_dJZkh2e66MOtu468et5QcnFDjHtr6lcjTAX9tKidkin507vFPmfcDfQUbB6clnY2mtWkltNjjMxtuLmpfsKLSv6nJzAPcbIyYTAN3noT9DheknGOPbKknfuYb5kWiBzhXYs3yp-IM1-d1m4kH-dewFHjQmJRYhDG6cb5Uow1ebA936zlB2a-CkXD5KKPlUC-5Jj1OATuIMTXv2uq04nTBimN-apLYFntoaeG40oZ9gW3CuPD3ifBnACDEatfj6s&sai=AMfl-YTA9ggpF17CnGEvS_pY26A2eR6KP4jc3gQ-Gam2ge1M9uKzFgWury7C7wNDgB0W8lKC31zMwRTvvl0hXnzdB4j8KHaejz3TSKCUll0TmGUb2mC-gGwaraCqF5olQOtIgTGq-XL2ByTWVIUZp8B39A&sig=Cg0ArKJSzIGbH94YtVpgEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.407937524;dc_pre=CJaqtZbq14kDFYpMRwEdbGIoSw;dc_trk_aid=599885309;dc_trk_cid=225630885;ord=124838;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuxuoUqsaY0WK13JYE6fm77ykLJTYPmZa4YX8Kh-146K5YiWnRwjZV0fqUAc8KReP9BS8cuNsytqVS6MuPAEnryhXLf8UxPR9Jo75YC2D8xD0xBsPmqJRMgfHhqU7h8ZkoVbvgjdGuZkqkrAhygot0CZlDkH0fAZ7ViTfpqXYEoviHNxJYgiyvLW9q21xsmENpJtqlcgiBb0jFrW3QqKaK1AvI0fbz911xXAXPmDk7m6IK10gd7CG5vkjnMP6uGeogTrf6zF92U3rUQHCZHtVgH1_cAj_0cvsqan_p6xhhuwHKHa_UwwidSyPZfy1E8qayk2kuo7r6kf4dhE_GSkWJ8WKL1Z2ZgEAyXKoF8PjT2Dr4Bj2_O6ddKry8OElJHdZT_C8aYi5pGUjte6RvpAgiF_cro80ZGTggObiPXt1_-tNtBQguhzrxt&sai=AMfl-YTbgib7_NvJNdmKW4y9JAvG_rx_AYGcJ5fGxlwc96y9I7L19EpkZhVje9quKdYrflUOZ_3XQGIeEiPBMZ1oNRqwvUU88wVe9dDjLhnqspwIaqPvDH8PFIPEr8yxS2HrCq0COMt3Jj_N0vRHDDvv1A&sig=Cg0ArKJSzC1bU4DVvl3FEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_a4a3vpen&w=300&h=250&c=e01f": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_a4a3vpen&w=300&h=250&c=35fb": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-init.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "616",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsteh8Pak-I_ONZnginatp2ZnptDylH-qF4p1P1z0pd1plgbGmE7buTQqTqHekBmQ-qA_J3okEtY5rs_2p5fgIVttK-UepKQLhPx_H0RGdXBBGotIHVr4MpsD2uU3uTaueeGDIoMu-HhY6YmZdeTvD38DUCXUkbyxQTZ76mDK2erhvawaOOYzbm_9p8Co_WTl-7cam1t_W_7szL-i0zPuHjnA7_cxRu1gCuGeO23bEeD8j_OnrWY-rSQJE6wMhSs-aMtC-StxkwETnDCL3ELOGni5wYWA9TqljbOBCAAf77KhudAXGyO_E4Iw7o27EFYyrFghJYRqQ1U_CSzOUcHEjMzbWeBHahs1TW2phc1LnNJ_bU1DNfWYTOvt3-g_llYAcVQKJXWqVC0vMbZmG6lyU4jft64vkFOKaOS4sZx_7aqefHo&sai=AMfl-YQDEMDi6dINMeXeQzxdCUlbQO12UJPpLJ55MhRaBoPpdmI60T714K51dH8cLtOksnvr_EKTkfQi21bBnZVA5-5gZL_u-QAenxRKkMCQfwSDhyB1KyWHbdV2v23U5J5w1uENO4gJPhSCuVIkNTePtg&sig=Cg0ArKJSzMl-HUplPEjmEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjssph0J9EIh2uD1riGNnsdEEgiS1J-_8lVu9kx0twu23hQheRWF7KNLOoRFBExKcWfLpaw9rn1cE5kRve670ukQDlfVOM0rRa8O68vHp3lhCwK8CyaY9UZQzrMIyGRtDd3GeWi9-pin-fxwplJnodP90F_SenEW3NRnJ5nS8AJjhrDcuD_q0ONWW4WcmDVNOJa7BirkfuZKXrbNQjGw1YCKIOH2U9lURzcr5Z3IGwUBFuetbVTZvN4QcjSrYfHrO1qpKp5bKWp9Cf6rbBBMbkH5Eo4QBH6KGC9eIj3HwFUOALstT_y0y-rvRa5os2REguOHJn1HqXqNpsGMFKs6IoPRzXiB8AK9ikRQPUf-4PKuxWZpn3pcv8b6WzIffmQNmsrf2frewkunbGxNN4YuP_ceYXMYOtJCRDT8p8fsfoPoFXNWxTdwgi8Uz6Mo&sai=AMfl-YSWXUc-7aNk308yTz_6Q5SdTS4esOZM8tOmCiK-s2OR9L-SFr-RztERI3hox4lXGtoUJtHDlhpueTyoFPX0roo15YKfsZbd7HKAZvGR4RHi42cCHhTlN-3agEACSZuNZfxhF-zMLQjBja0PXs2z1Q&sig=Cg0ArKJSzBk5MQ9qiogwEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174238.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47449",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuLuGuqbEoibSKsU0bo3kmcoe-iPTmJD_IpFoA0WS0iWPZdNZHgSxJ_f3YfnSBtohLKp7gY_H5o9xqwSM9u-rdgwalWYLq9ne-1At_jMwjw4RWanZ6xHMi7hUHMyhhy6WbVzcTbjYEVYWqZgzFSmyi1pUnjyWixGie8p8uNfwQv3hcg0en0hwndi5GBVyN1ex9nb7VwkirreXkgsywxHryxp-6IN6ZAz51kzNP4khYSBXm4Xh6JtVoOVohQWHl00yIgtxIJ-OvqhGzqMGO66vAwFb4_zEw8H3iCl38pcR1x0yrakMayBWQAfkHMMX6K-JmmAJS-1kAuOkFc5WdjQsjVfT71wypR0mM4rKX_BQZSuCTbfbO2yAH8o-0PRAGHRtqM9oR0YPb4s1Ehp9lSvKxnDkNS3zLeBr194Speh55MHIsH&sai=AMfl-YRW4fMg6AJldFH9uE6ul0-lM9CrfrciTTjAo87IchKYCHW1QoTTVLiaPWWh_ltrbO_KkzUNqa62Y0TFDzY7Vq9eIRYZRDawRwQ6UVmbkanbzSx_y_sIY6RAfUSAp-dEVcfGm2I5AHSGV849zigBEQ&sig=Cg0ArKJSzCaWmRypzefXEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_oew3x0v8&w=300&h=250&c=1a64": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174237.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47250",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://va6-bid.adsrvr.org/bid/feedback/casale?t=1&iid=2903298c-8d67-460e-bbc8-80864601258a&crid=iif5mj4x&wp=ZzPU3AAAAACDAxAxrlUdxi3hkjIbcTGf757qfA&aid=1&wpc=USD&sfe=196b54dc&puid=&bdc=71&tdid=&pid=h7w985s&ag=epgxr5n&adv=8l1y7r0&sig=1RZIG1KYwdNScTjyBsPwdHfNa5qibo-jKAd2yI1gtx3I.&bp=0.241395&cf=7676625&fq=0&td_s=www.cnn.com&rcats=y29&mste=cnn.com&mfld=4&mssi=&mfsi=&uhow=65&agsa=&rgz=15217&svbttd=1&dt=PC&osf=Linux&os=Other&br=Chrome&rlangs=en&mlang=&svpid=188146&did=&rcxt=Other&lat=40.330002&lon=-79.720001&tmpc=9.810000000000002&daid=&vp=0&osi=&osv=&bffi=41&testid=%7Cfcaw%7CCRE2519T%20TTDContextualTest%20%20&npt=3&c=1~KLUv_SNa1XJFrmUCAIOCCK0viP-Q_M_zf4__d5-SKbbXiOd6cT7Kr1GWkUcYLkpgewEN_FsxgLnjnmRzz4-kjGIUSFbTg3lwL8jECMUr34O48c4bhahLbgs.&dur=1~KLUv_SMFoCgkSuUAAFAKSCUItP0UAggBBfw8tLlKxfLhxeguq7CjcBc.&durs=OtySav&crrelr=&fpa=809&pcm=3&said=08177563-10bb-4359-8af7-ba94062c0327&ict=Unknown&auct=1&im=1&mc=0c516118-4bf7-47ff-86ff-2934cd6927d8&abr=fd527a82-231d-4130-8fa9-70195bb3f697&tail=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuDdjX2EcBOH25tvtY2o4mUyDsl3N6pu9dDn7oHPswzHew0jHQEVVll0jts4G-bK-qOFQxyipaeMkg49fLGhAO_bO-azJ0EIlfZcixRmEb5U-8iWmhjfjy6lx00DaaZ-Ktlv8Tc2WEBO7U-j1zxqwKuWEwZi-WG-T3mRZhK6rga4LCH8JWk9gx75p5NKw11gP_fbiECctqAD55zsLf2KQkyBG5SL0reEH1sBcpdJ7PgmKOW2qi3jzDOlZh11j8OJ6mGs111r3xTHeEnv0HT-T9P72d_tzzwY6RHGhqa95_81y9HAti0enqQsQyBqO9LLJJzcoHHuoKKvmhkMrkvUt6KKdYvLsKhdtbUykBbHF-qX4TiWCLJggHsJyynfp0XcSs4kp6k95DwUPN15iEr_braSzBQJpw3AX6VLLMNC4bzG0sZUWo&sai=AMfl-YSn_of8NAZZkk1p0GdILMXBJTHW6tNfH8OIP9XeMkEM6vpStabxBar_KB7jYIVR9dv_m09F-sL6Ti6Jw5qAP7XmyVpVU_B_HJaIcXRTgrHtVaQkeHIGxDTqDGOqVIOJzuiGvDyeJqIfzj35UMndCQ&sig=Cg0ArKJSzDHGANxz9We3EAE&uach_m=%5BUACH%5D&urlfix=1&uach=WyJMaW51eCIsIjYuOC4wIiwieDg2IiwiIiwiMTI5LjAuNjY2OC4xMDAiLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxMjkuMC42NjY4LjEwMCJdLFsiTm90PUE%2FQnJhbmQiLCI4LjAuMC4wIl1dLDBd&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_t3z548xd&w=300&h=250&c=5440": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_t3z548xd&w=300&h=250&c=5a70": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://ad.doubleclick.net/ddm/trackimp/N1056876.284566THETRADEDESK/B28841078.406824061;dc_pre=CIXs1Jbq14kDFdsIiAkd6GcC4g;dc_trk_aid=598886892;dc_trk_cid=224896764;ord=863886;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=0;gdpr_consent=;ltd=;dc_tdv=1?": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://a3621.casalemedia.com/impression/v2/1074066/39/cspt9n56augbu211nq0g/26cd53ed-913a-4a49-aa23-d2f79a495b7d?verifieD=1&userID=&cmpro=0&deviceType=2&expiryTime=1731450676&profileIDs=&creativeID=329f8b7&pubID=188146&format=banner&channel=site&ee=1": {
+      "responseCode": 200,
+      "statusText": "OK",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||casalemedia.com^"
+    },
+    "https://d14c63magvk61v.cloudfront.net/hls/23078/vid/186707/640x360/index0.ts": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "1613040",
+      "contentType": "video/mp2t",
+      "referrer": "https://distro.tv/"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjssd-a0x3mccZWbk2GPgi3LYtX1RS1bzc-1P0QppWfKcQlMPLt-9iLszgiqrSEFOzWYghlhTiltITUyP-CeKhIgUwnTSbsLu0odirr8DoFKyawMfJuwODL2zqQzHVmi2LDFG7BcGv4Qsx39g0bhg02KXi5z6IfIbqp-rNJloUXD2Y8vjSEYHiaAvA0t_UFDqmuiw_00CZuheugBeusAKJWSEDr4HERH9y3Hcbndsdk7hyoghTvwAe_xzByXY8-pNBBuC54n9yykHWrWu0HNIizzPwki91gIeXPIY1pAO9FuWDM4wPsu7UOEFYL4CQI4573M6X4rd5u526C1aIC6X2ZRviCypRWF2XehiJaFqchIkx4mFmmd876lPvCgvWJkAqPNZanf2LNehOx2p0WMuWb6vKzwnzq0Ex4xfpRjYV_bQ5Q8D5c6hX7EKFw&sai=AMfl-YStya_ZFS1XY_zf6FqTI-v4KwwYKDwqh-TG1SCfxSH5EX5-u8kOcEJ3wKCmIKfCZnHM63UCyqthfGL5rcJw_5zmz752pZu7LQDTo-F-847tV5s1594OI4c2-4OXIOLniqfJe_Y1WBvY8LWDS6Bkrw&sig=Cg0ArKJSzI3FRh-EI9NhEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=33&t=2&li=v_h.h.3.2.2&sid=1tQzZ4PIMPXMnboPqLSW2Qk&sc=3064517782836280&bg=!y8ilyIfNAAarj73Qi487ADQBe5WfOPqUPdhvjTe_Tv2-nhGepH8zDfxOFtY2ndyBqKER-JD45hrOfFkB5gHaVeZQx5aFAgAAAq9SAAAAA2gBB34AK0FtQSqrjnCUEUqV6wCfbagrHOn5hX5tmZ2Oe9wdkvnLsYyx_Z1YwlrdNScKATaGm5QyOCG9EW5QSXhHCAKJvCo5WeNcSx62bxiIi_CP66sWeDM0mnuw2Vb4ZiKTe7xLaIWNHSdLEcIKOTDpcOIiKGdwjEzXtjTcXnNaY5HnZYd-Q9nSuBsuHxLRZmbBYnclslpyrxw-88u_rr-ZPYImUo4-X2ed2CDjCxFnEPObRFuXSU8nzS83rOBmHNU6zI7MGZurgHU9aJhTaNUrOAbo1SfEO45zkWJkHXisEUQpsXvcT5YnuQU_cxZaehwSNoa411kpt7drAFlyMWybJXMdT_UXUCygZ7rDBuI_9bJ7kUa_VYimBSKUhrGfKHK0wQdcTyM86a0QTR_R7UJ0GqWHqpbcO9GUdJm3k5Iiil68eWYGz1rWRieDAczKRkfZCrs1tisghk0hD-HR8N3-AAXrDdxAzm7-mQH9LaKzgkK6viDSoMetQ71uXxyxOFSw2CCB7yszB-zHAmUuUuZSvG8FkQRi46z4EryApLKIChHQoLdvl08YFV_C1r-6SrjZGAW_y6xlErC9YsumOV_Ekyc2wABJTh3M86NVfJAgGPZ5GVBF3IRBb9FJN10JzN3wtSAlOUSfB4J7zr84sF6Bvbr37mo_ImDcbfGDnpriW3hr7cuMycSQ4Uwnqyy0W5Wt-fyLrXL9TZAkycaJBs317pkp1f1QEEWX6teIWUkIbUnmuwfeXoWo6LA_9ufTYmPo74Z8S-wJUZgZBLnmy8I5avNAy0PYrQX7S_mSUelog26WXXeHNcnYI23jgIVrhzzITk9zvL2iUi5nWsQVYRyf_N-_o2yJ2w5Ze5UTVD90ftjLMin5QDsJQaNeiQ0RVvIMEbAtdbdRycIw7AKYI6qNrFxEEgCdPlcKsEeIM7hbh59xLVeFL7M9LKe3DbgWrn3lwQkGXERetoctia5g-UdZMMlXO5fo-EeN_toXOMZ0GXVMzP4aub_Vow0LQ90uR1GXQy4Mc9F-bz3t_FSS5UW_HMJcQB8NB770KMP-HMT1s3M6OkYt-Edi-IOQy3TrbWxqsfw_StibbN3q_4qIDADSx46xkwREItCqA2ZqCBAAncZ9z9EZGw-sFsViakJ0tOwrnV-36HxhRSk": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjsuoot_N63ySDb733XCC-5qAKIxEQC71lWEoJyXXSFNU9ykqIG5gYTXEoxB-5K-Xdv0oOiM55pAEJkYIJMooNE32ukhbKI3ymKKxtZFA6Jptj2AeUIHnZTBF0GIYNZfhVfMrNWad3CYMQzs21MNzXPsOudFWoFLeN265ite_BoHrRhK-ir03jHrgtEktBG6XI49-L7PSLVx0dBoVur5lNPu2_WvCLhk9Cd6QF4Zej9XULxkKFEXG8x3zQf6RvhcwVbUxtGHr8L-P9EZyBGfuwjuA77cx1qOcPNvmBRQOP8B_2kSocfDPwAbcwNlmmB4rdWpCvvJFrKNDKMPzeheb1zPeQMnHeJ4xtHevvP6muSfADnuku19_et_U1Z30x_rXNbg5uMHBoeMEW_gROnnT58l-INW3Sf62alnzXhn4MFJqlWlUizc&sai=AMfl-YTvUDOibOmaPlsYTO23hnW4Abktsdzk5kMrF-ByOPQr9JJJJ0JV0fmk8Vh_ahxRzPJCMG67KWUMtEooA4OUBix5lxYmyy843gEHfzNVW_mOBmAhgm6BKDm3m7HB2v1XlEpoCZK3JDLP-IDYCggFHQ&sig=Cg0ArKJSzB-WApk0QD03EAE&uach_m=%5BUACH%5D&urlfix=1&uach=WyJMaW51eCIsIjYuOC4wIiwieDg2IiwiIiwiMTI5LjAuNjY2OC4xMDAiLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxMjkuMC42NjY4LjEwMCJdLFsiTm90PUE%2FQnJhbmQiLCI4LjAuMC4wIl1dLDBd&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjstcIBuQxgZ01hmMNGrkffPZqk1-ipc2Bln_EwX1QRcfb5NyBRtsCPEXNNejzCmbR80QH4vfyXeTcNfThH1EHxpLfZakSrZPIKknIa_C4JH_IEd7ksVAa0gxQ2LwUHDdEBiHvnYeZvYtCMPvTH4_NKLdxWc528WC8NPKk4pUD3yo3gIZk7Or6RXL-GmNiKAODCjVCW07pPqtyXnOdTE_zADnX50sJ7bVLkI3dvAcnSMg-sxZmTEHsO94PJ_DOJVJLIyRbgFypgDiz74RxY-7MsC0cibeLFQ5QAE8RC7nYJwPsD-V0H7Qq11vG45Edb3g1hdjk6NcDdW2Fi6b_euPaCOnFGWmUaU2XD0tAn1AN1RuEyu5rG9Yg8hJa10mtummWEuxkNlx40KBQHxdxB49fM3-_xO9OqAVebHARfZsaneeOUAK1khSdLeGFizT&sai=AMfl-YS0Y_zXrR-kKWWVyvAFYX7YMy048VW-g_PXWNFwtGxGHzzEr5KNOgJ1PE1VFULpdk6ka_cGGbzDSl5x2uULkKd97Hn_1GPc3Hn694EEFuHyhL6rm0y9X5xaNVKMveWddgaEZ6xIUOZgxTVnU2ynPg&sig=Cg0ArKJSzJ4BwgFtIawXEAE&uach_m=%5BUACH%5D&urlfix=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://ping.chartbeat.net/ping?h=video%40cnn.com&g=37612&p=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&i=CNN%20Headlines&g0=&u=DWnRoOB_4pseBhXjrL&t=7Gi6nDT2xweKDiucD-ejvHBjWper&x=0&y=0&V=147&VS=CNN&n=1&b=5509&r=&_vd=Infinity&_vi=Domestic%20Homepage&_vp=www.cnn.com%2F&_vh=cnn.com&_pu=DlNSp-DLCtt7DQxqbz&_pt=B64CdLC8FawYCm1iNqBjMlrOBQEeis&_pr=&_vdd=cnn.com&_vt=ct&_vs=s2&_vcs=0&_vbr=1128.601&_vvs=8.142&_vpt=-1&_vaup=auto&_vplt=live&_vce=8&c=0.14&W=0&R=1&I=0&E=8&j=20&tz=300&_": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://smetrics.cnn.com/b/ss/cnn-adbp-domestic/1/JS-2.26.0-LEWM/s9240960294020?AQB=1&ndh=1&pf=1&t=12%2F10%2F2024%2017%3A21%3A18%202%20300&mid=25561399104648852293722075928796065213&aamlh=7&ce=UTF-8&ns=cnn&g=https%3A%2F%2Fwww.cnn.com%2F&c.&cm.&ssf=1&.cm&.c&cc=USD&events=event111&v1=live%20player&l1=16b6&l2=&v7=0&v8=new%3A1&v22=0&v23=cnn%20headlines&v26=%2Fhomepage&v27=homepage&v28=homepage%3Ano%20value%20set&v29=cnn.com&v30=cnn%20domestic&v32=landing_homepage&c33=adbp%3Avideo%20start&v33=D%3Dc33&v34=does%20not%20require%20authentication&c35=launch.cnn.prod.78.20241112&v35=D%3Dc35&v37=desktop&v41=cnn%20headlines&v42=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&c44=section_homepage1&v44=cnn&c46=17314500673972771206687662&v46=D%3Dc46&c47=6733d4d301cb7c0a3f8d09001324c66e&v47=D%3Dc47&v48=stellar2.0&v51=anonymous&v52=top%202.16.1-0&v53=cnn%20headlines&v54=video%3Alive%3Anon%20tve%3Alive%3Afast%3Acontent&v56=landscape&v57=no%20mvpd%20set&v59=no%20mvpd%20set&v64=cnn%20news&v66=in_focus&v67=default%7Cmuted%7Cnvs&v68=no%20ad%20present&v70=noautostart%3Alive&v74=account%20not%20verified&c75=nvs&v75=D%3Dc75&v89=not%20logged%20in&v90=domestic&v101=not%20subscriber%3A&v111=no%20media&v112=https%3A%2F%2Fwww.cnn.com&v113=L19wYWdlcy9jbGczNG9sOXUwMDAwNDdub2RhYnVkMW8y&v114=cnn%20news%2Cdaily%20news%2Cbreaking%20news%2Cnews%20today%2Ccurrent%20events&v117=L19jb21wb25lbnRzL3ZpZGVvLXBsYXllci9pbnN0YW5jZXMvY2xwN2dlN291MDAwMDNiNmZkbWt5YTljeQ%3D%3D&v120=https%3A%2F%2Fwww.cnn.com%2Fvideos%2Ffast%2Fcnn-headlines&v127=cnn-headlines&v130=nvs&v132=section&v195=4052091756867558744&v197=29af35c9-67ac-4ac8-afb8-346cd9b87fe2&pe=lnk_o&pev2=cnnvideo-mute%3Acnn%20headlines&s=1920x1200&c=24&j=1.6&v=N&k=Y&bw=1852&bh=1053&mcorgid=7FF852E2556756057F000101%40AdobeOrg&lrt=681&AQE=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=utf-8",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||smetrics.cnn.com^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/234p-30fps-500kbps-init.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "684",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_t3z548xd&w=300&h=250&c=d444": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/234p-30fps-500kbps-174239.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "386902",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://ads.yieldmo.com/v000/sync?extinit=0&userid=4052091756867558744&pn_id=an": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=utf-8",
+      "referrer": "https://ads.yieldmo.com/",
+      "blacklistRule": "||yieldmo.com^"
+    },
+    "https://x.bidswitch.net/sync?ssp=sonobi&gdpr=0&gdpr_consent=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bidswitch.net^"
+    },
+    "https://cm.g.doubleclick.net/pixel?google_nid=yieldmo_dbm&google_hm=VkZ6VTdpaXQ3VWlpQ1ZIME1ySms=&google_tc=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "170",
+      "contentType": "image/png",
+      "referrer": "https://ads.yieldmo.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://cm.g.doubleclick.net/pixel?google_nid=yieldmo_dbm&google_cm=&pn_id=c&google_tc=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "170",
+      "contentType": "image/png",
+      "referrer": "https://ads.yieldmo.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://x.bidswitch.net/ul_cb/sync?ssp=adaptmx&user_id=23e0b879-3023-4487-a0b8-1118347d709c&gdpr=0&gdpr_consent=&us_privacy=1---": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://sync.a-mo.net/",
+      "blacklistRule": "||bidswitch.net^"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_t3z548xd&w=300&h=250&c=2ba3": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://cm.adform.net/cookie?gdpr=0&gdpr_consent=&us_privacy=1---&redirect_url=https%3A%2F%2Fsync.a-mo.net%2Fsetuid%3FA%3D23e0b879-3023-4487-a0b8-1118347d709c%26bidder%3Dadform%26uid%3D%24UID": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "N/A",
+      "contentType": "image/gif",
+      "referrer": "https://sync.a-mo.net/",
+      "blacklistRule": "||adform.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174239.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47271",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://d14c63magvk61v.cloudfront.net/hls/23078/vid/186707/640x360/index1.ts": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "898264",
+      "contentType": "video/mp2t",
+      "referrer": "https://distro.tv/"
+    },
+    "https://cm.g.doubleclick.net/pixel?google_nid=contextweb&google_cm=&google_sc=&google_hm=dlZ2SlRpWkVkaVFnQ0RBZXBuQVhJc1BqUnNfQUNwX1I&gdpr=&gdpr_consent=&google_tc=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "170",
+      "contentType": "image/png",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://s0.2mdn.net/simgad/2612285721277257684": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "46204",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||2mdn.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/234p-30fps-500kbps-174240.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "374760",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://sync.go.sonobi.com/us.gif?nw=zt&nuid=968625804654128638": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "49",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||sonobi.com^"
+    },
+    "https://sync.go.sonobi.com/us.gif?nw=st&nuid=gfF0pY8sVuFfRMGXi4UtAUc9j-Y": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "49",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||sonobi.com^"
+    },
+    "https://match.adsrvr.org/track/cmb/generic?ttd_pid=tapad&ttd_tpi=1&ttd_puid=2f39b46c-e819-4c98-8d2c-fc9478608ecb%252C%252C&gdpr=0&gdpr_consent=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "70",
+      "contentType": "image/gif",
+      "referrer": "https://ads.yieldmo.com/",
+      "blacklistRule": "||adsrvr.org^"
+    },
+    "https://d14c63magvk61v.cloudfront.net/hls/23078/vid/186707/640x360/index2.ts": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "782644",
+      "contentType": "video/mp2t",
+      "referrer": "https://distro.tv/"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=xbid&dbm_b=AKAmf-C2W6x53KIZRHWFpvLr3aAQRqOUqaV3OAWKv7kbeiV7qYS73Ecz6VxoP8lSnwWLDjJnHoyt52BtabGW-bNZJ_KhwKGoncrZyYtcFTjLWJt_Teih9_c": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ad.doubleclick.net/pcs/view?xai=AKAOjsug_7MeJs1ToyScP04L3com3YFHF91cocxtq-B1cmbJrs_n_wRuk2h-l2Ij9WW5sAC_tff-hfpIvOEOxm6dQuNd51geJF_9pS9QB22NMr3hr0HX4Q97BcHZ87rrsHU-yOFVH_sFBiRhGAyTLXCXfRrUq8l6YFBXT-YNU8870bU2jkh6D0IpNfTHx6mZ7eVkbMFSolaHxWCO7rab1DeloVCRzU8IX5HyhLdRNjuboiRsJy8KUXfZxO9Fvrx0X8G0P88OJT4AFyEdaFXDc4sefR42bj7Gje412IK9mnD6biV3ENHk3jZlPUdGJ2ZosLt6feFMUmX7dpB3mjwznJ60bXod3ZOYHOQGmkGsqFkXUBppM2kr14xPujQ-hmHc-j9QHCFOH9mZNWwt0dt1kyKVOPsSMThCtt3gjqlJR3Cx9FeW3llcoq0MBRazCjA4L6ZStXWjFxdufj-BReJOxtf0IMg9p2f5Z75flZqGSrXHTzXz7vZsUpQcTtBKaYwusuGrFaGSvfT0zYyiJXN-M7NsoyDkxaoSSBCR73Bt4hWqnrzCkS7U20tP-QPS6A_2W6ExmxwZG-_QERWjGHLp40jDG2yBunYDAm8nRLdFVGkmhcmyKoZH8rhUQXiR2ElzgCDXAzX9qi89MYLVRd8k-wdNioV_F0oe0TGXUsw_XaLOSLRBLZd5qhWCNgIkJv3VEO6s27GJht6MyD4qGc5tUz8Nq8f57CHKpVRTS24xRRt-SewlrmupIZV38WJVJeXGZwi1AtxcsWEyAHgHqBPD5PNV5ixrQ8ZwGpvckBZk3uPPVSSkGIgM1k9gKyz9BuQc4MsBWNPbMPBX_VLDkeWefZ3AksG43kEk_Mmw7jvewO62bv0Tu8hMb-4lEJMJ4yf4WeJ9uivzcr7HgGyWWoEp0cB23e-FrwTUTqio_zAKzC-Ro_vOItMerYLz4NsGR5KZmQaSr1YxraJ4TnZftwAGwQm9H1FCj8hb6Ud2_kFuxb_GztDZKpEucNjTy6XctKV2Qs6t2EW-zcex91xT6bBp7FoK-psZj4TyQ9YCtoASSJchy137bngo5Mt6-M4kjMAEZgUoMBzoi2kHbRTk56JZfXVi9nv6JZea56eHLBeL_LJLUv9NMcwFoO2bYUog-pL6koEYbIUJgbbsi2eJuI6yDAfuvaQWxQ8GCk3rgyD44X2vXrSveXRmVhqeum6J39-UBYzYr9M1Gs08haVQ-lG4VJgG7UU4OhTR3uMa8yNkBpgXts8hsmkl9nHigl-527DTEHBOy7wV1BUTO3JmWHQkwYc_8mWtRy80koNc7zOWkPhWiAc--GnX2p4GAa1HA6TOtbg4Xe-rVrUb_P-7dMVaFD1-D360y9EeyAzRMeWWWIXtOTFFHvyqtFYOklfYjeU-fUjPy8XTxvMIhN_GNJ1Citc7Vv5YQsxmSwOx6rCec0GdheT9DYb5gYeNl4UHs1iCVp9lyV-HHyCxe9IG5ugweFCx57NUjRc4wL1TAHQT&sai=AMfl-YQr-XpKLdnMaQtgQPf8qzkyHsCkOAf9f4W6MUpLwx44pQqr5XLaYzqeNwuPimQCFvbMLvEgkV_lkNc-MX7px_8VZk2j4_QdHRsvviru-ORYdnP0F10RHs9oYYmW7S6J1dz1zTUnfatHOmHVH_3s3zFNyRlSeilQv_5OmI42zOn7HPc7-Pq8N49z0ll7QV7z1G0f1POrFQ6QCIv4rcvNGldQ1ULGC0eRMegZuobYO5s5VrRlKe3rdgqsyhr2A_8rovQwBefMsdKy_w19Na6P_8Tu7Lm1UNf2DxggpfgEpGetyVpJvF0KulxFurv4fcmNE-wslCGvdH0Q2eX9nlVjy8j3T0kABO9UCMnU&sig=Cg0ArKJSzH3ryDwNgTHLEAE&uach_m=%5BUACH%5D&crd=aHR0cHM6Ly90cmFkZXN0YXRpb24uY29t&pr=missingexchangepricemacro&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&omid=1&rm=4&ctpt=3&cstd=0&cisv=r20241107.17553&arae=1&ftch=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/png",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174240.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47432",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://smetrics.cnn.com/b/ss/cnn-adbp-domestic/1/JS-2.26.0-LEWM/s98222566299029?AQB=1&ndh=1&pf=1&t=12%2F10%2F2024%2017%3A21%3A18%202%20300&mid=25561399104648852293722075928796065213&aamlh=7&ce=UTF-8&ns=cnn&pageName=%2Fhomepage&g=https%3A%2F%2Fwww.cnn.com%2F&c.&cm.&ssf=1&.cm&.c&cc=USD&ch=homepage&server=cnn.com&events=event1%2Cevent32%2Cevent90%2Cevent109&c1=live%20player&v1=D%3Dc1&l1=16b6&l2=&v3=D%3Dc3&c7=0&v7=D%3Dc7&c8=new%3A1&v8=D%3Dc8&v22=0&v26=D%3DpageName&v27=D%3Dch&c28=homepage%3Ano%20value%20set&v28=D%3Dc28&c29=cnn%20headlines&v29=D%3Dserver&c30=cnn%20domestic&v30=D%3Dc30&c32=landing_homepage&v32=D%3Dc32&c33=adbp%3Avideo%20start&v33=D%3Dc33&c34=does%20not%20require%20authentication&v34=D%3Dc34&c35=launch.cnn.prod.78.20241112&v35=D%3Dc35&c37=desktop&v37=D%3Dc37&v41=D%3Dc29&v42=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&c44=section_homepage1&v44=cnn&c46=17314500673972771206687662&v46=D%3Dc46&c47=6733d4d301cb7c0a3f8d09001324c66e&v47=D%3Dc47&v48=stellar2.0&v51=anonymous&c52=top%202.16.1-0&v52=D%3Dc52&c53=cnn%20headlines&v53=D%3Dc53&c54=video%3Alive%3Anon%20tve%3Alive%3Afast%3Acontent&v54=D%3Dc54&c56=landscape&v56=D%3Dc56&c57=no%20mvpd%20set&v57=D%3Dc57&c59=no%20mvpd%20set&v59=D%3Dc59&c64=cnn%20news&c66=in_focus&v66=D%3Dc66&v67=default%7Cmuted%7Cnvs&c68=no%20ad%20present&v68=D%3Dc68&c70=autostart%3Alive&v70=D%3Dc70&v74=account%20not%20verified&c75=nvs&v75=D%3Dc75&v89=not%20logged%20in&v90=domestic&v101=not%20subscriber%3A&v111=no%20media&v112=https%3A%2F%2Fwww.cnn.com&v113=L19wYWdlcy9jbGczNG9sOXUwMDAwNDdub2RhYnVkMW8y&v114=cnn%20news%2Cdaily%20news%2Cbreaking%20news%2Cnews%20today%2Ccurrent%20events&v117=L19jb21wb25lbnRzL3ZpZGVvLXBsYXllci9pbnN0YW5jZXMvY2xwN2dlN291MDAwMDNiNmZkbWt5YTljeQ%3D%3D&v120=https%3A%2F%2Fwww.cnn.com%2Fvideos%2Ffast%2Fcnn-headlines&v127=cnn-headlines&v130=nvs&v132=section&v195=4052091756867558744&v197=29af35c9-67ac-4ac8-afb8-346cd9b87fe2&pe=lnk_o&pev2=cnnvideo-live%3Acnn%20headlines&s=1920x1200&c=24&j=1.6&v=N&k=Y&bw=1852&bh=1053&mcorgid=7FF852E2556756057F000101%40AdobeOrg&lrt=60&AQE=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif;charset=utf-8",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||smetrics.cnn.com^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/234p-30fps-500kbps-174241.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "417717",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://secure-us.imrworldwide.com/cgi-bin/m?ci=us-100120&c6=vc,b01&cc=1&tl=dav0-livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&rnd=1731450078606&cg=live&ja=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "44",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||imrworldwide.com^"
+    },
+    "https://sb.scorecardresearch.com/p2?c1=2&c2=6035748&ns_type=hidden&ns_st_sv=5.2.0.160629&ns_st_smv=5.3&ns_st_it=r&ns_st_id=1731450078615&ns_st_ec=1&ns_st_sp=1&ns_st_sc=1&ns_st_psq=1&ns_st_asq=1&ns_st_sq=1&ns_st_ppc=1&ns_st_apc=1&ns_st_spc=1&ns_st_cn=1&ns_st_ev=play&ns_st_po=0&ns_st_cl=0&ns_st_pb=1&ns_st_mp=js_api&ns_st_mv=5.2.0.160629&ns_st_pn=1&ns_st_tp=0&ns_st_ci=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&ns_st_pt=0&ns_st_dpt=0&ns_st_ipt=0&ns_st_et=0&ns_st_det=0&ns_st_upc=0&ns_st_dupc=0&ns_st_iupc=0&ns_st_upa=0&ns_st_dupa=0&ns_st_iupa=0&ns_st_lpc=0&ns_st_dlpc=0&ns_st_lpa=0&ns_st_dlpa=0&ns_st_pa=0&ns_ts=1731450078616&ns_st_bc=0&ns_st_dbc=0&ns_st_bt=0&ns_st_dbt=0&ns_st_bp=0&ns_st_lt=1&ns_st_skc=0&ns_st_dskc=0&ns_st_ska=0&ns_st_dska=0&ns_st_skd=0&ns_st_skt=0&ns_st_dskt=0&ns_st_pc=0&ns_st_dpc=0&ns_st_pp=0&ns_st_br=0&ns_st_ub=0&ns_st_ki=1200000&ns_st_pr=*null&ns_st_sn=*null&ns_st_en=*null&ns_st_ep=CNN%20Headlines&ns_st_ct=vc11&ns_st_ge=*null&ns_st_st=*null&ns_st_ce=0&ns_st_ia=0&ns_st_ddt=*null&ns_st_tdt=*null&ns_st_pu=CNN&c3=*null&c4=CNN&c6=*null&c7=https%3A%2F%2Fwww.cnn.com%2F&c8=Breaking%20News%2C%20Latest%20News%20and%20Videos%20%7C%20CNN&c9=&cs_ucfr=1": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||scorecardresearch.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=xbid&dbm_b=AKAmf-BsTpvPuH_2sx_gQoPckN4JPr60RP02AfL1EV2w7BhizIFWNYFMAoIIejhKK_1qleAUpP9eT3s12nHNm_FTDu8D2bkWoy2Eh1BvzSE-btwBw_fyFoA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=44&t=2&bgai=BWW633dQzZ--1OpWtoPMP0cGd8AcAAAAAOAHgBAI&bg=!xcalxonNAAYQZ9WPMGc7ADQBe5WfOOccCxAgdzWX5spUILaIZNUe_xaui9sgCtuDYWqr0Pj6J1ODyWJQ2bYeLibQcFnEAgAAAGpSAAAABWgBB34ANVZdVNH7SRTYooZrauW_MSSY04G3YdQqFsLsGX3VqrinB_D4Z5IosPQwmOib8dUHtPSQotBbmQKvnFzMjBdwpo5XdL57_voFjkT1XwvCpR9jKI5vr1r9f50-H-M2col0MNGxcwtELFtkEigrzTd3sd4vzxP7lLE1hx5unkAEWOgRjXJ6GTX8QYxxJn95LCb7g99DEXLxPPdwujdk6gX8CawBSC6YAYioojl0j4fRsiC7MqmqgWzP3sFbc_GSdtWSlOg6WcpAqjjIfthWDjsgURr4ubd1FIVUMklEJuXUn6HAvOUKmQe4JQCziTdFr7hIGFFVLGyHq2L1ixbtI8h4c_pWEeE6LLOn7cLFJohDE431M4rdPJNoWk-vOUYlKMEdqNaIR7tr5NPy5E967LD5lpUzrxmow8Sp4CUBkTuPbcHMpQDsEzaabZknDtYvacTlGNRTGh-TqEiHrdc2FjeWOdD7OXAzkWznJll10o4EcsbXBwgI1QP_itwZ_aZeGBay-JaBchqGTM7E6O6I1MjOZOJuZTPeDeBzGxwcweebDJidsPlqTlX5gss8lpGvuBlgq3rxHnjkpq2ubTrunqdNqfcWm6r_JWOjjEBqoN70WUHZxHrRe8SDD-ULOQ61OhIXlpr-06irXJB55B4_MNBNIHS_c08ioD2ntWBKZrhu3JK8Lt8b4-S2_MF1yHAR4R3-EzKmXjc3h0xZfgVRz5cAlWkkA3ZjOmdToPsSO5FOopgtHl4ja3R-6afEUv2RQxjVGY14M37mic71PSGbgJgPR9HpSPvcux6zjdmlcCqRcJoijeujTkXQ-Dc3kUJNME1796OiIPAHXF93hJ7lDJ0gIPY7QjUR-auV-wNvg5Qg4FAWjDAXMhntorJbt867079oaOtIDyXvpMnDw67sui-jwwNNlMXqWhKy4UTyV5gc_00MhCexQs7ap023yjb_wdLanYWFDk0JghyIn_WiFPx6m8zG68kYMaZ1": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ad.doubleclick.net/pcs/view?xai=AKAOjsu_kyzldfXcjVPaM8_ZkZe6GQm3FdrV8d4yeqmHceJrKOijsF8bDDWfsgBtHprlm_wGWJVCeaNN2hT_eDzWVqw1NtJ62Y4OoFFLZdKMsbLYL1Cbvmrc6xXNCuuZsRT0hxq5w3s-aiZK2mFhuo2ucNmq0xhepO3f4CKTDZ8AxzclHCSPFflstLNfIto9Zo_IIi0Y-gai94JrovFt9K7cP5DUpYZ_rrRhyLjtgTvRhepfFkEom0h0mRUkzjAm_HIaIXv9rw75d_onWN9PX7pabOGGBm2XmhH7mgtri1aQaoHtq2UbDCivj6rjFYZl7EWVN58duhclrVJsrnbcXlf7gUoLtHKkWGTEqLQUPC9Eg7JZpdnqULfdwwhAwXmOjVa6YniYcWqcADdna4ZWQohXIQ8P0aCAjlqtMl0_fENX0t_DdwWao7lg0yPpaIwuRegi3J4bp1a4Gnig2VfN850QtQ1qmqex94Nd3FHIqAErL9govt1mbiWHbXvwRmFG_5fEEPLmQoZ9ovyrIJlI0cHeeMBfk099h__m6QGIkf7MHfhgFzm7lGEy27wWVrxf4OqOgyYO4dk_XMsBv37MrFqJA4eEO9dqwbDn5U_YE7r-B7jJZ1qZtpDFRYSKhXlH4W84If3uk2FJTOQq7HAo5eJkbTG62-oikoX2YCbeFEP0-H0aGilIGs_wcnDaaV5II7ya7-hxTIH04oW2lqRWaa2j0Zer2cQX9MPsWUoH3-vWedpm3qo8xwwlgo7KwXJN88ks3SIt_qZTiqiHRWMBNa1RvY_Nwo9ss6ckZLMqZCePz8eYhBKINB6zWozWfhdH1zb4zqyzDDyS7U8zamibKMibnhQv24p2g62Ax5iHf7fFas-DkoWIK-2jYZPE0KwAMFkXvDrsa8PHMIl5xlLXuAvZHwhSV8cjAXw42HhRsepi-Z3IyWzz9q4wDZ63spWrwJ4IlGD0QUIY_bsLsBWv7yQvwanpJIaBGrco4GggFjR7ivyacSw1NYU-Rr3o-KsAhIxjP7mHoLWf_VabioQsVojGuEcAN-GQJ6YZIhI_kM16-KUDUF9gEeXCHmNZmYHvTh6G6MRyqqE-F4fX-bx37e0R-awop4DyNF3n5E1wZfq0gg1_Krt5hBLU1QzCF4OrLCIgFRS0hh4vH6IKP_hBihZOko1GLRFSvMwCjPvO0UyZlQmlnatg9koVNhZD-9vhbnJKlyeAfJj_fO2VhUqnBfWjpfeA88BDOE36cmkk5-ABYFOx3GqI65UFF2DipC1WMlJC5oePbLpudJfdKLKasrCDJPCYoCVgzxr-LNERsaSZfdhXjPbgfpixVv2SGJ8nsNrXdVL6IR2nBzFnoBiF1w5MTr3E-V1p6blVeIrCJXfjvhubSrMfmFeJkigCSTYuHHoPS0hSWdQb79uYX2CjXuoHsHF6IfhdbRY4bh4JlAiHQGv5Kp5fGQdlmjTh0pSK5iCiKqay8C5shcC-kqxfzfW1p9cRsW_ALQVnhbYx&sai=AMfl-YTVn3aoKlYFee4FpNYQlKaUgT3UXKFKddCVSlcfKuPuW13kLcptrX04-iAGM1VbbiFl7VF6tBsOcZLk-DQ3TNxJIjig3LKPeC0oXPe-uO3LvY6IiGHIa44djxvmzrxTyrCZMeWSNdZkw7KTz-a0jFuB6yIKQff4ZP77e4EpTlmMsWDYIivPCYEHHbKBRNpUgfAj3X3qbIcvhBCLuZTC53b9oTS4kIUWoeFXvJJoWDQijSoIG7Jdikf5WyORPkGaUJ7gCUBV5tpWLK20PqVmOj-Azs1p55Z1BN_U5wvxxdVG9gC2QYBF3cXAGD-pZgAMgTQdi1w27vCY_PftVu7LW-ukTid5cXPGsRXb&sig=Cg0ArKJSzNUmYuPpX748EAE&uach_m=%5BUACH%5D&crd=aHR0cHM6Ly90cmFkZXN0YXRpb24uY29t&pr=missingexchangepricemacro&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&omid=1&rm=4&ctpt=3&dett=2&cstd=0&cisv=r20241107.40276&arae=1&ftch=1&adurl=": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/png",
+      "referrer": "https://googleads.g.doubleclick.net/",
+      "blacklistRule": "||doubleclick.net^"
+    },
+    "https://choices.trustarc.com/cap?aid=tradedesk01&pid=tradedesk01&cid=0k7clci_epgxr5n_iif5mj4x&w=300&h=250&c=b029": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||trustarc.com/cap?"
+    },
+    "https://www.cnn.com/media/sites/cnn/favicon.ico": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "5466",
+      "contentType": "image/x-icon",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174241.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47245",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=44&t=2&bgai=B2yYO3dQzZ4ejO6WnoPMPiaiboAEAAAAAOAHgBAI&bg=!NjWlNXrNAAYQZ9WPMGc7ADQBe5WfOJgAFL6_pd96lprEbeGftzzBQtZdW5RgiJZ9-mwljYYWHRE9N_mfaDqUYdoYbhzJAgAAAIFSAAAABGgBB34ANQ8dLHFDNiHAabeGNjhlDtm8ZUrns-XXADvImHKklfTfiTE21WUE_N-okyWKFEOeaFIFm6ENCgBLnsovrb1jv4qaTupD8kWGT9oBAVa7b9LxvIZhD8LO8xg9iwFRlSc_6LJMKB3OmSlnnd38vlHvTmZslEMeZYdx6nis2rM-xRnqgrO5mQK1q9Kg5Shm6eLy7oXCkAMnfaun8o-ATCWqKSoveR74dlw467vs7xFvLTOiu-HnsGsJFkYSsGaxQklCo1bKBXkclh0imewgFjoD00ua8LgiWmCaGK38CU4BxCHLJqqx0EjzWLzCWaOF-kqnCgx3h7JHqVQ3qTz_Yt2_yknNIVRYnxD07L_M7O8BulWLKn-EZeKERtbUfGnVBui2rP7HFsT3RYcCpDF05kOxjLPzDgLkGkLX2r4YGoGwzCtPIw0-2ngNNvBF6h6ysWhuxINVz8kY8tr_R1uaF2wilkKLYEMsHaA2n55HzA0GKqa2M0Q24kJyAwm04j7sx0yl__1_HcVrsBu11K0ixR8NyqWxCfFK79qRhOFPWAFFYM7ZJicw8zYP3p-CvrmQgCuV2k1QXlY2LFuo0SqswOexMT4VMkc_WvtuXW6g4c60OQ2AhWPAJ2hgs2IMJzkkKgDJprPdgVHlwXiPw2FRte-Cedtg0cCeHWC1LMMkpJWQWObnYtrpaZB7PBBjIE2cB2uMLFM6INOGNQ7mc563TQ1w5yBgqLQK2V_VzzhvNmJqJZ_bcIp64IyaMfU0yRlWh4nKSgQpyqAuI1nKpZAm3_ul6lyTbx_T4XEXqs0h6HpiGDzC9HQDxsHCLxm7_P8wumQffnLexVyLrhAeR-fVv7Tb3Nw8t2NsfIhmCwncF42jOFyzQ1AIRBEz9YvlaPiK0eYRDjmGeZgt2OfZmSXg1S7UjcXV2Dors0kvI_HuUqAq1PXwCDRQYMIbixxq7grmEI_MGRABY7YcWPzJ21IioUq_JXogIC8PoHD_oMetN9Hw9GYqW4rmDXkCIgT0yZcSN8ysDJNPBmKarqCCebS85g5yOrhMyO4OBInBr9fJ5VXyyDapzJcz2PGRbVz1ZQD5qR_z8k6oCD16vt6aoFap": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ping.chartbeat.net/ping?h=cnn.com&p=www.cnn.com%2F&u=DlNSp-DLCtt7DQxqbz&d=cnn.com&g=37612&g0=cnn&g1=No%20Author&n=1&f=00001&c=0.17&x=12483&m=12483&y=13536&o=1845&w=1053&j=30&R=0&W=0&I=1&E=0&e=0&r=&PA=https%3A%2F%2Fwww.cnn.com%2F&b=4239&_s=%7B%22obr%22%3A%22669bf3c6742925f1d4045f9e80646279%22%7D&t=B64CdLC8FawYCm1iNqBjMlrOBQEeis&V=147&tz=300&_vi=CNN%20Headlines&_vp=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&_vdd=video%40cnn.com&_vs=s2&_vt=ct&_vap=&_vtn=&_vd=Infinity&sn=2&sv=BCQB-VDamcr_DnG4aLDn4ttiC5Diju&sr=external&sd=1&im=06672ff0&_": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://events.bouncex.net/track.gif/reloadcampaigns?wklz=E4UwNg9ghgJgxlAtgBygSwOYDsDOAuOAVxwBcJEA3KYNKAIzBBwF4BSAdgCFWAmHmJgGsyyAPqxRFNDjQMQvHqwDMAQQUAzKGBzy+vAMILqJNHEajUGXYtUatOhQY1goGHAAs0YmOXRZHtnwkwITWTnyIEFggAJ7iwCZmIBauYYE8mtphPIZ8OnAmUaJYSGlqfO7kIJbZuTxkOAHlGfa1CnDkyIwkIDCiMtiEyE12WY45ClICEBYuMWhYGCNBIW18dKBQggsYxSAA7jgWoDpYJMstY3oTEVGx4oQklcAX43U4yCBwtGDxiYwXTIOa51FykfpMGRFKYXACM7CUsIALABWAAMaPYPBRSIAbAAOdgATjeCh0OChWFEHUIZzhpPWUDggnUaDAvwEXQgMUQIDpenSDP46mQPFEAh6BQuHyiOAgLxBZMIdEQaBIPT6tIEwBwHVAMEBrSFOGVqvVvXFIHshquihuPBNKrVGtE+ytTxACpszSBawdpudFo9yAgC3OAp9RsVeQD5r6mlAvRwGEgdC0GzQIFZixtwLt71jLpOhDAJBw1BAC1zfsdZpdrIoICeO0aEdGefC-qdcdEYDQ6hAdEeGET0S9ykjts7tcDfVgJaeEAgMCHJDoTZ64-SvuNhYtoD79EYcsIwDgTGru+7LuQwAgFAggmqnpNsDK7b97igRxnPeih26TdL2jLs6wtDAlxgUhCHUdRgPzJVrwtFEOnLVtvQ-IUOjOPkSFEEgYk+eDpz3Po+0bKYQAgYj7V-F0FhgWgtE9MsaILJC+nXdR5SbdxB3AMA2IUPl4CgMQuiZEBeTOak+OZC5glCK8wL6NAUCtOB3Gk8MML4HcQLoi1eSgLB9k8AE2z0qMEJjDjRGM0zzMrM4+NVGAYEYK1SCE2yVNEDYrW2RZ-3QidMIM0jRHAL5Ciwc8cK3ScO1oyK9SiKApBCULt2ski7LMqA8MQQrN2ypKa1SrAsFhNEfNA2dXXlYRgBMnBuOAXkDUsy5kvYvysEwdwSAQYZuv0mz6p7IcZGiCk6sMvocE80bdJ6iq7NIE4yvCiaFtENUtBiebIt5AAPUxqLG3KUrskMxD7Adjrs1kSFm7arKnG6-OCDLwFdEAQEEMAjquz6+oa3VMzi98Pt6xC-M0hYoCevy7xiLQ9kOFGGpa89sZ7AArNcl0EMxlXxl1qHoUx-M2ILdhCimLXdezeiZvp9kKzTqSquqRBptAoNeECFj7aIouKtlRG4ogdC61bxs7Ygdn25J5SimArDq2g6HwiBkBpkhXHeu1dtwvWDbgfDjbhXFOFxIUNjai3DZt7qsKq6kSczE3FftLAZjMCAdBScETF5dQWt5BTVg9qkIP6Sp9hMEgLNWq9dRodc+hCwDPWF3aenZahZkK9rEBjpSDJitAigIojup8XlSFMIUmRMRsIQwbT2f+wq+OAOh5pDXAeLnBJTDTsLYb9LUXz1C0ZVHnVPBW6e1qFfXw7QAAvcA4lvJhcLqyAMCsVT-FBuG+BARtgF7CAz4tKsr79YxJ+SDYTMYnNX6FUAMA9HBB0RA2kVbtzQI2OqXw+zIBDu-JI81ioTySF7R8mZxBQVEFEYGSCEHmA6Og5IsAjjfweO5W+80IDfAxqAAcwAWq-BPGeGGptOxwE9o6TOsh85-xAhwqkXC4BZ09KIAAjsjPhE1UAxE5uyY4R9+QK1yuwAAIgAMgPNAUSKB0DYHwCUXkzAqA0CPCATR4BtEIF0ZgXAeB64gGMYLKipd5iLAsZAWA+gkCoFsTgAAajwZgaJ1GRAEME9Rbo6AyB6ILZgSgkQhKkDEuJ8JESogxFiHEBJiTqIEFIc8cTiTsHxLiHESgeDsDRLiBEKICRKHYOomoUgDipPUToMRoRoZxKROoswUN1RqSYEbFAzA0nInRGifEGIlD4j6X2XCYlIEvlrlgZgRsMBKDybfUwjiYDqObMAPoqAEhxFIPKVI4ppBmJgOs1YByd4QHiRidpEBTznmYFE9RqQzjMGIJ6V56g8JxJ4BAMA7gADKRy0QACkMAAE1-HRHYAAeSgAAWSwDCgAGsAGI8KACSAAZFF6ivxHP2rc0F4KIX7AAAoUAwIIU6UB1AAFVcS4h3gAJRgPUdQBMMBQoAFpAA": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||bouncex.net^"
+    },
+    "https://pagead2.googlesyndication.com/pagead/gen_204?id=sodar&v=33&t=2&li=v_h.h.3.2.2&sid=1tQzZ4PIMPXMnboPqLSW2Qk&sc=3064517782836280&bg=!ZGelZyjNAAarj73Qi487ADQBe5WfOPqUPdhvjTe_Tv2-nhGepH8zDfxOFtY2ndyBqKER-JD45hrOfFkB5gHaVeZQx5aFAgAAAq9SAAAAA2gBB34AK0FtQSqrjnCUEUqV6wCfbagrHOn5hX5tmZ2Oe9wdkvnLsYyx_Z1YwlrdNScKATY9VGdkzHqus7hcCCpZY5JGfsnUBUy_nMQEl2pae3xLNqCa_KyUf7rCSciJ7oyCPc5_rfvWyltDUgW2PZYJ0YxMRD4_UJEKxkdQ0NeFZZzfvrQyCC5xtSWMVMmSzpqLvdcYfKPnvEigMieNv4t_nOFG_lJ2f1P7ha0Ez9VpNdz5YrKTVEKnAgcVGErTLRe_I4hgIdA2HcE4FihtRCXfZYxGHHN7m0tQE2rRPhpLf2LxfIZ7ME6uwSyC4oL8k3qk9R3pkyaW-X3vOz0yASv9--BnkWlec3V53cevETm3jcOpu6IvkXtkVs28exk0PVIpPXBYf-uNT73RrLWFxH9NdXvDpCUBKaj-iO9UuToxBNxkBAVBwEcr0IXpXlciorfEbX0qnwWpdsrTTX8585gp6SuE_S3JuZZhmQH9LaKzgkK6viDSoMetQ71uXxyxOFSw2CCB7yszB-zHAmUuUuZSvG8FkQRi46z4EryApLKIChHQoLdvl08YFV_C1r-6SrjZGAW_y6xlErC9YsumOV_Ekyc2wABJTh3M86NVfJAgGPZ5GVBF3IRBb9FJN10JzN3wtSAlOUSfB4J7zr84sF6Bvbr37mo_ImDcbfGDnpriW3hr7cuMycSQ4Uwnqyy0W5Wt-fyLrXL9TZAkycaJBs317pkp1f1QEEWX6teIWUkIbUnmuwfeXoWo6LA_9ufTYmPo74Z8S-wJUZgZBLnmy8I5avNAy0PYrQX7S_mSUelog26WXXeHNcnYI23jgIVrhzzITk9zvL2iUi5nWsQVYRyf_N-_o2yJ2w5Ze5UTVD90ftjLMin5QDsJQaNeiQ0RVvIMEbAtdbdRycIw7AKYI6qNrFxEEgCdPlcKsEeIM7hbh59xLVeFL7M9LKe3DbgWrn3lwQkGXERetoctia5g-UdZMMlXO5fo-EeN_toXOMZ0GXVMzP4aub_Vow0LQ90uR1GXQy4Mc9F-a8JGUyoaFF8hk_yAko_33yE7NwBg_fi9U1ngVJEUgiCxuWnJFVO5HY5HHswCiMCKyGfW68XMtSIaq2xagXNMTvNAAHsYB5bvrNOckqOmuE6CV1zo27-YuD5iB0AJv3kG8f0": {
+      "responseCode": 204,
+      "statusText": "N/A",
+      "contentLength": "0",
+      "contentType": "image/gif",
+      "referrer": "https://tpc.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ade.googlesyndication.com/ddm/activity/dc_oe=ChMI95v5k-rXiQMVIQ5oCB3FbTiFEAAYACCas_5nQhMI98C2k-rXiQMVHAFWBR3r_B-8;dc_eps=AHas8cBn6a3qR82i-J-EmijYgpfRV35ZBeMuzIjA6o5q0nWbYsiI7-M4btyYrlAIuh2gTdzc3fXNkpvp82tC-u2gTjk;met=1;&timestamp=1731450082792;eid1=871060;ecn1=1;etm1=0;eid2=2;ecn2=1;etm2=10;": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "42",
+      "contentType": "image/gif",
+      "referrer": "https://159fae163492be21964394db019eb466.safeframe.googlesyndication.com/",
+      "blacklistRule": "||googlesyndication.com^"
+    },
+    "https://ping.chartbeat.net/ping?h=video%40cnn.com&g=37612&p=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&i=CNN%20Headlines&g0=&u=DWnRoOB_4pseBhXjrL&t=7Gi6nDT2xweKDiucD-ejvHBjWper&x=0&y=0&V=147&VS=CNN&n=1&b=5509&_vd=Infinity&_vi=Domestic%20Homepage&_vp=www.cnn.com%2F&_vh=cnn.com&_pu=DlNSp-DLCtt7DQxqbz&_pt=B64CdLC8FawYCm1iNqBjMlrOBQEeis&_pr=&_vdd=cnn.com&_vt=ct&_vs=s2&_vcs=1&_vbr=617.701&_vvs=13.145&_vpt=581314.1460418701&_vaup=auto&_vplt=live&_vce=13&c=0.22&W=0&R=1&I=0&E=13&j=20&tz=300&_": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://ping.chartbeat.net/ping?h=cnn.com&p=www.cnn.com%2F&u=DlNSp-DLCtt7DQxqbz&d=cnn.com&g=37612&g0=cnn&g1=No%20Author&n=1&f=00001&c=0.25&x=12483&m=12483&y=13536&o=1845&w=1053&j=45&R=0&W=0&I=1&E=0&e=0&r=&PA=https%3A%2F%2Fwww.cnn.com%2F&b=4239&_s=%7B%22obr%22%3A%22669bf3c6742925f1d4045f9e80646279%22%7D&t=B64CdLC8FawYCm1iNqBjMlrOBQEeis&V=147&tz=300&_vi=CNN%20Headlines&_vp=livec76319f599742ab668c8b3ba6dcfed3ce7e817ad&_vdd=video%40cnn.com&_vs=s2&_vt=ct&_vap=&_vtn=&_vd=Infinity&sn=3&sv=BCQB-VDamcr_DnG4aLDn4ttiC5Diju&sr=external&sd=1&im=06672ff0&_": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "43",
+      "contentType": "image/gif",
+      "referrer": "https://www.cnn.com/",
+      "blacklistRule": "||chartbeat.net^"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/234p-30fps-500kbps-174242.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "374816",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    },
+    "https://live-media-aka.warnermediacdn.com/cmaf/live/2028715/cnnfast-domestic/1730407224/eng-aac-64kbps-174242.mp4": {
+      "responseCode": 200,
+      "statusText": "N/A",
+      "contentLength": "47415",
+      "contentType": "video/mp4",
+      "referrer": "https://www.cnn.com/"
+    }
+  }
+}

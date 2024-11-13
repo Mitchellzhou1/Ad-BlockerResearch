@@ -182,8 +182,7 @@ Driver.prototype.navigateToWebsite = async function() {
 
 Driver.prototype.store_blacklist = async function(key){
   const blacklist = Object.fromEntries(this.blacklistedItems);
-  const blacklistString = JSON.stringify(blacklist, null, 4);  // Adds indentation for readability
-  console.log("UPO THE")
+  const blacklistString = JSON.stringify(blacklist, null, 4);
   fs.writeFile(`${key}.json`, blacklistString, (err) => {
       if (err) {
           console.error('Error writing file:', err);
@@ -206,9 +205,9 @@ Driver.prototype.store_blacklist = async function(key){
   const responsesObject = Object.fromEntries(driver.responsesMap);
   const jsonData = JSON.stringify(responsesObject, null, 2);
   process.send(jsonData);
-
-  driver.browser.close();
   await driver.store_blacklist(key);
+  driver.browser.close();
+  
 
   process.exit(0);
 
