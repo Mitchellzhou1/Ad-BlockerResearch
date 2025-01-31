@@ -71,7 +71,7 @@ def start_server(url, extn):
     [temp_port1, temp_port2] = get_ports(2, 11001)
     website_root = get_website_root(url)
     go_path = '/home/character/go/src/github.com/catapult-project/catapult/web_page_replay_go/'
-    wpgro_filepath = f'/home/character/replay_1/broken_site_tracker/09-02/{extn}_{website_root}.wprgo'
+    wpgro_filepath = f'/home/character/replay_1/broken_site_tracker/09-08/{extn}_{website_root}.wprgo'
 
     os.chdir(go_path)
 

@@ -33,23 +33,11 @@ import {
     const fctxt = new FilteringContext();
 
     // Tests
-    fctxt.setDocOriginFromURL('https://analytics.justuno.com/');
-    fctxt.setURL('https://analytics.justuno.com/');
-    // fctxt.setType('stylesheet');
+    fctxt.setDocOriginFromURL('https://www.uxmatters.com/');                                                // this is the website URL
+    fctxt.setURL('https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png');                 // this is the resource URL
+    // fctxt.setType('stylesheet'); 
     if ( snfe.matchRequest(fctxt) !== 0 ) {
-        console.log(snfe.toLogData()['raw']);
-    }
-
-    fctxt.setURL('https://analytics.justuno.com/hi.txt');
-    // fctxt.setType('stylesheet');
-    if ( snfe.matchRequest(fctxt) !== 0 ) {
-        console.log(snfe.toLogData()['raw']);
-    }
-
-    fctxt.setURL('https://analytics.justuno.com/robots.txt');
-    // fctxt.setType('stylesheet');
-    if ( snfe.matchRequest(fctxt) !== 0 ) {
-        console.log(snfe.toLogData()['raw']);
+        console.log(snfe.toLogData());
     }
 
     restart();
