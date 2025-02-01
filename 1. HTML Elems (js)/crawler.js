@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path'); 
 
 
-const TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+const TIMEOUT = 15 * 60 * 1000; // 15 minutes
 const SIZE = 2;                 // Number of driver processes to create
 
 const catapult = true;          // testing mode
@@ -125,7 +125,7 @@ const html_options = [
 ];
 
 websites = [
-   "https://dongjunke.cn/posts/2024/08/22/63066.html",
+   "https://easinote.seewo.com/linkShare?id=87ea6781e8384b00913325132a973565",
   // "https://dragontea.ink/",
   // "https://xhamster.com/search/knockin+nurses",
   // "https://www.cib.com.cn/cn/index.html",

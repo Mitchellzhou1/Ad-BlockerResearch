@@ -146,7 +146,7 @@ Driver.prototype.initialize = async function() {
         this.fctxt.setURL(requestUrl);
         if (snfe.matchRequest(this.fctxt) !== 0) {
           responseData.blacklistRule = snfe.toLogData()['raw'];
-          this.blacklistedItems.set(response.url(), responseData);
+          this.blacklistedItems.set(response.url(), responseData); // Checks if the url is blacklisted
         }
         this.responsesMap.set(response.url(), responseData);
 
@@ -180,15 +180,36 @@ Driver.prototype.navigateToWebsite = async function() {
   this.source = await this.page.content();
 };
 
-Driver.prototype.store_blacklist = async function(key){
-  const blacklist = Object.fromEntries(this.blacklistedItems);
-  const blacklistString = JSON.stringify(blacklist, null, 4);
-  fs.writeFile(`${key}.json`, blacklistString, (err) => {
-      if (err) {
-          console.error('Error writing file:', err);
-      } else {
-          console.log('File successfully written!');
-      }
+
+Driver.prototype.take_ss = async function(){
+  
+}
+
+
+Driver.prototype.store_blacklist = async function(website) {
+  let finalData = Object.fromEntries(this.blacklistedItems);
+  finalData = {[website]: finalData};
+  
+  const filePath = join(`./Results/blacklist/blacklist.json`);
+
+  if (fs.existsSync(filePath)) {
+      const existingData = fs.readFileSync(filePath, 'utf8');
+      if (existingData) {
+        // If file exists, parse the existing data and combine it with new data
+        const existingJson = JSON.parse(existingData);
+        finalData = { ...existingJson, ...finalData };
+      } 
+  }
+
+  finalData = JSON.stringify(finalData, null, 2);
+
+  // Write the combined data back to the file
+  fs.writeFileSync(filePath, finalData, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing file:', err);
+      return;
+    }
+    console.log('Data has been written to', filePath);
   });
 };
 
@@ -206,6 +227,9 @@ Driver.prototype.store_blacklist = async function(key){
   const jsonData = JSON.stringify(responsesObject, null, 2);
   process.send(jsonData);
   await driver.store_blacklist(key);
+
+
+
   driver.browser.close();
   
 

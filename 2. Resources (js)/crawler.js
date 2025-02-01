@@ -55,40 +55,29 @@ function subset(jsonArray){
 };
 
 function write_results(website, data) {
-  data = {website, data};
-  const filePath = join(__dirname, `./Results/resources/${website}.json`);
+  let finalData = {[website]: data};
+  const filePath = join(`./Results/resources/all_resources.json`);
 
-  // Check if the file already exists
-  fs.readFile(filePath, 'utf8', (err, existingData) => {
-    if (err && err.code !== 'ENOENT') {
-      console.error('Error reading file:', err);
+  if (fs.existsSync(filePath)) {
+      const existingData = fs.readFileSync(filePath, 'utf8');
+      if (existingData) {
+        // If file exists, parse the existing data and combine it with new data
+        const existingJson = JSON.parse(existingData);
+        finalData = { ...existingJson, ...finalData };
+      } 
+  }
+  
+  finalData = JSON.stringify(finalData, null, 2);
+
+  // Write the combined data back to the file
+  fs.writeFileSync(filePath, finalData, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing file:', err);
       return;
     }
-
-    let combinedData;
-    if (existingData) {
-      // If file exists, parse the existing data and combine it with new data
-      const existingJson = JSON.parse(existingData);
-      combinedData = { ...existingJson, ...data };
-    } else {
-      // If file does not exist, use new data as combined data
-      combinedData = data;
-    }
-
-    // Convert combined data back to JSON string
-    const combinedJsonData = JSON.stringify(combinedData, null, 2);
-
-    // Write the combined data back to the file
-    fs.writeFile(filePath, combinedJsonData, 'utf8', (err) => {
-      if (err) {
-        console.error('Error writing file:', err);
-        return;
-      }
-      console.log('Data has been written to', filePath);
-    });
+    console.log('Data has been written to', filePath);
   });
 };
-
 
 async function runBatch(chunk, extn) {
   const results = [];
@@ -133,8 +122,7 @@ async function runBatch(chunk, extn) {
   await Promise.all(jobs);
 
   return results;
-}
-
+};
 
 
 async function runInBatches(chunksList, extn) {
@@ -171,15 +159,9 @@ async function runInBatches(chunksList, extn) {
       
       console.log("Finished running website:", website);
 
-
       console.log("Starting Comparison for:", website);
       
-
-
-
-
     }
-     
      
   }
 };
@@ -188,16 +170,19 @@ async function runInBatches(chunksList, extn) {
 
 
 const websites = [
-  "https://www.cnn.com",
-  "https://www.bbc.com",
-  "https://www.nytimes.com",
-  "https://www.theguardian.com",
-  "https://www.washingtonpost.com",
-  "https://www.nbcnews.com",
-  "https://www.reuters.com",
-  "https://www.forbes.com",
-  "https://www.wsj.com",
-  "https://www.aljazeera.com"
+  // "https://www.cnn.com",
+  // "https://www.bbc.com",
+  // "https://www.nytimes.com",
+  // "https://www.theguardian.com",
+  // "https://www.washingtonpost.com",
+  // "https://www.nbcnews.com",
+  // "https://www.reuters.com",
+  // "https://www.forbes.com",
+  // "https://www.wsj.com",
+  // "https://www.aljazeera.com"
+  'https://www.uxmatters.com/',
+  // 'https://www.owayo.com/'
+
 ]
 
 let extn_lst = [
@@ -214,8 +199,6 @@ let extn_lst = [
   const args = process.argv.slice(2);
 
   const chunks = divideChunks(websites, SIZE);
-
-
 
   try {
     await runInBatches(chunks, extn_lst);

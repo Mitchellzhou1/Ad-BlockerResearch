@@ -404,7 +404,6 @@ Driver.prototype.getCSSselector = async function(outerHTML, set_field = true) {
 
 Driver.prototype.get_element = async function(selector, outerHTML = this.RESULT.initial_outer_html){
 
-
   function rejoinSelector(baseSelector, contents) {
       // Remove all square bracket contents from the base selector
       let baseWithoutBrackets = baseSelector.replace(/\[[^\]]+\]/g, '');
