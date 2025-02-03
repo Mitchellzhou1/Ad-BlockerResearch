@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
 import { initializeBlacklists, FilteringContext } from './blacklist_parser/blacklistparser.js';
+import {take_ss} from 'screenshot.mjs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -182,7 +183,7 @@ Driver.prototype.navigateToWebsite = async function() {
 
 
 Driver.prototype.take_ss = async function(){
-  
+
 }
 
 
@@ -228,7 +229,7 @@ Driver.prototype.store_blacklist = async function(website) {
   process.send(jsonData);
   await driver.store_blacklist(key);
 
-
+  
 
   driver.browser.close();
   

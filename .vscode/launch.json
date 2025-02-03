@@ -11,9 +11,12 @@
             // "program": "${workspaceFolder}/2. Resources (js)/crawler.js",
             // "cwd": "${workspaceFolder}/2. Resources (js)",
 
-            "program": "${workspaceFolder}/1. HTML Elems (js)/crawler.js",
-            "cwd": "${workspaceFolder}/1. HTML Elems (js)",
+            // "program": "${workspaceFolder}/1. HTML Elems (js)/crawler.js",
+            // "cwd": "${workspaceFolder}/1. HTML Elems (js)",
             
+            "program": "${workspaceFolder}/1. HTML Elems (js)/test.mjs",
+            "cwd": "${workspaceFolder}/1. HTML Elems (js)",
+
             "args": []
         }
     ]
