@@ -79,18 +79,18 @@ function write_results(website, data) {
   });
 };
 
-async function runBatch(chunk, extn) {
+async function runBatch(chunk, extn, control_resources=false) {
   const results = [];
   const jobs = chunk.map((site, index) => {
     const key = websiteKey(site);
 
-    // const processCount = (extn === 'control') ? 3 : 1;
-    const processCount = 1;
+    const processCount = (extn === 'control') ? 2 : 1;
+    // const processCount = 2;
 
     // Create an array of promises for each job
     const jobPromises = Array.from({ length: processCount }, (_, processIndex) => {
       return new Promise((resolve, reject) => {
-        const childProcess = fork(join(__dirname, 'driver.mjs'), [extn, site, key]);
+        const childProcess = fork(join(__dirname, 'driver.mjs'), [extn, site, key, control_resources]);
 
         childProcess.on('message', (message) => {
             results[processIndex] = message;
@@ -143,12 +143,14 @@ async function runInBatches(chunksList, extn) {
       
       //need to store this value
       const control_final_subset = subset(control_resources);
-      write_results(websiteKey(website), control_final_subset);
+      // write_results(websiteKey(website), control_final_subset);
 
       const extn_resources = new Array(extn_lst.length);
+      const extn_resources_string = JSON.stringify(control_final_subset, null, 2);
+
       const extnPromises = extn_lst.map((extn, i) => {
         console.log('Testing extn:', extn);
-        return runBatch(chunk, extn).then(result => {
+        return runBatch(chunk, extn, extn_resources_string).then(result => {
           extn_resources[i] = result;
         });
       });
@@ -186,8 +188,8 @@ const websites = [
 ]
 
 let extn_lst = [
-  // 'control', // the control is included in each run of the website
-  // 'adblock', 
+  // 'control', // the control is not included. Use the subset
+  'adblock', 
   // 'ublock', 
   // 'privacy-badger',
   // 'adguard'

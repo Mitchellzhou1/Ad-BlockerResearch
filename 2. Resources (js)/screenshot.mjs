@@ -1,8 +1,10 @@
 import puppeteer from 'puppeteer';
-import { Url } from './url.mjs';
+import https from 'https';
+import { Url } from '../1. HTML Elems (js)/url.mjs';
 import fs from 'fs';
+import { fork } from 'child_process';
 
-async function findImage(imageUrl, page) {
+async function findImage(missingUrl, page) {
 
     const results = [];
 
@@ -10,7 +12,7 @@ async function findImage(imageUrl, page) {
     const imgElements = await page.$$('img');
     for (const img of imgElements) {
         const src = await img.evaluate(el => el.src);
-        if (src === imageUrl) {
+        if (src === missingUrl) {
             results.push(img);
         }
     }
@@ -19,7 +21,7 @@ async function findImage(imageUrl, page) {
     const allElements = await page.$$('*');
     for (const el of allElements) {
         const bgImage = await el.evaluate(el => window.getComputedStyle(el).backgroundImage);
-        if (bgImage.includes(imageUrl)) {
+        if (bgImage.includes(missingUrl)) {
             results.push(el);
         }
     }
@@ -28,7 +30,7 @@ async function findImage(imageUrl, page) {
     const pictureSources = await page.$$('picture source');
     for (const source of pictureSources) {
         const srcset = await source.evaluate(el => el.srcset);
-        if (srcset.includes(imageUrl)) {
+        if (srcset.includes(missingUrl)) {
             results.push(source);
         }
     }
@@ -37,7 +39,7 @@ async function findImage(imageUrl, page) {
     const objectElements = await page.$$('object');
     for (const object of objectElements) {
         const data = await object.evaluate(el => el.data);
-        if (data === imageUrl) {
+        if (data === missingUrl) {
             results.push(object);
         }
     }
@@ -46,7 +48,7 @@ async function findImage(imageUrl, page) {
     const embedElements = await page.$$('embed');
     for (const embed of embedElements) {
         const src = await embed.evaluate(el => el.src);
-        if (src === imageUrl) {
+        if (src === missingUrl) {
             results.push(embed);
         }
     }
@@ -55,7 +57,7 @@ async function findImage(imageUrl, page) {
     const svgImages = await page.$$('svg image');
     for (const svgImage of svgImages) {
         const href = await svgImage.evaluate(el => el.getAttribute('xlink:href') || el.getAttribute('href'));
-        if (href === imageUrl) {
+        if (href === missingUrl) {
             results.push(svgImage);
         }
     }
@@ -64,7 +66,7 @@ async function findImage(imageUrl, page) {
     const figureImages = await page.$$('figure img');
     for (const img of figureImages) {
         const src = await img.evaluate(el => el.src);
-        if (src === imageUrl) {
+        if (src === missingUrl) {
             results.push(img);
         }
     }
@@ -96,87 +98,110 @@ async function getParent(element, traversalAmt = 3, page) {
     return ancestor;
   }
 
+  function downloadImage(url, fileName) {
+    const file = fs.createWriteStream(fileName);
 
+    https.get(url, (response) => {
+        response.pipe(file); // Pipe the response data to the file
+
+        file.on('finish', () => {
+            file.close();
+            console.log(`Image downloaded and saved as ${fileName}`);
+        });
+    }).on('error', (err) => {
+        fs.unlink(fileName, () => {}); // Delete the file if there's an error
+        console.error(`Error downloading image: ${err.message}`);
+    });
+}
 
 // Example usage
-async function take_ss(imageUrl, pageUrl, adblocker) {
-    // const imageUrl = 'https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png';
+export async function take_ss(missingUrls, pageUrl, adblocker, browser, page) {
+
+    // const missingUrl = 'https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png';
     // const pageUrl = 'https://www.uxmatters.com/'; // Replace with the target webpage URL
-    const url_base = new Url()
-    var delete_flag = true;
-    const adResources = [];
-    url_base.initialize(pageUrl);
+    var file_path;
+    for (const [key, missingUrl] of Object.entries(missingUrls)) {
 
-    const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
-    const page = await browser.newPage(); // Open a new page
-    await page.goto(pageUrl); // Navigate to the specified URL
+        const url_base = new Url()
+        const adResources = [];
+        url_base.initialize(pageUrl);
+        var delete_flag = true;
+        file_path  = 'screenshots' + '/' + url_base.key + '/' + adblocker;
+
+        // const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
+        // const page = await browser.newPage(); // Open a new page
+        // await page.goto(pageUrl); // Navigate to the specified URL
 
 
+        if (!fs.existsSync(url_base.key)){
+            fs.mkdirSync(file_path, { recursive: true });
+            console.log(`Folder created successfully!: ${file_path}`);    
+        }
+        
+        // For each element in the missing resources list:
+        const resources = await findImage(missingUrl, page);       // returns list of CdpElementHandles
 
-    if (!fs.existsSync(url_base.key)){
-        fs.mkdirSync(url_base.key);
-        console.log(`Folder created successfully!: ${url_base.key}`);    
-    }
-    
-    // For each element in the missing resources list:
-    const resources = await findImage(imageUrl, page);       // returns list of CdpElementHandles
+        if (resources){
+        /*
+        
+        {
+            id: 'img1',
+            outerHTML: '<img src="img1.jpg" alt="Image 1">',
+            parentHTML: '<div class="container"></div>'
+        },
+        {
+            id: 'img2',
+            outerHTML: '<img src="img2.jpg" alt="Image 2">',
+            parentHTML: '<div class="container"></div>'
+        }
 
-    if (resources){
-    /*
-    
-     {
-        id: 'img1',
-        outerHTML: '<img src="img1.jpg" alt="Image 1">',
-        parentHTML: '<div class="container"></div>'
-    },
-    {
-        id: 'img2',
-        outerHTML: '<img src="img2.jpg" alt="Image 2">',
-        parentHTML: '<div class="container"></div>'
-    }
+        */
 
-    */
+            // Take screenshots of the found elements
+            delete_flag = false;
 
-        // Take screenshots of the found elements
-        delete_flag = false;
-        for (const [index, elementHandle] of resources.entries()) {
+            // need for loop because 1 resource blocked could be reflect multiple times in the HTML
+            for (const [index, elementHandle] of resources.entries()) {
 
-            // Ensure the element is visible in the viewport
-            await elementHandle.scrollIntoViewIfNeeded();
+                // Ensure the element is visible in the viewport
+                await elementHandle.scrollIntoViewIfNeeded();
 
-            // Take a screenshot of the element
-            await elementHandle.screenshot({ path: `${url_base.key}/img_${index}.png` });
-            console.log(`Screenshot saved: ${imageUrl}`);
+                // Take a screenshot of the element
+                try{
+                    await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
+                    console.log(`Screenshot saved: ${missingUrl}`);
+                }
+                catch{
+                    downloadImage(missingUrl,`${file_path}/img_${index}.png`)
+                }
+                adResources.push({
+                    id: `img_${index}.png`,
+                    outerHTML: await elementHandle.evaluate(element => element.outerHTML),
+                });
 
-            const parent = await getParent(elementHandle, 3, page);
-            await parent.screenshot({ path: `${url_base.key}/img_${index}_context.png` });
+            }       
+        }
 
-            adResources.push({
-                id: `img_${index}.png`,
-                outerHTML: await elementHandle.evaluate(element => element.outerHTML),
-                parentHTML: await parent.evaluate(element => element.outerHTML),
+        if (!delete_flag){
+            const data = JSON.stringify(adResources, null, 2);
+
+            // Write the string to a file
+            fs.writeFile(`${file_path}/mappings.json`, data, (err) => {
+                if (err) {
+                    console.error('Error writing to file', err);
+                } else {
+                    console.log('File has been written successfully');
+                }
             });
 
-        }       
+            await page.screenshot({
+                path: `${file_path}/entire_page.png`, 
+                fullPage: true,
+            });
+        }
+        
+
     }
 
-    if (!delete_flag){
-        const data = JSON.stringify(adResources, null, 2);
-
-        // Write the string to a file
-        fs.writeFile(`${url_base.key}/mappings.json`, data, (err) => {
-            if (err) {
-                console.error('Error writing to file', err);
-            } else {
-                console.log('File has been written successfully');
-            }
-        });
-
-        await page.screenshot({
-            path: `${url_base.key}/entire_page.png`, 
-            fullPage: true,
-        });
-    }
-    await page.close();
-    await browser.close();
+    return file_path;
 }

@@ -2,19 +2,21 @@ import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
 import { initializeBlacklists, FilteringContext } from './blacklist_parser/blacklistparser.js';
-import {take_ss} from 'screenshot.mjs';
+import { take_ss } from './screenshot.mjs';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { dirname, join, resolve } from 'path';
 
 
 
-const snfe = await initializeBlacklists();
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = dirname(__filename);
 
-let EXTENSION_NAME = 'control'
+let EXTENSION_NAME = process.argv[2]
+
+var snfe = false;
+if (EXTENSION_NAME != 'control'){
+  snfe = await initializeBlacklists();
+}
 
 async function sleep(ms) {
   const seconds = ms * 1000;
@@ -78,7 +80,7 @@ Driver.prototype.initialize = async function() {
     let args = ['--start-maximized'];
     if (EXTENSION_NAME !== 'control') {
       const extensionPath = `../Extensions/puppeteer_extn/${EXTENSION_NAME}`;
-      const absolutePath = resolve(__path, extensionPath);
+      const absolutePath = resolve(__dirname, extensionPath);
       // console.log(absolutePath);
       args.push(`--disable-extensions-except=${absolutePath}`);
       args.push(`--load-extension=${absolutePath}`);
@@ -145,7 +147,7 @@ Driver.prototype.initialize = async function() {
           referrer: referer,
         };
         this.fctxt.setURL(requestUrl);
-        if (snfe.matchRequest(this.fctxt) !== 0) {
+        if (snfe && snfe.matchRequest(this.fctxt) !== 0) {
           responseData.blacklistRule = snfe.toLogData()['raw'];
           this.blacklistedItems.set(response.url(), responseData); // Checks if the url is blacklisted
         }
@@ -182,11 +184,6 @@ Driver.prototype.navigateToWebsite = async function() {
 };
 
 
-Driver.prototype.take_ss = async function(){
-
-}
-
-
 Driver.prototype.store_blacklist = async function(website) {
   let finalData = Object.fromEntries(this.blacklistedItems);
   finalData = {[website]: finalData};
@@ -214,26 +211,43 @@ Driver.prototype.store_blacklist = async function(website) {
   });
 };
 
+Driver.prototype.find_missing_resources = async function(constrol_rr_str, extn_rr){
+  const control_rr = JSON.parse(constrol_rr_str);
+  const missing = Object.keys(control_rr).filter(key => !(key in extn_rr));
+  return missing;
+};
 
-(async (adblocker, website, key)  => {
+Driver.prototype.control_ss = async function(path){
+  await this.page.screenshot({
+    path: `${path}/../control.png`, 
+    fullPage: true,
+  });
+};
 
-  const driver = new Driver(adblocker, website);
+(async (adblocker, website, key, control_resources)  => {
+
+  const driver = new Driver(adblocker, website);    //extensions are not working?
   await driver.initialize();
   await driver.navigateToWebsite()
   
   // await driver.store_results(key);
   // console.log(driver.responsesMap);
-
   const responsesObject = Object.fromEntries(driver.responsesMap);
-  const jsonData = JSON.stringify(responsesObject, null, 2);
-  process.send(jsonData);
-  await driver.store_blacklist(key);
 
+  if (control_resources!='false'){
+    const missing_resources = await driver.find_missing_resources(control_resources, responsesObject)
+    const path = await take_ss(missing_resources, website, adblocker, driver.browser, driver.page);
+    await driver.control_ss(path);
+  }else{
+    const jsonData = JSON.stringify(responsesObject, null, 2);
+    process.send(jsonData);
+  }
   
+
+  // await driver.store_blacklist(key);
 
   driver.browser.close();
   
-
   process.exit(0);
 
-})(process.argv[2], process.argv[3], process.argv[4]);
+})(process.argv[2], process.argv[3], process.argv[4], process.argv[5]);
