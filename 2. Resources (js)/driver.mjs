@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
 import { initializeBlacklists, FilteringContext } from './blacklist_parser/blacklistparser.js';
+import { Url } from '../1. HTML Elems (js)/url.mjs';
 import { take_ss } from './screenshot.mjs';
 import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
@@ -218,15 +219,34 @@ Driver.prototype.find_missing_resources = async function(constrol_rr_str, extn_r
 };
 
 Driver.prototype.control_ss = async function(path){
-  await this.page.screenshot({
-    path: `${path}/../control.png`, 
-    fullPage: true,
-  });
+
+  const filePath = `${path}/control.png`;
+
+  if (!fs.existsSync(path)){
+        fs.mkdirSync(path, { recursive: true });
+        console.log(`Folder created successfully!: ${path}`);    
+    }
+        
+
+  try {
+    // Check if the file exists
+    fs.access(filePath);
+    return;
+  } catch (error) {
+    await this.page.screenshot({
+      path: filePath,
+      fullPage: true,
+    });
+  }
 };
 
 (async (adblocker, website, key, control_resources)  => {
 
   const driver = new Driver(adblocker, website);    //extensions are not working?
+  const url_base = new Url()
+  url_base.initialize(website);
+  const path  = 'screenshots' + '/' + url_base.key;
+
   await driver.initialize();
   await driver.navigateToWebsite()
   
@@ -236,11 +256,11 @@ Driver.prototype.control_ss = async function(path){
 
   if (control_resources!='false'){
     const missing_resources = await driver.find_missing_resources(control_resources, responsesObject)
-    const path = await take_ss(missing_resources, website, adblocker, driver.browser, driver.page);
-    await driver.control_ss(path);
+   await take_ss(missing_resources, website, adblocker, driver.browser, driver.page);
   }else{
     const jsonData = JSON.stringify(responsesObject, null, 2);
     process.send(jsonData);
+    await driver.control_ss(path);  // take SS of the control
   }
   
 

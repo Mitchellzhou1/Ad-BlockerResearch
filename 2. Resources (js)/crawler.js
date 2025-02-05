@@ -189,10 +189,10 @@ const websites = [
 
 let extn_lst = [
   // 'control', // the control is not included. Use the subset
-  'adblock', 
+  // 'adblock', 
   // 'ublock', 
   // 'privacy-badger',
-  // 'adguard'
+  'adguard'
 ];
 
 
