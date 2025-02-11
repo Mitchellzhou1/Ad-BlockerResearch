@@ -46,9 +46,9 @@ function subset(jsonArray){
       if (jsonObjects.every(obj => obj.hasOwnProperty(key))) {
           commonPairs[key] = value;
       }
-      else{
-        console.log(key);
-      }
+      // else{
+      //   console.log(key);
+      // }
   }
 
   return commonPairs;
@@ -56,7 +56,7 @@ function subset(jsonArray){
 
 function write_results(website, data) {
   let finalData = {[website]: data};
-  const filePath = join(`./Results/resources/all_resources.json`);
+  const filePath = join(`./Results/all_resources.json`);
 
   if (fs.existsSync(filePath)) {
       const existingData = fs.readFileSync(filePath, 'utf8');
@@ -79,18 +79,23 @@ function write_results(website, data) {
   });
 };
 
-async function runBatch(chunk, extn, control_resources=false) {
+async function runBatch(chunk, extn, extn_lst, control_resources) {
   const results = [];
   const jobs = chunk.map((site, index) => {
     const key = websiteKey(site);
-
-    const processCount = (extn === 'control') ? 2 : 1;
-    // const processCount = 2;
+    
+    var processCount;
+    if (!control_resources){
+      processCount = (extn === 'control') ? 2 : 1;
+    }
+    else{
+      processCount = 1;
+    }
 
     // Create an array of promises for each job
     const jobPromises = Array.from({ length: processCount }, (_, processIndex) => {
       return new Promise((resolve, reject) => {
-        const childProcess = fork(join(__dirname, 'driver.mjs'), [extn, site, key, control_resources]);
+        const childProcess = fork(join(__dirname, 'driver.mjs'), [extn, site, key, extn_lst, control_resources]);
 
         childProcess.on('message', (message) => {
             results[processIndex] = message;
@@ -125,7 +130,7 @@ async function runBatch(chunk, extn, control_resources=false) {
 };
 
 
-async function runInBatches(chunksList, extn) {
+async function runInBatches(chunksList, extn_lst) {
   
   for (const chunk of chunksList) {
 
@@ -139,7 +144,7 @@ async function runInBatches(chunksList, extn) {
       */
 
       console.log('Running controls', website);
-      const control_resources = await runBatch(chunk, 'control'); //starts 3 control browsers
+      const control_resources = await runBatch(chunk, 'control', extn_lst, 'false'); //starts 3 control browsers
       
       //need to store this value
       const control_final_subset = subset(control_resources);
@@ -150,7 +155,7 @@ async function runInBatches(chunksList, extn) {
 
       const extnPromises = extn_lst.map((extn, i) => {
         console.log('Testing extn:', extn);
-        return runBatch(chunk, extn, extn_resources_string).then(result => {
+        return runBatch(chunk, extn, extn_lst, extn_resources_string).then(result => {
           extn_resources[i] = result;
         });
       });
@@ -181,19 +186,27 @@ const websites = [
   // "https://www.reuters.com",
   // "https://www.forbes.com",
   // "https://www.wsj.com",
-  // "https://www.aljazeera.com"
+  // "https://www.nbcnews.com/",
+  // 'https://www.washingtonpost.com/',
   'https://www.uxmatters.com/',
-  // 'https://www.owayo.com/'
+  // 'https://www.reddit.com/'
 
 ]
 
 let extn_lst = [
-  // 'control', // the control is not included. Use the subset
-  // 'adblock', 
+  'control', // launching control is required
+  'adblock', 
   // 'ublock', 
   // 'privacy-badger',
-  'adguard'
+  // 'adguard'
 ];
+
+// let resource = [
+//   'images',
+//   'videos'
+// ]
+
+// let resource = 'videos';
 
 
 (async () => {

@@ -1,8 +1,19 @@
 import puppeteer from 'puppeteer';
+import { exec } from 'child_process';
 import https from 'https';
-import { Url } from '../1. HTML Elems (js)/url.mjs';
 import fs from 'fs';
 import { fork } from 'child_process';
+
+function removeDirectory(directoryPath) {
+    // Execute the shell command 'rm -rf' on the provided directory path
+    exec(`rm -rf ${directoryPath}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(`Error executing rm -rf: ${stderr}`);
+      } else {
+        console.log(`Successfully deleted: ${directoryPath}`);
+      }
+    });
+  }
 
 async function findImage(missingUrl, page) {
 
@@ -73,7 +84,21 @@ async function findImage(missingUrl, page) {
 
 
     return results;
-}
+};
+
+async function clickVideos(missingUrl, page) {
+
+    const results = [];
+
+    const videoElements = await page.$$('video')
+    for (const vids of videoElements) {
+        const src = await vids.evaluate(el => el.src);
+        if (src === missingUrl) {
+            results.push(vids);
+        }
+    }
+    return results;
+};
 
 
 async function getParent(element, traversalAmt = 3, page) {
@@ -96,111 +121,105 @@ async function getParent(element, traversalAmt = 3, page) {
       }
     }
     return ancestor;
-  }
+}
 
-  function downloadImage(url, fileName) {
-    const file = fs.createWriteStream(fileName);
+function downloadImage(url, fileName) {
+    try{
+        const file = fs.createWriteStream(fileName);
 
-    https.get(url, (response) => {
-        response.pipe(file); // Pipe the response data to the file
+        https.get(url, (response) => {
+            response.pipe(file); // Pipe the response data to the file
 
-        file.on('finish', () => {
-            file.close();
-            console.log(`Image downloaded and saved as ${fileName}`);
+            file.on('finish', () => {
+                file.close();
+                console.log(`Image downloaded and saved as ${fileName}`);
+            });
+        }).on('error', (err) => {
+            fs.unlink(fileName, () => {}); // Delete the file if there's an error
+            console.error(`Error downloading image: ${err.message}`);
         });
-    }).on('error', (err) => {
-        fs.unlink(fileName, () => {}); // Delete the file if there's an error
-        console.error(`Error downloading image: ${err.message}`);
-    });
+    }catch{
+        return 'Failed to Download';
+    }
 }
 
 // Example usage
-export async function take_ss(missingUrls, pageUrl, adblocker, browser, page) {
+export async function take_ss(missingUrls, pageUrl, adblocker, browser, page, key, resource) {
 
-    // const missingUrl = 'https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png';
-    // const pageUrl = 'https://www.uxmatters.com/'; // Replace with the target webpage URL
-    var file_path;
-    for (const [key, missingUrl] of Object.entries(missingUrls)) {
-
-        const url_base = new Url()
-        const adResources = [];
-        url_base.initialize(pageUrl);
-        var delete_flag = true;
-        file_path  = 'screenshots' + '/' + url_base.key + '/' + adblocker;
+    var file_path  = 'screenshots' + '/' + key + '/' + adblocker;
+    var delete_flag = true;
+    var page_resources;
+    var adResources = [];
+    for (const [i, missingUrl] of Object.entries(missingUrls)) {
 
         // const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
         // const page = await browser.newPage(); // Open a new page
         // await page.goto(pageUrl); // Navigate to the specified URL
 
-
-        if (!fs.existsSync(url_base.key)){
+        let resource = missingUrl.type;
+        if (!fs.existsSync(file_path)){
             fs.mkdirSync(file_path, { recursive: true });
             console.log(`Folder created successfully!: ${file_path}`);    
         }
         
         // For each element in the missing resources list:
-        const resources = await findImage(missingUrl, page);       // returns list of CdpElementHandles
-
-        if (resources){
-        /*
-        
-        {
-            id: 'img1',
-            outerHTML: '<img src="img1.jpg" alt="Image 1">',
-            parentHTML: '<div class="container"></div>'
-        },
-        {
-            id: 'img2',
-            outerHTML: '<img src="img2.jpg" alt="Image 2">',
-            parentHTML: '<div class="container"></div>'
+        if (resource == 'images') {
+            page_resources = await findImage(missingUrl, page);       // returns list of CdpElementHandles
+        } else {
+            page_resources = await clickVideos(missingUrl, page);
         }
 
-        */
+   
 
-            // Take screenshots of the found elements
-            delete_flag = false;
+        // Take screenshots of the found elements
+        delete_flag = false;
 
-            // need for loop because 1 resource blocked could be reflect multiple times in the HTML
-            for (const [index, elementHandle] of resources.entries()) {
+        // need for loop because 1 resource blocked could be reflect multiple times in the HTML
+        if (resource == 'images') {
+            for (const [index, elementHandle] of page_resources.entries()) {
 
-                // Ensure the element is visible in the viewport
+            try{
                 await elementHandle.scrollIntoViewIfNeeded();
-
-                // Take a screenshot of the element
-                try{
-                    await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
-                    console.log(`Screenshot saved: ${missingUrl}`);
-                }
-                catch{
-                    downloadImage(missingUrl,`${file_path}/img_${index}.png`)
-                }
-                adResources.push({
-                    id: `img_${index}.png`,
-                    outerHTML: await elementHandle.evaluate(element => element.outerHTML),
-                });
-
-            }       
-        }
-
-        if (!delete_flag){
-            const data = JSON.stringify(adResources, null, 2);
-
-            // Write the string to a file
-            fs.writeFile(`${file_path}/mappings.json`, data, (err) => {
-                if (err) {
-                    console.error('Error writing to file', err);
-                } else {
-                    console.log('File has been written successfully');
-                }
+                await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
+                console.log(`Screenshot saved: ${missingUrl}`);
+            }
+            catch{
+                downloadImage(missingUrl,`${file_path}/img_${index}.png`)
+            }
+            adResources.push({
+                id: `img_${index}.png`,
+                outerHTML: await elementHandle.evaluate(element => element.outerHTML),
             });
 
-            await page.screenshot({
-                path: `${file_path}/entire_page.png`, 
-                fullPage: true,
+            }      
+        } 
+        else {
+            console.log(missingUrl);
+            downloadImage(missingUrl,`${file_path}/vid_${i}.mp4`)
+            adResources.push({
+                id: `img_${i}.png`,
+                Url: missingUrl
             });
         }
-        
+    }
+    if (!delete_flag){
+        const data = JSON.stringify(adResources, null, 2);
 
+        // Write the string to a file
+        fs.writeFile(`${file_path}/mappings.json`, data, (err) => {
+            if (err) {
+                console.error('Error writing to file', err);
+            } else {
+                console.log('File has been written successfully');
+            }
+        });
+
+        await page.screenshot({
+            path: `${file_path}/entire_page.png`, 
+            fullPage: true,
+        });
+    }else{
+        removeDirectory(file_path);
     }
 
     return file_path;

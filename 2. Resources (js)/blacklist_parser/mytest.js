@@ -1,8 +1,8 @@
 import { readFile } from 'fs/promises';
 import {
     FilteringContext,
-    // enableWASM,
-    // pslInit,
+    enableWASM,
+    pslInit,
     restart,
 } from './main.js';
 
@@ -50,13 +50,16 @@ import { hideBin } from 'yargs/helpers';
     const fctxt = new FilteringContext();
 
     // Tests
-    // fctxt.setDocOriginFromURL('https://analytics.justuno.com/');
-    fctxt.setDocOriginFromURL(`${argv.url}`);
-    // fctxt.setURL('https://analytics.justuno.com/');
-    fctxt.setURL(`${argv.resource}`);
+
+
+    // fctxt.setDocOriginFromURL(`${argv.url}`);
+    // fctxt.setURL(`${argv.resource}`);
+
+    // fctxt.setDocOriginFromURL('https://www.uxmatters.com/');
+    fctxt.setURL('https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png');
     // fctxt.setType('stylesheet');
     if ( snfe.matchRequest(fctxt) !== 0 ) {
-        console.log(snfe.toLogData()['raw']);
+        console.log(snfe.toLogData());
     }
 
     restart();
