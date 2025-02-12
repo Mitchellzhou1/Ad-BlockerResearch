@@ -85,7 +85,7 @@ async function runBatch(chunk, extn, extn_lst, control_resources) {
     const key = websiteKey(site);
     
     var processCount;
-    if (!control_resources){
+    if (control_resources==='false'){
       processCount = (extn === 'control') ? 2 : 1;
     }
     else{
@@ -186,9 +186,9 @@ const websites = [
   // "https://www.reuters.com",
   // "https://www.forbes.com",
   // "https://www.wsj.com",
-  // "https://www.nbcnews.com/",
+  "https://www.nbcnews.com/",
   // 'https://www.washingtonpost.com/',
-  'https://www.uxmatters.com/',
+  // 'https://www.uxmatters.com/',
   // 'https://www.reddit.com/'
 
 ]

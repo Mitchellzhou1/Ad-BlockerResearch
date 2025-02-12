@@ -145,14 +145,15 @@ Driver.prototype.initialize = async function() {
           referrer: referer,
         };
         this.fctxt.setURL(requestUrl);
-        this.responsesMap.set(requestUrl, responseData);
-        // if (snfe && (snfe.matchRequest(this.fctxt) !== 0)) {
-        //   responseData.blacklistRule = snfe.toLogData()['raw'];
-        //   this.blacklistedItems.set(requestUrl, responseData); // Checks if the url is blacklisted
-        // }
-        // else{
-        //   this.responsesMap.set(requestUrl, responseData);
-        // }
+
+        if (snfe && (snfe.matchRequest(this.fctxt) !== 0)) {
+          responseData.blacklistRule = snfe.toLogData()['raw'];
+          this.blacklistedItems.set(requestUrl, responseData); // Checks if the url is blacklisted
+        }
+        else{
+          this.responsesMap.set(requestUrl, responseData);
+        }
+        
       }
     });
 
@@ -211,8 +212,8 @@ Driver.prototype.store_blacklist = async function(website) {
   });
 };
 
-Driver.prototype.find_missing_resources = async function(control_rr_str, extn_rr){
-  const control_rr = JSON.parse(control_rr_str);
+Driver.prototype.find_missing_resources = async function(control_rr, extn_rr){
+
   const missing = Object.keys(control_rr)
     .filter(key => !(key in extn_rr))
     .map(key => {
@@ -237,8 +238,16 @@ Driver.prototype.click_on_videos = async function(){
       try{
         await videoElement.click();
         await sleep(5);
+        const pages = await browser.pages();
+        for (let i = 1; i < pages.length; i++) {
+          const title = await pages[i].title();
+          console.log(`Closing page: ${title}`);
+          await pages[i].close();
+        }
         await this.page.keyboard.press('Escape');
+
       }
+
       catch{
         1;
       }
@@ -302,11 +311,12 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
    * @param {number} check_interval - The time interval (in milliseconds) between checks. Default is 1000ms (1 second).
    */
   const filepath = `./screenshots/${key}/missing.json`;
-  const sleep_interval = 20;
+  const sleep_interval = 5;
 
   if (typeof extn_lst === 'string') {
     extn_lst = extn_lst.split(','); // Split the string by commas
   }
+  extn_lst = extn_lst.filter(item => item !== 'control');
 
   while (true) {
       try {
@@ -329,19 +339,33 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
           // Handle errors (e.g., empty file, invalid JSON, or file being written to)
           console.log(`An error occurred: ${error.message}. Waiting...`);
           await sleep(sleep_interval);
+          console.log("running again");
       }
   }
 
   const ret = [];
-  const final_subset = await this.find_missing_resources(control_resources, Object.fromEntries(this.responsesMap));
+  const final_subset = findSubset(JSON.parse(control_resources), Object.fromEntries(this.responsesMap));
   for(const extn of extn_lst){
     var extn_resources = data[extn];
     var extn_missing = await this.find_missing_resources(final_subset, extn_resources);
-    await take_ss(extn_missing, website, adblocker, this.browser, this.page, key);
+    await take_ss(extn_missing, extn, this.page, key);
 
   }  
 
 };
+
+
+function findSubset(obj1, obj2) {
+  let subset = {};
+  
+  for (let key in obj1) {
+      if (obj2.hasOwnProperty(key)) {
+          subset[key] = obj1[key];
+      }
+  }
+  
+  return subset;
+}
 
 
 
@@ -360,12 +384,19 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
   if (control_resources!=='false'){ //we are in second round
     // write_results(website, responsesObject)
     if (adblocker == 'control'){
-      await driver.control_filter(key, extn_lst);
+      await driver.control_filter(key, extn_lst, control_resources);
 
     }
     else{
-      const missing_resources = await driver.find_missing_resources(control_resources, responsesObject)
-      write_results(missing_resources, adblocker, key)
+      const file_path = path + '/' + adblocker
+      if (!fs.existsSync(file_path)){
+          fs.mkdirSync(file_path, { recursive: true });  
+      }
+      write_results(responsesObject, adblocker, key)
+      await driver.page.screenshot({
+        path: `${file_path}/entire_page.png`, 
+        fullPage: true,
+    });
     }
   }
   else{

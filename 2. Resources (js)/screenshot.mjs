@@ -100,7 +100,6 @@ async function clickVideos(missingUrl, page) {
     return results;
 };
 
-
 async function getParent(element, traversalAmt = 3, page) {
     let ancestor = element;
   
@@ -144,7 +143,7 @@ function downloadImage(url, fileName) {
 }
 
 // Example usage
-export async function take_ss(missingUrls, pageUrl, adblocker, browser, page, key, resource) {
+export async function take_ss(missingUrls, adblocker, page, key) {
 
     var file_path  = 'screenshots' + '/' + key + '/' + adblocker;
     var delete_flag = true;
@@ -164,9 +163,9 @@ export async function take_ss(missingUrls, pageUrl, adblocker, browser, page, ke
         
         // For each element in the missing resources list:
         if (resource == 'images') {
-            page_resources = await findImage(missingUrl, page);       // returns list of CdpElementHandles
+            page_resources = await findImage(missingUrl.url, page);       // returns list of CdpElementHandles
         } else {
-            page_resources = await clickVideos(missingUrl, page);
+            page_resources = await clickVideos(missingUrl.url, page);
         }
 
    
@@ -178,26 +177,29 @@ export async function take_ss(missingUrls, pageUrl, adblocker, browser, page, ke
         if (resource == 'images') {
             for (const [index, elementHandle] of page_resources.entries()) {
 
-            try{
-                await elementHandle.scrollIntoViewIfNeeded();
-                await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
-                console.log(`Screenshot saved: ${missingUrl}`);
-            }
-            catch{
-                downloadImage(missingUrl,`${file_path}/img_${index}.png`)
-            }
-            adResources.push({
-                id: `img_${index}.png`,
-                outerHTML: await elementHandle.evaluate(element => element.outerHTML),
-            });
+                try{
+                    await elementHandle.scrollIntoViewIfNeeded();
+                    await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
+                    const ancestorHandle = await getParent(elementHandle, 3);
+                    await ancestorHandle.screenshot({ path: `${file_path}/img_${index}_context.png` });
+                    await ancestorHandle.dispose(); // Clean up
+                }
+                catch (error){
+                    console.error("An error occurred:", error.message);
+                    downloadImage(missingUrl,`${file_path}/img_${index}.png`)
+                }
+                adResources.push({
+                    id: `img_${index}.png`,
+                    outerHTML: await elementHandle.evaluate(element => element.outerHTML),
+                });
 
             }      
         } 
         else {
             console.log(missingUrl);
-            downloadImage(missingUrl,`${file_path}/vid_${i}.mp4`)
+            downloadImage(missingUrl.url,`${file_path}/vid_${i}.mp4`)
             adResources.push({
-                id: `img_${i}.png`,
+                id: `vid_${i}.mp4`,
                 Url: missingUrl
             });
         }
@@ -214,10 +216,6 @@ export async function take_ss(missingUrls, pageUrl, adblocker, browser, page, ke
             }
         });
 
-        await page.screenshot({
-            path: `${file_path}/entire_page.png`, 
-            fullPage: true,
-        });
     }else{
         removeDirectory(file_path);
     }
