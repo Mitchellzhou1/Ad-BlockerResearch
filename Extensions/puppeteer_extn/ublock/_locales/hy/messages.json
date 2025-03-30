@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "Ներկառուցված",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "Գովազդ",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "Գաղտնիություն",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
     "message": "Վնասակար տիրույթներ",
-    "description": "English: Malware domains"
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "Սոցիալական վիդջեթներ",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Cookie ծանուցում",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "Ջղայնացնող տարրեր",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "Բազմանպատակային",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "Տարածաշրջաններ, լեզուներ",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "Օգտվողային",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "Ներմուծել...",
@@ -527,17 +535,25 @@
     "message": "Ցանցի սխալի պատճառով թարմացումը տեղի չունեցավ։",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "Մեկ տողում մեկ զտիչ։ Որպես զտիչ կարող է լինել կայքի անուն կամ EasyList-համաեղելի զտիչ։ <code>! </code>-ով սկսվող տողերը կանտեսվեն։",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "Մի՛ ավելացրեք զտիչներ անվստահելի աղբյուրներից։",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "Թուլատրել իմ անհատական ֆիլտրերը",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "Թույլատրել վստահություն պահանջող հատուկ զտիչները",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
     "message": "Ներմուծել և հավելել",
-    "description": "English: Import and append"
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
     "message": "Արտահանել",
-    "description": "English: Export"
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "my-ublock-static-filters_{{datetime}}.txt",
@@ -581,7 +597,7 @@
   },
   "rulesExport": {
     "message": "Արտահանել դեպի նիշք",
-    "description": ""
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "my-ublock-dynamic-rules_{{datetime}}.txt",
@@ -617,11 +633,11 @@
   },
   "whitelistImport": {
     "message": "Ներմուծել և հավելել",
-    "description": "English: Import and append"
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
     "message": "Արտահանել",
-    "description": "English: Export"
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "my-ublock-trusted-sites_{{datetime}}.txt",
@@ -951,6 +967,14 @@
     "message": "Կամավորներին կրկնօրինակ զեկույցներով չծանրաբեռնելու համար խնդրում ենք ստուգել, որ խնդիրն արդեն հաղորդված չէ։",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "Զտիչների ցուցակները թարմացվում են ամեն օր։ Համոզվեք, որ Ձեր խնդիրը չի լուծվել զտիչների թարմ ցուցակներում։",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "Համոզվեք, որ խնդիրը պահպանվում է նույնիսկ խնդրահարույց էջը վերաբեռնելուց հետո։",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "Վեբ էջի հասցեն՝",
     "description": "Label for the URL of the page"
@@ -985,6 +1009,10 @@
   },
   "supportS6Select1Option6": {
     "message": "Բացում է անցանկալի ներդիրները կամ լուսամուտները",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "Leads to badware, phishing",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1163,6 +1191,10 @@
     "message": "Շարունակել",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "The blocked page wants to redirect to another site. If you choose to proceed, you will navigate directly to: {{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "Արտահանել առ ամպային պահեստ",
     "description": "tooltip"
@@ -1239,6 +1271,10 @@
     "message": "Փոխանջատել կոսմետիկ զտումը",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
+  "toggleJavascript": {
+    "message": "Անջատել JavaScript֊ը",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
+  },
   "relaxBlockingMode": {
     "message": "Արգելափակման թուլացված ռեժիմ",
     "description": "Label for keyboard shortcut used to relax blocking mode"
@@ -1268,8 +1304,8 @@
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "Could not filter properly at browser launch.\nReload the page to ensure proper filtering.",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "Չհաջողվեց կատարել զտումը զննիչի գործարկման ժամանակ։\nՎերաբեռնեք էջը՝ պատշաճ զտումն ապահովելու համար։",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "This entry must be the last one",

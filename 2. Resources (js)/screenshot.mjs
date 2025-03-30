@@ -13,7 +13,7 @@ function removeDirectory(directoryPath) {
         console.log(`Successfully deleted: ${directoryPath}`);
       }
     });
-  }
+};
 
 async function findImage(missingUrl, page) {
 
@@ -92,10 +92,11 @@ async function clickVideos(missingUrl, page) {
 
     const videoElements = await page.$$('video')
     for (const vids of videoElements) {
-        const src = await vids.evaluate(el => el.src);
-        if (src === missingUrl) {
-            results.push(vids);
-        }
+        // const src = await vids.evaluate(el => el.src);
+        results.push(vids);
+        // if (src === missingUrl) {
+        //     results.push(vids);
+        // }
     }
     return results;
 };
@@ -106,9 +107,9 @@ async function getParent(element, traversalAmt = 3, page) {
     for (let i = 0; i < traversalAmt; i++) {
       try {
         const parentHandle = await page.evaluateHandle(el => el.parentElement, ancestor);
-          if (i > 0) await ancestor.dispose();
-          ancestor = parentHandle;
-          const parentElement = await page.evaluate(el => el, parentHandle);
+        if (i > 0) await ancestor.dispose();
+        ancestor = parentHandle;
+        const parentElement = await page.evaluate(el => el, parentHandle);
         if (!parentElement) {
           await parentHandle.dispose();
           return null;
@@ -120,7 +121,7 @@ async function getParent(element, traversalAmt = 3, page) {
       }
     }
     return ancestor;
-}
+};
 
 function downloadImage(url, fileName) {
     try{
@@ -135,18 +136,17 @@ function downloadImage(url, fileName) {
             });
         }).on('error', (err) => {
             fs.unlink(fileName, () => {}); // Delete the file if there's an error
-            console.error(`Error downloading image: ${err.message}`);
+            console.log(`Error downloading ${url}: ${err.message}`);
         });
     }catch{
         return 'Failed to Download';
     }
-}
+};
 
 // Example usage
 export async function take_ss(missingUrls, adblocker, page, key) {
 
     var file_path  = 'screenshots' + '/' + key + '/' + adblocker;
-    var delete_flag = true;
     var page_resources;
     var adResources = [];
     for (const [i, missingUrl] of Object.entries(missingUrls)) {
@@ -168,11 +168,6 @@ export async function take_ss(missingUrls, adblocker, page, key) {
             page_resources = await clickVideos(missingUrl.url, page);
         }
 
-   
-
-        // Take screenshots of the found elements
-        delete_flag = false;
-
         // need for loop because 1 resource blocked could be reflect multiple times in the HTML
         if (resource == 'images') {
             for (const [index, elementHandle] of page_resources.entries()) {
@@ -180,7 +175,7 @@ export async function take_ss(missingUrls, adblocker, page, key) {
                 try{
                     await elementHandle.scrollIntoViewIfNeeded();
                     await elementHandle.screenshot({ path: `${file_path}/img_${index}.png` });
-                    const ancestorHandle = await getParent(elementHandle, 3);
+                    const ancestorHandle = await getParent(elementHandle, 3, page);
                     await ancestorHandle.screenshot({ path: `${file_path}/img_${index}_context.png` });
                     await ancestorHandle.dispose(); // Clean up
                 }
@@ -192,7 +187,6 @@ export async function take_ss(missingUrls, adblocker, page, key) {
                     id: `img_${index}.png`,
                     outerHTML: await elementHandle.evaluate(element => element.outerHTML),
                 });
-
             }      
         } 
         else {
@@ -204,11 +198,11 @@ export async function take_ss(missingUrls, adblocker, page, key) {
             });
         }
     }
-    if (!delete_flag){
+    if (adResources.length !== 0){
         const data = JSON.stringify(adResources, null, 2);
 
         // Write the string to a file
-        fs.writeFile(`${file_path}/mappings.json`, data, (err) => {
+        fs.writeFileSync(`${file_path}/mappings.json`, data, (err) => {
             if (err) {
                 console.error('Error writing to file', err);
             } else {
@@ -221,4 +215,4 @@ export async function take_ss(missingUrls, adblocker, page, key) {
     }
 
     return file_path;
-}
+};

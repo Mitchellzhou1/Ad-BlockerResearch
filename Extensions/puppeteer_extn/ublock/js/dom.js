@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    uBlock Origin - a browser extension to block requests.
+    uBlock Origin - a comprehensive, efficient content blocker
     Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
@@ -18,10 +18,6 @@
 
     Home: https://github.com/gorhill/uBlock
 */
-
-/* jshint esversion:11 */
-
-'use strict';
 
 /******************************************************************************/
 
@@ -70,13 +66,30 @@ class dom {
         }
     }
 
+    static clear(target) {
+        for ( const elem of normalizeTarget(target) ) {
+            while ( elem.firstChild !== null ) {
+                elem.removeChild(elem.firstChild);
+            }
+        }
+    }
+
     static clone(target) {
-        return normalizeTarget(target)[0].cloneNode(true);
+        const elements = normalizeTarget(target);
+        if ( elements.length === 0 ) { return null; }
+        return elements[0].cloneNode(true);
     }
 
     static create(a) {
         if ( typeof a === 'string' ) {
             return document.createElement(a);
+        }
+    }
+
+    static prop(target, prop, value = undefined) {
+        for ( const elem of normalizeTarget(target) ) {
+            if ( value === undefined ) { return elem[prop]; }
+            elem[prop] = value;
         }
     }
 
@@ -93,6 +106,14 @@ class dom {
     static remove(target) {
         for ( const elem of normalizeTarget(target) ) {
             elem.remove();
+        }
+    }
+
+    static empty(target) {
+        for ( const elem of normalizeTarget(target) ) {
+            while ( elem.firstElementChild !== null ) {
+                elem.firstElementChild.remove();
+            }
         }
     }
 
@@ -144,9 +165,9 @@ dom.cl = class {
         }
     }
 
-    static remove(target, name) {
+    static remove(target, ...names) {
         for ( const elem of normalizeTarget(target) ) {
-            elem.classList.remove(name);
+            elem.classList.remove(...names);
         }
     }
 
@@ -174,6 +195,7 @@ function qs$(a, b) {
     if ( typeof a === 'string') {
         return document.querySelector(a);
     }
+    if ( a === null ) { return null; }
     return a.querySelector(b);
 }
 
@@ -181,6 +203,7 @@ function qsa$(a, b) {
     if ( typeof a === 'string') {
         return document.querySelectorAll(a);
     }
+    if ( a === null ) { return []; }
     return a.querySelectorAll(b);
 }
 

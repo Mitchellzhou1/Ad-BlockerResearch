@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "Ugrađeno",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "Reklame",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "Privatnost",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
-    "message": "Zloćudne domene",
-    "description": "English: Malware domains"
+    "message": "Zaštita od zlonamjernog softvera, sigurnost",
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "Socijalni widgeti",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Obavijest o kolačićima",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "Nametljivost",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "Višenamjensko",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "Regije, jezici",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "Prilagođeno",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "Uvoz…",
@@ -527,17 +535,25 @@
     "message": "Mrežna pogreška je sprječila ažuriranje resursa.",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "Jedan filter po retku. Filter može biti običan hostname ili filter kompatibilan sa EasyList-om. Linije sa prefiksom <code>!</code> zanemarit će se.",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "Nemojte dodavati filtere iz nepouzdanih izvora.",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "Omogući moje prilagođene filtre",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "Dopusti prilagođene filtre koji zahtijevaju povjerenje",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
-    "message": "Uvesti i dodati",
-    "description": "English: Import and append"
+    "message": "Uvesti i dodati...",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
-    "message": "Izvoz",
-    "description": "English: Export"
+    "message": "Izvoz...",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "moji-ublock-staticni-filteri_{{datetime}}.txt",
@@ -581,7 +597,7 @@
   },
   "rulesExport": {
     "message": "Izvoz u datoteku...",
-    "description": ""
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "moja-ublock-dinamicna-pravila_{{datetime}}.txt",
@@ -616,12 +632,12 @@
     "description": "A concise description of the 'Trusted sites' pane."
   },
   "whitelistImport": {
-    "message": "Uvesti i dodati",
-    "description": "English: Import and append"
+    "message": "Uvesti i dodati...",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
-    "message": "Izvoz",
-    "description": "English: Export"
+    "message": "Izvoz...",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "moje-ublock-pouzdane-stranice_{{datetime}}.txt",
@@ -951,6 +967,14 @@
     "message": "Kako biste izbjegli opterećivanje volontera duplim prijavama, provjerite nije li problem već prijavljen.",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "Popisi filtera ažuriraju se svakodnevno. Provjerite nije li vaš problem već riješen sa najnovijim popisima filtera.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "Provjerite postoji li problem i dalje nakon ponovnog učitavanja problematične web stranice.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "Adresa web stranice:",
     "description": "Label for the URL of the page"
@@ -985,6 +1009,10 @@
   },
   "supportS6Select1Option6": {
     "message": "Otvara neželjene kartice ili prozore",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "Vodi do zloćudnog softvera, krađe identiteta",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1036,7 +1064,7 @@
     "description": "Shown in the About pane"
   },
   "aboutCDNsInfo": {
-    "message": "Koristit će se slučajno odabrani CDN za ažuriranje popisa filtera",
+    "message": "Koristit će se slučajno odabrani CDN kada treba ažurirati popis filtera",
     "description": "Shown in the About pane"
   },
   "aboutBackupDataButton": {
@@ -1163,6 +1191,10 @@
     "message": "Nastavi",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "Blokirana stranica želi preusmjeriti na drugu stranicu. Ako odlučite nastaviti, otići ćete izravno na: {{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "Izvezi u pohranu u oblaku",
     "description": "tooltip"
@@ -1239,6 +1271,10 @@
     "message": "Prekidač estetskog filtriranja",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
+  "toggleJavascript": {
+    "message": "Uključi/isključi JavaScript",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
+  },
   "relaxBlockingMode": {
     "message": "Opušteni način blokiranja",
     "description": "Label for keyboard shortcut used to relax blocking mode"
@@ -1268,8 +1304,8 @@
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "Nije moguće pravilno filtrirati pri pokretanju \npreglednika.\nPonovno učitajte stranicu kako biste osigurali \nispravno filtriranje",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "Nije moguće pravilno filtrirati pri pokretanju \npreglednika. Ponovno učitajte stranicu \nkako biste osigurali ispravno filtriranje.",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "Ova stavka mora biti posljednja",

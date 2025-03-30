@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    uBlock Origin - a browser extension to block requests.
+    uBlock Origin - a comprehensive, efficient content blocker
     Copyright (C) 2017-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,8 @@
 /******************************************************************************/
 
 const StaticExtFilteringHostnameDB = class {
-    constructor(nBits, selfie = undefined) {
+    constructor(nBits, version = 0) {
+        this.version = version;
         this.nBits = nBits;
         this.strToIdMap = new Map();
         this.hostnameToSlotIdMap = new Map();
@@ -35,9 +36,6 @@ const StaticExtFilteringHostnameDB = class {
         // Array of strings (selectors and pseudo-selectors)
         this.strSlots = [];
         this.size = 0;
-        if ( selfie !== undefined ) {
-            this.fromSelfie(selfie);
-        }
         this.cleanupTimer = vAPI.defer.create(( ) => {
             this.strToIdMap.clear();
         });
@@ -142,8 +140,9 @@ const StaticExtFilteringHostnameDB = class {
 
     toSelfie() {
         return {
-            hostnameToSlotIdMap: Array.from(this.hostnameToSlotIdMap),
-            regexToSlotIdMap: Array.from(this.regexToSlotIdMap),
+            version: this.version,
+            hostnameToSlotIdMap: this.hostnameToSlotIdMap,
+            regexToSlotIdMap: this.regexToSlotIdMap,
             hostnameSlots: this.hostnameSlots,
             strSlots: this.strSlots,
             size: this.size
@@ -151,11 +150,11 @@ const StaticExtFilteringHostnameDB = class {
     }
 
     fromSelfie(selfie) {
-        if ( selfie === undefined ) { return; }
-        this.hostnameToSlotIdMap = new Map(selfie.hostnameToSlotIdMap);
+        if ( typeof selfie !== 'object' || selfie === null ) { return; }
+        this.hostnameToSlotIdMap = selfie.hostnameToSlotIdMap;
         // Regex-based lookup available in uBO 1.47.0 and above
-        if ( Array.isArray(selfie.regexToSlotIdMap) ) {
-            this.regexToSlotIdMap = new Map(selfie.regexToSlotIdMap);
+        if ( selfie.regexToSlotIdMap ) {
+            this.regexToSlotIdMap = selfie.regexToSlotIdMap;
         }
         this.hostnameSlots = selfie.hostnameSlots;
         this.strSlots = selfie.strSlots;

@@ -18,7 +18,6 @@ export const initializeBlacklists = async () => {
             { name: 'peterlowe', raw: rawLists[2] },
         ]);
 
-        console.log("Finished reading and initializing blacklists.");
     }
     return snfe;
 };

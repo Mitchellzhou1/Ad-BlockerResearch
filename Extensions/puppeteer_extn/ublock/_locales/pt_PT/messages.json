@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "Integrados",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "Anúncios",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "Privacidade",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
-    "message": "Domínios maliciosos",
-    "description": "English: Malware domains"
+    "message": "Proteção contra malware, segurança",
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "Widgets sociais",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Avisos de cookies",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "Inconveniências",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "Multifunções",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "Regiões e idiomas",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "Personalizados",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "Importar…",
@@ -527,17 +535,25 @@
     "message": "Um erro de rede impediu que o recurso fosse atualizado.",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "Um filtro por linha. Um filtro pode ser um simples nome de anfitrião, ou um filtro compatível com a EasyList. Linhas começadas por <code>!</code> serão ignoradas.",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "Não adicione filtros de fontes não confiáveis.",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "Ativar os meus filtros personalizados",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "Permitir filtros personalizados que requeiram confiança",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
-    "message": "Importar e anexar",
-    "description": "English: Import and append"
+    "message": "Importar e anexar…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
-    "message": "Exportar",
-    "description": "English: Export"
+    "message": "Exportar…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "my-ublock-custom-filters_{{datetime}}.txt",
@@ -580,8 +596,8 @@
     "description": ""
   },
   "rulesExport": {
-    "message": "Exportar para ficheiro",
-    "description": ""
+    "message": "Exportar para ficheiro…",
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "my-ublock-dynamic-rules_{{datetime}}.txt",
@@ -616,12 +632,12 @@
     "description": "A concise description of the 'Trusted sites' pane."
   },
   "whitelistImport": {
-    "message": "Importar e anexar",
-    "description": "English: Import and append"
+    "message": "Importar e anexar…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
-    "message": "Exportar",
-    "description": "English: Export"
+    "message": "Exportar…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "my-ublock-trusted-sites_{{datetime}}.txt",
@@ -951,6 +967,14 @@
     "message": "Para evitar sobrecarregar os voluntários com relatórios duplicados, por favor verifique se o problema ainda não foi relatado.",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "As listas de filtros são atualizadas diariamente. Certifique-se de que o seu problema ainda não foi abordado nas listas de filtros mais recentes.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "Verifique se o problema ainda existe após o recarregamento da página web problemática.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "Endereço da página web:",
     "description": "Label for the URL of the page"
@@ -980,11 +1004,15 @@
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option5": {
-    "message": "Falha quando o uBlock Origin é ativado",
+    "message": "Falha quando o uBlock Origin está ativado",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option6": {
     "message": "Abre separadores ou janelas indesejáveis",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "Leva a badware e phishing",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1036,7 +1064,7 @@
     "description": "Shown in the About pane"
   },
   "aboutCDNsInfo": {
-    "message": "Uma CDN escolhida aleatoriamente é utilizada quando uma lista de filtros precisar de ser atualizada",
+    "message": "Uma CDN escolhida aleatoriamente é utilizada quando uma lista de filtros precisar de ser atualizada.",
     "description": "Shown in the About pane"
   },
   "aboutBackupDataButton": {
@@ -1163,6 +1191,10 @@
     "message": "Proceder",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "A página bloqueada pretende redirecionar para outro site. Se optar por proceder, navegará diretamente para: {{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "Exportar para a nuvem",
     "description": "tooltip"
@@ -1239,6 +1271,10 @@
     "message": "Alternar filtragem cosmética",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
+  "toggleJavascript": {
+    "message": "Alternar JavaScript",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
+  },
   "relaxBlockingMode": {
     "message": "Relaxar modo de bloqueio",
     "description": "Label for keyboard shortcut used to relax blocking mode"
@@ -1268,8 +1304,8 @@
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "Não foi possível filtrar adequadamente no arranque do navegador.\nRecarregue a página para assegurar uma filtragem adequada.",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "Não foi possível filtrar adequadamente no arranque do navegador. Recarregue a página para assegurar uma filtragem adequada.",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "Esta entrada deve ser a última",

@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    uBlock Origin - a browser extension to block requests.
+    uBlock Origin - a comprehensive, efficient content blocker
     Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
@@ -19,29 +19,16 @@
     Home: https://github.com/gorhill/uBlock
 */
 
-/* globals vAPI */
-
-'use strict';
-
-/******************************************************************************/
-
-import { queueTask, dropTask } from './tasks.js';
-import BidiTrieContainer from './biditrie.js';
-import HNTrieContainer from './hntrie.js';
-import { sparseBase64 } from './base64-custom.js';
-import { CompiledListReader } from './static-filtering-io.js';
 import * as sfp from './static-filtering-parser.js';
 
-import {
-    domainFromHostname,
-    hostnameFromNetworkURL,
-} from './uri-utils.js';
+import { domainFromHostname, hostnameFromNetworkURL } from './uri-utils.js';
+import { dropTask, queueTask } from './tasks.js';
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#browser_compatibility
-//
-// This import would be best done dynamically, but since dynamic imports are
-// not supported by older browsers, for now a static import is necessary.
+import BidiTrieContainer from './biditrie.js';
+import { CompiledListReader } from './static-filtering-io.js';
 import { FilteringContext } from './filtering-context.js';
+import HNTrieContainer from './hntrie.js';
+import { urlSkip } from './urlskip.js';
 
 /******************************************************************************/
 
@@ -57,84 +44,99 @@ const keyvalStore = typeof vAPI !== 'undefined'
 
 /******************************************************************************/
 
-// fedcba9876543210
-//     ||    | || |
-//     ||    | || |
-//     ||    | || |
-//     ||    | || |
-//     ||    | || +---- bit  0- 1: block=0, allow=1, block important=2
-//     ||    | |+------ bit     2: modifier
-//     ||    | +------- bit  3- 4: party [0-3]
-//     ||    +--------- bit  5- 9: type [0-31]
-//     |+-------------- bit    10: headers-based filters
-//     +--------------- bit 11-15: unused
+// 10fedcba9876543210
+// ||||||||    | || |
+// ||||||||    | || |
+// ||||||||    | || |
+// ||||||||    | || |
+// ||||||||    | || +---- bit 0- 1: block=0, allow=1, block important=2
+// ||||||||    | |+------ bit    2: unused
+// ||||||||    | +------- bit 3- 4: party [0-3]
+// ||||||||    +--------- bit 5- 9: type [0-31]
+// |||||||+-------------- bit   10: headers-based filters
+// ||||||+--------------- bit   11: redirect filters
+// |||||+---------------- bit   12: removeparam filters
+// ||||+----------------- bit   13: csp filters
+// |||+------------------ bit   14: permissions filters
+// ||+------------------- bit   15: uritransform filters
+// |+-------------------- bit   16: replace filters
+// +--------------------- bit   17: urlskip filters
+// TODO: bit 11-17 could be converted into 3-bit value, as these options are not
+//       meant to be combined.
 
-const CategoryCount  = 1 << 0xb; // shift left to first unused bit
+const BLOCK_REALM          = 0b0000_0000_0000_0000_0000;
+const ALLOW_REALM          = 0b0000_0000_0000_0000_0001;
+const IMPORTANT_REALM      = 0b0000_0000_0000_0000_0010;
+const BLOCKALLOW_REALM     = BLOCK_REALM | ALLOW_REALM | IMPORTANT_REALM;
+const BLOCKIMPORTANT_REALM = BLOCK_REALM | IMPORTANT_REALM;
+const ANYPARTY_REALM       = 0b0000_0000_0000_0000_0000;
+const FIRSTPARTY_REALM     = 0b0000_0000_0000_0000_1000;
+const THIRDPARTY_REALM     = 0b0000_0000_0000_0001_0000;
+const ALLPARTIES_REALM     = FIRSTPARTY_REALM | THIRDPARTY_REALM;
+const TYPE_REALM           = 0b0000_0000_0011_1110_0000;
+const HEADERS_REALM        = 0b0000_0000_0100_0000_0000;
+const REDIRECT_REALM       = 0b0000_0000_1000_0000_0000;
+const REMOVEPARAM_REALM    = 0b0000_0001_0000_0000_0000;
+const CSP_REALM            = 0b0000_0010_0000_0000_0000;
+const PERMISSIONS_REALM    = 0b0000_0100_0000_0000_0000;
+const URLTRANSFORM_REALM   = 0b0000_1000_0000_0000_0000;
+const REPLACE_REALM        = 0b0001_0000_0000_0000_0000;
+const URLSKIP_REALM        = 0b0010_0000_0000_0000_0000;
+const MODIFY_REALMS        = REDIRECT_REALM | CSP_REALM |
+                             REMOVEPARAM_REALM | PERMISSIONS_REALM |
+                             URLTRANSFORM_REALM | REPLACE_REALM |
+                             URLSKIP_REALM;
 
-const RealmBitsMask  = 0b00000000111;
-const ActionBitsMask = 0b00000000011;
-const TypeBitsMask   = 0b01111100000;
-const TypeBitsOffset = 5;
-
-const BlockAction    = 0b00000000000;
-const AllowAction    = 0b00000000001;
-const Important      = 0b00000000010;
-const BlockImportant = BlockAction | Important;
-const ModifyAction   = 0b00000000100;
-const AnyParty       = 0b00000000000;
-const FirstParty     = 0b00000001000;
-const ThirdParty     = 0b00000010000;
-const AllParties     = 0b00000011000;
-const HEADERS        = 0b10000000000;
+const TYPE_REALM_OFFSET = 5;
 
 const typeNameToTypeValue = {
-           'no_type':  0 << TypeBitsOffset,
-        'stylesheet':  1 << TypeBitsOffset,
-             'image':  2 << TypeBitsOffset,
-            'object':  3 << TypeBitsOffset,
- 'object_subrequest':  3 << TypeBitsOffset,
-            'script':  4 << TypeBitsOffset,
-             'fetch':  5 << TypeBitsOffset,
-    'xmlhttprequest':  5 << TypeBitsOffset,
-         'sub_frame':  6 << TypeBitsOffset,
-              'font':  7 << TypeBitsOffset,
-             'media':  8 << TypeBitsOffset,
-         'websocket':  9 << TypeBitsOffset,
-            'beacon': 10 << TypeBitsOffset,
-              'ping': 10 << TypeBitsOffset,
-             'other': 11 << TypeBitsOffset,
-             'popup': 12 << TypeBitsOffset, // start of behavorial filtering
-          'popunder': 13 << TypeBitsOffset,
-        'main_frame': 14 << TypeBitsOffset, // start of 1p behavorial filtering
-       'generichide': 15 << TypeBitsOffset,
-      'specifichide': 16 << TypeBitsOffset,
-       'inline-font': 17 << TypeBitsOffset,
-     'inline-script': 18 << TypeBitsOffset,
-             'cname': 19 << TypeBitsOffset,
-            'webrtc': 20 << TypeBitsOffset,
-       'unsupported': 21 << TypeBitsOffset,
+           'no_type':  0 << TYPE_REALM_OFFSET,
+        'stylesheet':  1 << TYPE_REALM_OFFSET,
+             'image':  2 << TYPE_REALM_OFFSET,
+            'object':  3 << TYPE_REALM_OFFSET,
+ 'object_subrequest':  3 << TYPE_REALM_OFFSET,
+            'script':  4 << TYPE_REALM_OFFSET,
+             'fetch':  5 << TYPE_REALM_OFFSET,
+    'xmlhttprequest':  5 << TYPE_REALM_OFFSET,
+         'sub_frame':  6 << TYPE_REALM_OFFSET,
+              'font':  7 << TYPE_REALM_OFFSET,
+             'media':  8 << TYPE_REALM_OFFSET,
+         'websocket':  9 << TYPE_REALM_OFFSET,
+            'beacon': 10 << TYPE_REALM_OFFSET,
+              'ping': 10 << TYPE_REALM_OFFSET,
+             'other': 11 << TYPE_REALM_OFFSET,
+             'popup': 12 << TYPE_REALM_OFFSET, // start of behavioral filtering
+          'popunder': 13 << TYPE_REALM_OFFSET,
+        'main_frame': 14 << TYPE_REALM_OFFSET, // start of 1p behavioral filtering
+       'generichide': 15 << TYPE_REALM_OFFSET,
+      'specifichide': 16 << TYPE_REALM_OFFSET,
+       'inline-font': 17 << TYPE_REALM_OFFSET,
+     'inline-script': 18 << TYPE_REALM_OFFSET,
+             'cname': 19 << TYPE_REALM_OFFSET,
+            'webrtc': 20 << TYPE_REALM_OFFSET,
+       'unsupported': 21 << TYPE_REALM_OFFSET,
 };
 
 const otherTypeBitValue = typeNameToTypeValue.other;
 
 const bitFromType = type =>
-    1 << ((typeNameToTypeValue[type] >>> TypeBitsOffset) - 1);
+    1 << ((typeNameToTypeValue[type] >>> TYPE_REALM_OFFSET) - 1);
 
 // All network request types to bitmap
-//   bring origin to 0 (from TypeBitsOffset -- see typeNameToTypeValue)
+//   bring origin to 0 (from TYPE_REALM_OFFSET -- see typeNameToTypeValue)
 //   left-shift 1 by the above-calculated value
 //   subtract 1 to set all type bits
 const allNetworkTypesBits =
-    (1 << (otherTypeBitValue >>> TypeBitsOffset)) - 1;
+    (1 << (otherTypeBitValue >>> TYPE_REALM_OFFSET)) - 1;
 
 const allTypesBits =
     allNetworkTypesBits |
-    1 << (typeNameToTypeValue['popup'] >>> TypeBitsOffset) - 1 |
-    1 << (typeNameToTypeValue['main_frame'] >>> TypeBitsOffset) - 1 |
-    1 << (typeNameToTypeValue['inline-font'] >>> TypeBitsOffset) - 1 |
-    1 << (typeNameToTypeValue['inline-script'] >>> TypeBitsOffset) - 1;
+    1 << (typeNameToTypeValue['popup'] >>> TYPE_REALM_OFFSET) - 1 |
+    1 << (typeNameToTypeValue['main_frame'] >>> TYPE_REALM_OFFSET) - 1 |
+    1 << (typeNameToTypeValue['inline-font'] >>> TYPE_REALM_OFFSET) - 1 |
+    1 << (typeNameToTypeValue['inline-script'] >>> TYPE_REALM_OFFSET) - 1;
 const unsupportedTypeBit =
-    1 << (typeNameToTypeValue['unsupported'] >>> TypeBitsOffset) - 1;
+    1 << (typeNameToTypeValue['unsupported'] >>> TYPE_REALM_OFFSET) - 1;
 
 const typeValueToTypeName = [
     '',
@@ -178,16 +180,37 @@ const typeValueToDNRTypeName = [
     'other',
 ];
 
+// Do not change order. Compiled filter lists rely on this order being
+// consistent across sessions.
 const MODIFIER_TYPE_REDIRECT = 1;
 const MODIFIER_TYPE_REDIRECTRULE = 2;
 const MODIFIER_TYPE_REMOVEPARAM = 3;
 const MODIFIER_TYPE_CSP = 4;
+const MODIFIER_TYPE_PERMISSIONS = 5;
+const MODIFIER_TYPE_URLTRANSFORM = 6;
+const MODIFIER_TYPE_REPLACE = 7;
+const MODIFIER_TYPE_URLSKIP = 8;
+
+const modifierBitsFromType = new Map([
+    [ MODIFIER_TYPE_REDIRECT, REDIRECT_REALM ],
+    [ MODIFIER_TYPE_REDIRECTRULE, REDIRECT_REALM ],
+    [ MODIFIER_TYPE_REMOVEPARAM, REMOVEPARAM_REALM ],
+    [ MODIFIER_TYPE_CSP, CSP_REALM ],
+    [ MODIFIER_TYPE_PERMISSIONS, PERMISSIONS_REALM ],
+    [ MODIFIER_TYPE_URLTRANSFORM, URLTRANSFORM_REALM ],
+    [ MODIFIER_TYPE_REPLACE, REPLACE_REALM ],
+    [ MODIFIER_TYPE_URLSKIP, URLSKIP_REALM ],
+]);
 
 const modifierTypeFromName = new Map([
     [ 'redirect', MODIFIER_TYPE_REDIRECT ],
     [ 'redirect-rule', MODIFIER_TYPE_REDIRECTRULE ],
     [ 'removeparam', MODIFIER_TYPE_REMOVEPARAM ],
     [ 'csp', MODIFIER_TYPE_CSP ],
+    [ 'permissions', MODIFIER_TYPE_PERMISSIONS ],
+    [ 'uritransform', MODIFIER_TYPE_URLTRANSFORM ],
+    [ 'replace', MODIFIER_TYPE_REPLACE ],
+    [ 'urlskip', MODIFIER_TYPE_URLSKIP ],
 ]);
 
 const modifierNameFromType = new Map([
@@ -195,22 +218,26 @@ const modifierNameFromType = new Map([
     [ MODIFIER_TYPE_REDIRECTRULE, 'redirect-rule' ],
     [ MODIFIER_TYPE_REMOVEPARAM, 'removeparam' ],
     [ MODIFIER_TYPE_CSP, 'csp' ],
+    [ MODIFIER_TYPE_PERMISSIONS, 'permissions' ],
+    [ MODIFIER_TYPE_URLTRANSFORM, 'uritransform' ],
+    [ MODIFIER_TYPE_REPLACE, 'replace' ],
+    [ MODIFIER_TYPE_URLSKIP, 'urlskip' ],
 ]);
 
-//const typeValueFromCatBits = catBits => (catBits >>> TypeBitsOffset) & 0b11111;
+//const typeValueFromCatBits = catBits => (catBits >>> TYPE_REALM_OFFSET) & 0b11111;
 
 const MAX_TOKEN_LENGTH = 7;
 
 // Four upper bits of token hash are reserved for built-in predefined
 // token hashes, which should never end up being used when tokenizing
 // any arbitrary string.
-const        NO_TOKEN_HASH = 0x50000000;
-const       DOT_TOKEN_HASH = 0x10000000;
-const       ANY_TOKEN_HASH = 0x20000000;
-const ANY_HTTPS_TOKEN_HASH = 0x30000000;
-const  ANY_HTTP_TOKEN_HASH = 0x40000000;
-const     EMPTY_TOKEN_HASH = 0xF0000000;
-const   INVALID_TOKEN_HASH = 0xFFFFFFFF;
+const        NO_TOKEN_HASH = 0x5000_0000;
+const       DOT_TOKEN_HASH = 0x1000_0000;
+const       ANY_TOKEN_HASH = 0x2000_0000;
+const ANY_HTTPS_TOKEN_HASH = 0x3000_0000;
+const  ANY_HTTP_TOKEN_HASH = 0x4000_0000;
+const     EMPTY_TOKEN_HASH = 0xF000_0000;
+const   INVALID_TOKEN_HASH = 0xFFFF_FFFF;
 
 /******************************************************************************/
 
@@ -222,6 +249,7 @@ let $requestTypeValue = 0;
 let $requestURL = '';
 let $requestURLRaw = '';
 let $requestHostname = '';
+let $requestAddress = '';
 let $docHostname = '';
 let $docDomain = '';
 let $tokenBeg = 0;
@@ -331,7 +359,7 @@ class LogData {
             this.raw = this.regex = '';
             return;
         }
-        this.result = (categoryBits & AllowAction) === 0 ? 1 : 2;
+        this.result = (categoryBits & ALLOW_REALM) === 0 ? 1 : 2;
         const pattern = [];
         const regex = [];
         const options = [];
@@ -348,14 +376,14 @@ class LogData {
             isRegex: false,
         };
         filterLogData(iunit, logData);
-        if ( (categoryBits & ThirdParty) !== 0 ) {
+        if ( (categoryBits & THIRDPARTY_REALM) !== 0 ) {
             logData.options.unshift('3p');
-        } else if ( (categoryBits & FirstParty) !== 0 ) {
+        } else if ( (categoryBits & FIRSTPARTY_REALM) !== 0 ) {
             logData.options.unshift('1p');
         }
-        const type = categoryBits & TypeBitsMask;
+        const type = categoryBits & TYPE_REALM;
         if ( type !== 0 ) {
-            logData.options.unshift(typeValueToTypeName[type >>> TypeBitsOffset]);
+            logData.options.unshift(typeValueToTypeName[type >>> TYPE_REALM_OFFSET]);
         }
         let raw = logData.pattern.join('');
         if (
@@ -365,7 +393,7 @@ class LogData {
         ) {
             raw += '*';
         }
-        if ( (categoryBits & AllowAction) !== 0 ) {
+        if ( (categoryBits & ALLOW_REALM) !== 0 ) {
             raw = '@@' + raw;
         }
         if ( denyallow.length !== 0 ) {
@@ -388,6 +416,14 @@ class LogData {
     }
     isPureHostname() {
         return this.tokenHash === DOT_TOKEN_HASH;
+    }
+
+    static requote(s) {
+        if ( /^\$|^(["'`]).*\1$|,/.test(s) === false ) { return s; }
+        if ( s.includes("'") === false ) { return `'${s}'`; }
+        if ( s.includes('"') === false ) { return `"${s}"`; }
+        if ( s.includes('`') === false ) { return `\`${s}\``; }
+        return `'${s.replace(/'/g, "\\'")}'`;
     }
 }
 
@@ -459,17 +495,13 @@ const filterDataReset = ( ) => {
     filterData.fill(0);
     filterDataWritePtr = 2;
 };
-const filterDataToSelfie = ( ) => {
-    return JSON.stringify(Array.from(filterData.subarray(0, filterDataWritePtr)));
-};
+const filterDataToSelfie = ( ) =>
+    filterData.subarray(0, filterDataWritePtr);
+
 const filterDataFromSelfie = selfie => {
-    if ( typeof selfie !== 'string' || selfie === '' ) { return false; }
-    const data = JSON.parse(selfie);
-    if ( Array.isArray(data) === false ) { return false; }
-    filterDataGrow(data.length);
-    filterDataWritePtr = data.length;
-    filterData.set(data);
-    filterDataShrink();
+    if ( selfie instanceof Int32Array === false ) { return false; }
+    filterData = selfie;
+    filterDataWritePtr = selfie.length;
     return true;
 };
 
@@ -485,53 +517,15 @@ const filterRefsReset = ( ) => {
     filterRefs.fill(null);
     filterRefsWritePtr = 1;
 };
-const filterRefsToSelfie = ( ) => {
-    const refs = [];
-    for ( let i = 0; i < filterRefsWritePtr; i++ ) {
-        const v = filterRefs[i];
-        if ( v instanceof RegExp ) {
-            refs.push({ t: 1, s: v.source, f: v.flags });
-            continue;
-        }
-        if ( Array.isArray(v) ) {
-            refs.push({ t: 2, v });
-            continue;
-        }
-        if ( typeof v !== 'object' || v === null ) {
-            refs.push({ t: 0, v });
-            continue;
-        }
-        const out = Object.create(null);
-        for ( const prop of Object.keys(v) ) {
-            const value = v[prop];
-            out[prop] = prop.startsWith('$')
-                ? (typeof value === 'string' ? '' : null)
-                : value;
-        }
-        refs.push({ t: 3, v: out });
-    }
-    return JSON.stringify(refs);
-};
+const filterRefsToSelfie = ( ) =>
+    filterRefs.slice(0, filterRefsWritePtr);
+
 const filterRefsFromSelfie = selfie => {
-    if ( typeof selfie !== 'string' || selfie === '' ) { return false; }
-    const refs = JSON.parse(selfie);
-    if ( Array.isArray(refs) === false ) { return false; }
-    for ( let i = 0; i < refs.length; i++ ) {
-        const v = refs[i];
-        switch ( v.t ) {
-        case 0:
-        case 2:
-        case 3:
-            filterRefs[i] = v.v;
-            break;
-        case 1:
-            filterRefs[i] = new RegExp(v.s, v.f);
-            break;
-        default:
-            throw new Error('Unknown filter reference!');
-        }
+    if ( Array.isArray(selfie) === false ) { return false; }
+    for ( let i = 0, n = selfie.length; i < n; i++ ) {
+        filterRefs[i] = selfie[i];
     }
-    filterRefsWritePtr = refs.length;
+    filterRefsWritePtr = selfie.length;
     return true;
 };
 
@@ -673,6 +667,11 @@ const dnrAddRuleError = (rule, msg) => {
     rule._error.push(msg);
 };
 
+const dnrAddRuleWarning = (rule, msg) => {
+    rule._warning = rule._warning || [];
+    rule._warning.push(msg);
+};
+
 /*******************************************************************************
 
     Filter classes
@@ -711,6 +710,8 @@ const dnrAddRuleError = (rule, msg) => {
         FilterNotType
         FilterStrictParty
         FilterModifier
+        FilterOnHeaders
+        FilterIPAddress
 
     Collection:
         FilterCollection
@@ -769,7 +770,7 @@ class FilterImportant {
     }
 
     static dnrFromCompiled(args, rule) {
-        rule.priority = (rule.priority || 1) + 10;
+        rule.priority = (rule.priority || 0) + 30;
     }
 
     static keyFromArgs() {
@@ -839,8 +840,7 @@ class FilterPatternPlain {
         if ( rule.condition === undefined ) {
             rule.condition = {};
         } else if ( rule.condition.urlFilter !== undefined ) {
-            rule._error = rule._error || [];
-            rule._error.push(`urlFilter already defined: ${rule.condition.urlFilter}`);
+            dnrAddRuleError(rule, `urlFilter already defined: ${rule.condition.urlFilter}`);
         }
         rule.condition.urlFilter = args[1];
     }
@@ -1244,7 +1244,7 @@ class FilterRegex {
         return [
             FilterRegex.fid,
             details.pattern,
-            details.patternMatchCase ? 1 : 0
+            details.optionValues.has('match-case') ? 1 : 0,
         ];
     }
 
@@ -1266,7 +1266,9 @@ class FilterRegex {
             dnrAddRuleError(rule, `regexFilter is not RE2-compatible: ${args[1]}`);
         }
         rule.condition.regexFilter = args[1];
-        rule.condition.isUrlFilterCaseSensitive = args[2] === 1;
+        if ( args[2] === 1 ) {
+            rule.condition.isUrlFilterCaseSensitive = true;
+        }
     }
 
     static keyFromArgs(args) {
@@ -1500,7 +1502,7 @@ const compileDomainOpt = (ctors, iterable, prepend, units) => {
         if ( len <= beg ) {  continue; }
         if ( s.charCodeAt(beg) === 0x2F /* / */ ) {
             if ( beg === 0 ) { regexHits.push(s); continue; }
-            regexMisses.push(s); continue;
+            regexMisses.push(s.slice(1)); continue;
         }
         if ( s.endsWith('.*') === false ) {
             if ( beg === 0 ) { hostnameHits.push(s); continue; }
@@ -1885,18 +1887,22 @@ class FilterFromDomainMissSet extends FilterFromDomainHitSet {
         return super.match(idata) === false;
     }
 
-    static logData(idata, details) {
-        details.fromDomains.push('~' + this.getDomainOpt(idata).replace(/\|/g, '|~'));
-    }
-
     static get dnrConditionName() {
         return 'excludedInitiatorDomains';
+    }
+
+    static logData(idata, details) {
+        details.fromDomains.push('~' + this.getDomainOpt(idata).replace(/\|/g, '|~'));
     }
 }
 
 class FilterFromRegexHit extends FilterDomainRegexHit {
     static getMatchTarget() {
         return $docHostname;
+    }
+
+    static get dnrConditionName() {
+        return 'initiatorDomains';
     }
 
     static logData(idata, details) {
@@ -1907,6 +1913,10 @@ class FilterFromRegexHit extends FilterDomainRegexHit {
 class FilterFromRegexMiss extends FilterFromRegexHit {
     static match(idata) {
         return super.match(idata) === false;
+    }
+
+    static get dnrConditionName() {
+        return 'excludedInitiatorDomains';
     }
 
     static logData(idata, details) {
@@ -2024,6 +2034,10 @@ class FilterToRegexHit extends FilterDomainRegexHit {
         return $requestHostname;
     }
 
+    static get dnrConditionName() {
+        return 'requestDomains';
+    }
+
     static logData(idata, details) {
         details.toDomains.push(`${this.getDomainOpt(idata)}`);
     }
@@ -2032,6 +2046,10 @@ class FilterToRegexHit extends FilterDomainRegexHit {
 class FilterToRegexMiss extends FilterToRegexHit {
     static match(idata) {
         return super.match(idata) === false;
+    }
+
+    static get dnrConditionName() {
+        return 'excludedRequestDomains';
     }
 
     static logData(idata, details) {
@@ -2067,7 +2085,7 @@ const compileToDomainOpt = (...args) => {
 
 class FilterDenyAllow extends FilterToDomainMissSet {
     static compile(details) {
-        return super.compile(details.denyallowOpt, 0b01);
+        return super.compile(details.optionValues.get('denyallow'), 0b01);
     }
 
     static logData(idata, details) {
@@ -2128,7 +2146,7 @@ class FilterModifier {
         let opt = modifierNameFromType.get(filterData[idata+2]);
         const refs = filterRefs[filterData[idata+3]];
         if ( refs.value !== '' ) {
-            opt += `=${refs.value}`;
+            opt += `=${LogData.requote(refs.value)}`;
         }
         details.options.push(opt);
     }
@@ -2152,11 +2170,11 @@ class FilterModifierResult {
         this.refs = filterRefs[filterData[imodifierunit+3]];
         this.ireportedunit = env.iunit;
         this.th = env.th;
-        this.bits = (env.bits & ~RealmBitsMask) | filterData[imodifierunit+1];
+        this.bits = (env.bits & ~BLOCKALLOW_REALM) | filterData[imodifierunit+1];
     }
 
     get result() {
-        return (this.bits & AllowAction) === 0 ? 1 : 2;
+        return (this.bits & ALLOW_REALM) === 0 ? 1 : 2;
     }
 
     get value() {
@@ -2633,39 +2651,43 @@ class FilterBucket extends FilterCollection {
     }
 
     static optimize(idata, optimizeBits = 0b11) {
-        if ( filterData[idata+2] >= 3 && (optimizeBits & 0b01) !== 0 ) {
-            const iplaintrie = this.optimizePatternTests(idata);
-            if ( iplaintrie !== 0 ) {
-                const icollection = filterData[idata+1];
-                const i = filterData[icollection+1];
-                if ( i === 0 ) { return iplaintrie; }
-                this.unshift(idata, iplaintrie);
+        if ( (optimizeBits & 0b01) !== 0 ) {
+            if ( filterData[idata+2] >= 3 ) {
+                const iplaintrie = this.optimizePatternTests(idata);
+                if ( iplaintrie !== 0 ) {
+                    const icollection = filterData[idata+1];
+                    const i = filterData[icollection+1];
+                    if ( i === 0 ) { return iplaintrie; }
+                    this.unshift(idata, iplaintrie);
+                }
             }
         }
-        if ( filterData[idata+2] >= 5 && (optimizeBits & 0b10) !== 0 ) {
-            const ioptimized = this.optimizeMatch(
-                idata,
-                FilterBucketIfOriginHits,
-                5
-            );
-            if ( ioptimized !== 0 ) {
-                const icollection = filterData[idata+1];
-                const i = filterData[icollection+1];
-                if ( i === 0 ) { return ioptimized; }
-                this.unshift(idata, ioptimized);
+        if ( (optimizeBits & 0b10) !== 0 ) {
+            if ( filterData[idata+2] >= 5 ) {
+                const ioptimized = this.optimizeMatch(
+                    idata,
+                    FilterBucketIfOriginHits,
+                    5
+                );
+                if ( ioptimized !== 0 ) {
+                    const icollection = filterData[idata+1];
+                    const i = filterData[icollection+1];
+                    if ( i === 0 ) { return ioptimized; }
+                    this.unshift(idata, ioptimized);
+                }
             }
-        }
-        if ( filterData[idata+2] >= 5 && (optimizeBits & 0b10) !== 0 ) {
-            const ioptimized = this.optimizeMatch(
-                idata,
-                FilterBucketIfRegexHits,
-                5
-            );
-            if ( ioptimized !== 0 ) {
-                const icollection = filterData[idata+1];
-                const i = filterData[icollection+1];
-                if ( i === 0 ) { return ioptimized; }
-                this.unshift(idata, ioptimized);
+            if ( filterData[idata+2] >= 5 ) {
+                const ioptimized = this.optimizeMatch(
+                    idata,
+                    FilterBucketIfRegexHits,
+                    5
+                );
+                if ( ioptimized !== 0 ) {
+                    const icollection = filterData[idata+1];
+                    const i = filterData[icollection+1];
+                    if ( i === 0 ) { return ioptimized; }
+                    this.unshift(idata, ioptimized);
+                }
             }
         }
         return 0;
@@ -2707,20 +2729,20 @@ class FilterBucket extends FilterCollection {
         const isrccollection = filterData[idata+1];
         const candidates = [];
         this.forEach(idata, iunit => {
-            if ( fc.canCoallesce(iunit) === false ) { return; }
+            if ( fc.canCoalesce(iunit) === false ) { return; }
             candidates.push(iunit);
         });
         if ( candidates.length < min ) { return 0; }
         const idesbucket = FilterBucket.create();
         const idescollection = filterData[idesbucket+1];
-        let coallesced;
+        let coalesced;
         let isrcseq = filterData[isrccollection+1];
         let iprev = 0;
         for (;;) {
             const iunit = filterData[isrcseq+0];
             const inext = filterData[isrcseq+1];
             if ( candidates.includes(iunit) ) {
-                coallesced = fc.coallesce(iunit, coallesced);
+                coalesced = fc.coalesce(iunit, coalesced);
                 // move the sequence slot to new bucket
                 filterData[isrcseq+1] = filterData[idescollection+1];
                 filterData[idescollection+1] = isrcseq;
@@ -2737,7 +2759,7 @@ class FilterBucket extends FilterCollection {
             if ( inext === 0 ) { break; }
             isrcseq = inext;
         }
-        return fc.create(coallesced, idesbucket);
+        return fc.create(coalesced, idesbucket);
     }
 
     static dumpInfo(idata) {
@@ -2794,28 +2816,28 @@ class FilterBucketIfOriginHits extends FilterBucketIf {
         return filterMatch(filterData[idata+2]);
     }
 
-    static canCoallesce(iunit) {
+    static canCoalesce(iunit) {
         return filterHasOriginHit(iunit);
     }
 
-    static coallesce(iunit, coallesced) {
-        if ( coallesced === undefined ) {
-            coallesced = new Set();
+    static coalesce(iunit, coalesced) {
+        if ( coalesced === undefined ) {
+            coalesced = new Set();
         }
         const domainOpt = filterGetDomainOpt(iunit);
         if ( domainOpt.includes('|') ) {
             for ( const hn of domainOptIterator.reset(domainOpt) ) {
-                coallesced.add(hn);
+                coalesced.add(hn);
             }
         } else {
-            coallesced.add(domainOpt);
+            coalesced.add(domainOpt);
         }
-        return coallesced;
+        return coalesced;
     }
 
-    static create(coallesced, ibucket) {
+    static create(coalesced, ibucket) {
         const units = [];
-        compileFromDomainOpt(coallesced, false, units);
+        compileFromDomainOpt(coalesced, false, units);
         const ihittest = filterFromCompiled(units[0]);
         const ipretest = super.create(
             FilterBucketIfOriginHits.fid,
@@ -2835,23 +2857,23 @@ class FilterBucketIfRegexHits extends FilterBucketIf {
         return filterRefs[filterData[idata+2]].test($requestURLRaw);
     }
 
-    static canCoallesce(iunit) {
+    static canCoalesce(iunit) {
         const fc = filterGetClass(iunit);
         if ( fc.hasRegexPattern === undefined ) { return false; }
         if ( fc.hasRegexPattern(iunit) !== true ) { return false; }
         return true;
     }
 
-    static coallesce(iunit, coallesced) {
-        if ( coallesced === undefined ) {
-            coallesced = new Set();
+    static coalesce(iunit, coalesced) {
+        if ( coalesced === undefined ) {
+            coalesced = new Set();
         }
-        coallesced.add(filterGetRegexPattern(iunit));
-        return coallesced;
+        coalesced.add(filterGetRegexPattern(iunit));
+        return coalesced;
     }
 
-    static create(coallesced, ibucket) {
-        const reString = Array.from(coallesced).join('|');
+    static create(coalesced, ibucket) {
+        const reString = Array.from(coalesced).join('|');
         return super.create(
             FilterBucketIfRegexHits.fid,
             ibucket,
@@ -2869,7 +2891,7 @@ registerFilterClass(FilterBucketIfRegexHits);
 /******************************************************************************/
 
 class FilterStrictParty {
-    // TODO: diregard `www.`?
+    // TODO: disregard `www.`?
     static match(idata) {
         return ($requestHostname === $docHostname) === (filterData[idata+1] === 0);
     }
@@ -2890,7 +2912,7 @@ class FilterStrictParty {
 
     static dnrFromCompiled(args, rule) {
         const partyness = args[1] === 0 ? 1 : 3;
-        dnrAddRuleError(rule, `FilterStrictParty: Strict partyness strict${partyness}p not supported`);
+        dnrAddRuleError(rule, `strict${partyness}p not supported`);
     }
 
     static keyFromArgs(args) {
@@ -2925,12 +2947,12 @@ class FilterOnHeaders {
     }
 
     static compile(details) {
-        return [ FilterOnHeaders.fid, details.headerOpt ];
+        return [ FilterOnHeaders.fid, details.optionValues.get('header') ];
     }
 
     static fromCompiled(args) {
         return filterDataAlloc(
-            args[0],                // fid
+            args[0], // fid
             filterRefAdd({
                 headerOpt: args[1],
                 $parsed: null,
@@ -2938,18 +2960,126 @@ class FilterOnHeaders {
         );
     }
 
+    static dnrFromCompiled(args, rule) {
+        dnrAddRuleError(rule, `header="${args[1]}" not supported`);
+    }
+
     static logData(idata, details) {
         const irefs = filterData[idata+1];
         const headerOpt = filterRefs[irefs].headerOpt;
         let opt = 'header';
         if ( headerOpt !== '' ) {
-            opt += `=${headerOpt}`;
+            opt += `=${LogData.requote(headerOpt)}`;
         }
         details.options.push(opt);
     }
 }
 
 registerFilterClass(FilterOnHeaders);
+
+/******************************************************************************/
+
+class FilterIPAddress {
+    static TYPE_UNKNOWN = 0;
+    static TYPE_EQUAL = 1;
+    static TYPE_STARTSWITH = 2;
+    static TYPE_LAN = 3;
+    static TYPE_LOOPBACK = 4;
+    static TYPE_RE = 5;
+    static reIPv6IPv4lan = /^::ffff:(7f\w{2}|a\w{2}|a9fe|c0a8):\w+$/;
+    static reIPv6local = /^f[cd]\w{2}:/;
+
+    static match(idata) {
+        const ipaddr = $requestAddress;
+        if ( ipaddr === '' ) { return false; }
+        const details = filterRefs[filterData[idata+1]];
+        switch ( details.$type || this.TYPE_UNKNOWN ) {
+        case this.TYPE_LAN:
+            return this.isLAN(ipaddr);
+        case this.TYPE_LOOPBACK:
+            return this.isLoopback(ipaddr);
+        case this.TYPE_EQUAL:
+        case this.TYPE_STARTSWITH:
+        case this.TYPE_RE:
+            return details.$pattern.test(ipaddr);
+        default:
+            break;
+        }
+        const { pattern } = details;
+        if ( pattern === 'lan' ) {
+            details.$type = this.TYPE_LAN;
+        } else if ( pattern === 'loopback' ) {
+            details.$type = this.TYPE_LOOPBACK;
+        } else if ( pattern.startsWith('/') && pattern.endsWith('/') ) {
+            details.$type = this.TYPE_RE;
+            details.$pattern = new RegExp(pattern.slice(1, -1), 'm');
+        } else if ( pattern.endsWith('*') ) {
+            details.$type = this.TYPE_STARTSWITH;
+            details.$pattern = new RegExp(`^${restrFromPlainPattern(pattern.slice(0, -1))}`, 'm');
+        } else {
+            details.$type = this.TYPE_EQUAL;
+            details.$pattern = new RegExp(`^${restrFromPlainPattern(pattern)}$`, 'm');
+        }
+        return this.match(idata);
+    }
+
+    // https://github.com/uBlockOrigin/uAssets/blob/master/filters/lan-block.txt
+    // https://en.wikipedia.org/wiki/Reserved_IP_addresses
+    // `ipaddr` is assumed well-formed
+    static isLAN(ipaddr) {
+        const c0 = ipaddr.charCodeAt(0);
+        // ipv4
+        if ( c0 === 0x30 /* 0 */ ) {
+            return ipaddr.startsWith('0.');
+        }
+        if ( c0 === 0x31 /* 1 */ ) {
+            if ( ipaddr.startsWith('10.') ) { return true; }
+            if ( ipaddr.startsWith('127.') ) { return true; }
+            if ( ipaddr.startsWith('169.254.') ) { return true; }
+            if ( ipaddr.startsWith('172.') ) {
+                const v = parseInt(ipaddr.slice(4), 10);
+                return v >= 16 && v <= 31;
+            }
+            return ipaddr.startsWith('192.168.');
+        }
+        // ipv6
+        if ( c0 === 0x3A /* : */ ) {
+            if ( ipaddr.startsWith('::') === false ) { return false; }
+            if ( ipaddr === '::' || ipaddr === '::1' ) { return true; }
+            if ( ipaddr.startsWith('::ffff:') === false ) { return false; }
+            return this.reIPv6IPv4lan.test(ipaddr);
+        }
+        if ( c0 === 0x66 /* f */ ) {
+            return this.reIPv6local.test(ipaddr);
+        }
+        return false;
+    }
+
+    static isLoopback(ipaddr) {
+        return ipaddr === '127.0.0.1' || ipaddr === '::1';
+    }
+
+    static compile(details) {
+        return [ FilterIPAddress.fid, details.optionValues.get('ipaddress') ];
+    }
+
+    static fromCompiled(args) {
+        const pattern = args[1];
+        const details = { pattern };
+        return filterDataAlloc(args[0], filterRefAdd(details));
+    }
+
+    static dnrFromCompiled(args, rule) {
+        dnrAddRuleError(rule, `"ipaddress=${args[1]}" not supported`);
+    }
+
+    static logData(idata, details) {
+        const irefs = filterData[idata+1];
+        details.options.push(`ipaddress=${LogData.requote(filterRefs[irefs].pattern)}`);
+    }
+}
+
+registerFilterClass(FilterIPAddress);
 
 /******************************************************************************/
 /******************************************************************************/
@@ -3061,14 +3191,11 @@ const urlTokenizer = new (class {
     }
 
     toSelfie() {
-        return sparseBase64.encode(
-            this.knownTokens.buffer,
-            this.knownTokens.byteLength
-        );
+        return this.knownTokens;
     }
 
     fromSelfie(selfie) {
-        return sparseBase64.decode(selfie, this.knownTokens.buffer);
+        this.knownTokens = selfie;
     }
 
     // https://github.com/chrisaljoudi/uBlock/issues/1118
@@ -3137,8 +3264,7 @@ class FilterCompiler {
             return Object.assign(this, other);
         }
         this.reToken = /[%0-9A-Za-z]+/g;
-        this.fromDomainOptList = [];
-        this.toDomainOptList = [];
+        this.optionValues = new Map();
         this.tokenIdToNormalizedType = new Map([
             [ sfp.NODE_TYPE_NET_OPTION_NAME_CNAME, bitFromType('cname') ],
             [ sfp.NODE_TYPE_NET_OPTION_NAME_CSS, bitFromType('stylesheet') ],
@@ -3164,9 +3290,13 @@ class FilterCompiler {
         ]);
         this.modifierIdToNormalizedId = new Map([
             [ sfp.NODE_TYPE_NET_OPTION_NAME_CSP, MODIFIER_TYPE_CSP ],
+            [ sfp.NODE_TYPE_NET_OPTION_NAME_PERMISSIONS, MODIFIER_TYPE_PERMISSIONS ],
             [ sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT, MODIFIER_TYPE_REDIRECT ],
             [ sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE, MODIFIER_TYPE_REDIRECTRULE ],
             [ sfp.NODE_TYPE_NET_OPTION_NAME_REMOVEPARAM, MODIFIER_TYPE_REMOVEPARAM ],
+            [ sfp.NODE_TYPE_NET_OPTION_NAME_URLTRANSFORM, MODIFIER_TYPE_URLTRANSFORM ],
+            [ sfp.NODE_TYPE_NET_OPTION_NAME_REPLACE, MODIFIER_TYPE_REPLACE ],
+            [ sfp.NODE_TYPE_NET_OPTION_NAME_URLSKIP, MODIFIER_TYPE_URLSKIP ],
         ]);
         // These top 100 "bad tokens" are collated using the "miss" histogram
         // from tokenHistograms(). The "score" is their occurrence among the
@@ -3278,7 +3408,7 @@ class FilterCompiler {
     }
 
     reset() {
-        this.action = BlockAction;
+        this.action = BLOCK_REALM;
         // anchor: bit vector
         //   0000 (0x0): no anchoring
         //   0001 (0x1): anchored to the end of the URL.
@@ -3292,13 +3422,9 @@ class FilterCompiler {
         this.modifyType = undefined;
         this.modifyValue = undefined;
         this.pattern = '';
-        this.patternMatchCase = false;
-        this.party = AnyParty;
+        this.party = ANYPARTY_REALM;
         this.optionUnitBits = 0;
-        this.fromDomainOpt = '';
-        this.toDomainOpt = '';
-        this.denyallowOpt = '';
-        this.headerOpt = undefined;
+        this.optionValues.clear();
         this.isPureHostname = false;
         this.isGeneric = false;
         this.isRegex = false;
@@ -3310,8 +3436,6 @@ class FilterCompiler {
         this.notTypeBits = 0;
         this.methodBits = 0;
         this.notMethodBits = 0;
-        this.wildcardPos = -1;
-        this.caretPos = -1;
         return this;
     }
 
@@ -3374,7 +3498,7 @@ class FilterCompiler {
         if ( not ) {
             firstParty = !firstParty;
         }
-        this.party |= firstParty ? FirstParty : ThirdParty;
+        this.party |= firstParty ? FIRSTPARTY_REALM : THIRDPARTY_REALM;
     }
 
     processHostnameList(iter, out = []) {
@@ -3400,71 +3524,80 @@ class FilterCompiler {
     processCspOption(value) {
         this.modifyType = MODIFIER_TYPE_CSP;
         this.modifyValue = value || '';
-        this.optionUnitBits |= this.CSP_BIT;
+        this.optionUnitBits |= MODIFY_BIT;
         return true;
     }
 
     processOptionWithValue(parser, id) {
         switch ( id ) {
-            case sfp.NODE_TYPE_NET_OPTION_NAME_CSP:
-                if ( this.processCspOption(parser.getNetOptionValue(id)) === false ) { return false; }
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_DENYALLOW:
-                this.denyallowOpt = this.processHostnameList(
-                    parser.getNetFilterDenyallowOptionIterator(),
-                );
-                if ( this.denyallowOpt === '' ) { return false; }
-                this.optionUnitBits |= this.DENYALLOW_BIT;
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_FROM:
-                this.fromDomainOpt = this.processHostnameList(
-                    parser.getNetFilterFromOptionIterator(),
-                    this.fromDomainOptList
-                );
-                if ( this.fromDomainOpt === '' ) { return false; }
-                this.optionUnitBits |= this.FROM_BIT;
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_HEADER: {
-                this.headerOpt = parser.getNetOptionValue(id) || '';
-                this.optionUnitBits |= this.HEADER_BIT;
-                break;
+        case sfp.NODE_TYPE_NET_OPTION_NAME_CSP:
+            if ( this.processCspOption(parser.getNetOptionValue(id)) === false ) { return false; }
+            break;
+        case sfp.NODE_TYPE_NET_OPTION_NAME_DENYALLOW: {
+            const value = this.processHostnameList(
+                parser.getNetFilterDenyallowOptionIterator()
+            );
+            if ( value === '' ) { return false; }
+            this.optionValues.set('denyallow', value);
+            this.optionUnitBits |= DENYALLOW_BIT;
+            break;
+        }
+        case sfp.NODE_TYPE_NET_OPTION_NAME_FROM: {
+            const iter = parser.getNetFilterFromOptionIterator();
+            const list = [];
+            const value = this.processHostnameList(iter, list);
+            if ( value === '' ) { return false; }
+            this.optionValues.set('from', value);
+            this.optionValues.set('fromList', list);
+            this.optionUnitBits |= FROM_BIT;
+            break;
+        }
+        case sfp.NODE_TYPE_NET_OPTION_NAME_HEADER: {
+            this.optionValues.set('header', parser.getNetOptionValue(id) || '');
+            this.optionUnitBits |= HEADER_BIT;
+            break;
+        }
+        case sfp.NODE_TYPE_NET_OPTION_NAME_IPADDRESS:
+            this.optionValues.set('ipaddress', parser.getNetOptionValue(id) || '');
+            this.optionUnitBits |= IPADDRESS_BIT;
+            break;
+        case sfp.NODE_TYPE_NET_OPTION_NAME_METHOD:
+            this.processMethodOption(parser.getNetOptionValue(id));
+            this.optionUnitBits |= METHOD_BIT;
+            break;
+        case sfp.NODE_TYPE_NET_OPTION_NAME_PERMISSIONS:
+        case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE:
+        case sfp.NODE_TYPE_NET_OPTION_NAME_REMOVEPARAM:
+        case sfp.NODE_TYPE_NET_OPTION_NAME_REPLACE:
+        case sfp.NODE_TYPE_NET_OPTION_NAME_URLSKIP:
+        case sfp.NODE_TYPE_NET_OPTION_NAME_URLTRANSFORM:
+            if ( this.processModifierOption(id, parser.getNetOptionValue(id)) === false ) {
+                return false;
             }
-            case sfp.NODE_TYPE_NET_OPTION_NAME_METHOD:
-                this.processMethodOption(parser.getNetOptionValue(id));
-                this.optionUnitBits |= this.METHOD_BIT;
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT: {
-                const actualId = this.action === AllowAction
-                    ? sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE
-                    : id;
-                if ( this.processModifierOption(actualId, parser.getNetOptionValue(id)) === false ) {
-                    return false;
-                }
-                this.optionUnitBits |= this.REDIRECT_BIT;
-                break;
+            this.optionUnitBits |= MODIFY_BIT;
+            break;
+        case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT: {
+            const actualId = this.action === ALLOW_REALM
+                ? sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE
+                : id;
+            if ( this.processModifierOption(actualId, parser.getNetOptionValue(id)) === false ) {
+                return false;
             }
-            case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE:
-                if ( this.processModifierOption(id, parser.getNetOptionValue(id)) === false ) {
-                    return false;
-                }
-                this.optionUnitBits |= this.REDIRECT_BIT;
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_REMOVEPARAM:
-                if ( this.processModifierOption(id, parser.getNetOptionValue(id)) === false ) {
-                    return false;
-                }
-                this.optionUnitBits |= this.REMOVEPARAM_BIT;
-                break;
-            case sfp.NODE_TYPE_NET_OPTION_NAME_TO:
-                this.toDomainOpt = this.processHostnameList(
-                    parser.getNetFilterToOptionIterator(),
-                    this.toDomainOptList
-                );
-                if ( this.toDomainOpt === '' ) { return false; }
-                this.optionUnitBits |= this.TO_BIT;
-                break;
-            default:
-                break;
+            this.optionUnitBits |= MODIFY_BIT;
+            break;
+        }
+        case sfp.NODE_TYPE_NET_OPTION_NAME_TO: {
+            const iter = parser.getNetFilterToOptionIterator();
+            const list = [];
+            const value = this.processHostnameList(iter, list);
+            if ( value === '' ) { return false; }
+            this.optionValues.set('to', value);
+            this.optionValues.set('toList', list);
+            this.optionUnitBits |= TO_BIT;
+            break;
+        }
+        default:
+            break;
         }
         return true;
     }
@@ -3478,7 +3611,7 @@ class FilterCompiler {
         }
 
         if ( parser.isException() ) {
-            this.action = AllowAction;
+            this.action = ALLOW_REALM;
         }
 
         if ( parser.isLeftHnAnchored() ) {
@@ -3506,14 +3639,14 @@ class FilterCompiler {
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_STRICT1P:
                 this.strictParty = this.strictParty === -1 ? 0 : 1;
-                this.optionUnitBits |= this.STRICT_PARTY_BIT;
+                this.optionUnitBits |= STRICT_PARTY_BIT;
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_3P:
                 this.processPartyOption(false, parser.isNegatedOption(type));
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_STRICT3P:
                 this.strictParty = this.strictParty === 1 ? 0 : -1;
-                this.optionUnitBits |= this.STRICT_PARTY_BIT;
+                this.optionUnitBits |= STRICT_PARTY_BIT;
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_ALL:
                 this.processTypeOption(-1);
@@ -3548,11 +3681,16 @@ class FilterCompiler {
             case sfp.NODE_TYPE_NET_OPTION_NAME_DENYALLOW:
             case sfp.NODE_TYPE_NET_OPTION_NAME_FROM:
             case sfp.NODE_TYPE_NET_OPTION_NAME_HEADER:
+            case sfp.NODE_TYPE_NET_OPTION_NAME_IPADDRESS:
             case sfp.NODE_TYPE_NET_OPTION_NAME_METHOD:
+            case sfp.NODE_TYPE_NET_OPTION_NAME_PERMISSIONS:
             case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT:
             case sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE:
             case sfp.NODE_TYPE_NET_OPTION_NAME_REMOVEPARAM:
+            case sfp.NODE_TYPE_NET_OPTION_NAME_REPLACE:
             case sfp.NODE_TYPE_NET_OPTION_NAME_TO:
+            case sfp.NODE_TYPE_NET_OPTION_NAME_URLSKIP:
+            case sfp.NODE_TYPE_NET_OPTION_NAME_URLTRANSFORM:
                 if ( this.processOptionWithValue(parser, type) === false ) {
                     return this.FILTER_INVALID;
                 }
@@ -3564,31 +3702,31 @@ class FilterCompiler {
                 break;
             }
             case sfp.NODE_TYPE_NET_OPTION_NAME_EMPTY: {
-                const id = this.action === AllowAction
+                const id = this.action === ALLOW_REALM
                     ? sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE
                     : sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT;
                 if ( this.processModifierOption(id, 'empty') === false ) {
                     return this.FILTER_INVALID;
                 }
-                this.optionUnitBits |= this.REDIRECT_BIT;
+                this.optionUnitBits |= MODIFY_BIT;
                 break;
             }
             case sfp.NODE_TYPE_NET_OPTION_NAME_IMPORTANT:
-                this.optionUnitBits |= this.IMPORTANT_BIT;
-                this.action = BlockImportant;
+                this.optionUnitBits |= IMPORTANT_BIT;
+                this.action = BLOCKIMPORTANT_REALM;
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_MATCHCASE:
-                this.patternMatchCase = true;
+                this.optionValues.set('match-case', true);
                 break;
             case sfp.NODE_TYPE_NET_OPTION_NAME_MP4: {
-                const id = this.action === AllowAction
+                const id = this.action === ALLOW_REALM
                     ? sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE
                     : sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECT;
                 if ( this.processModifierOption(id, 'noopmp4-1s') === false ) {
                     return this.FILTER_INVALID;
                 }
                 this.processTypeOption(sfp.NODE_TYPE_NET_OPTION_NAME_MEDIA, false);
-                this.optionUnitBits |= this.REDIRECT_BIT;
+                this.optionUnitBits |= MODIFY_BIT;
                 break;
             }
             default:
@@ -3596,8 +3734,8 @@ class FilterCompiler {
             }
         }
 
-        if ( this.party === AllParties ) {
-            this.party = AnyParty;
+        if ( this.party === ALLPARTIES_REALM ) {
+            this.party = ANYPARTY_REALM;
         }
 
         // Negated network types? Toggle on all network type bits.
@@ -3614,11 +3752,15 @@ class FilterCompiler {
             } else {
                 this.typeBits &= ~this.notTypeBits;
             }
-            this.optionUnitBits |= this.NOT_TYPE_BIT;
+            this.optionUnitBits |= NOT_TYPE_BIT;
         }
 
-        // CSP directives implicitly apply only to document/subdocument.
-        if ( this.modifyType === MODIFIER_TYPE_CSP ) {
+        // CSP/permissions options implicitly apply only to
+        // document/subdocument.
+        if (
+            this.modifyType === MODIFIER_TYPE_CSP ||
+            this.modifyType === MODIFIER_TYPE_PERMISSIONS
+        ) {
             if ( this.typeBits === 0 ) {
                 this.processTypeOption(sfp.NODE_TYPE_NET_OPTION_NAME_DOC, false);
                 this.processTypeOption(sfp.NODE_TYPE_NET_OPTION_NAME_FRAME, false);
@@ -3642,11 +3784,6 @@ class FilterCompiler {
         // regex?
         if ( this.isRegex ) {
             return this.FILTER_OK;
-        }
-
-        if ( this.isGeneric ) {
-            this.wildcardPos = this.pattern.indexOf('*');
-            this.caretPos = this.pattern.indexOf('^');
         }
 
         if ( this.pattern.length > 1024 ) {
@@ -3774,9 +3911,9 @@ class FilterCompiler {
     }
 
     isJustOrigin() {
-        if ( this.optionUnitBits !== this.FROM_BIT ) { return false; }
+        if ( this.optionUnitBits !== FROM_BIT ) { return false; }
         if ( this.isRegex ) { return false; }
-        if ( /[\/~]/.test(this.fromDomainOpt) ) { return false; }
+        if ( /[/~]/.test(this.optionValues.get('from')) ) { return false; }
         if ( this.pattern === '*' ) { return true; }
         if ( this.anchor !== 0b010 ) { return false; }
         if ( /^(?:http[s*]?:(?:\/\/)?)$/.test(this.pattern) ) { return true; }
@@ -3818,7 +3955,7 @@ class FilterCompiler {
             if ( parser.options.toDNR !== true ) {
                 const parsedBlock = this.clone();
                 parsedBlock.modifyType = undefined;
-                parsedBlock.optionUnitBits &= ~this.REDIRECT_BIT;
+                parsedBlock.optionUnitBits &= ~MODIFY_BIT;
                 parsedBlock.compileToFilter(writer);
             }
         }
@@ -3853,7 +3990,7 @@ class FilterCompiler {
             } else /* 'http:' */ {
                 this.tokenHash = ANY_HTTP_TOKEN_HASH;
             }
-            for ( const hn of this.fromDomainOptList ) {
+            for ( const hn of this.optionValues.get('fromList') ) {
                 this.compileToAtomicFilter(hn, writer);
             }
             return;
@@ -3894,39 +4031,44 @@ class FilterCompiler {
         }
 
         // Origin
-        if ( this.fromDomainOpt !== '' ) {
+        if ( (this.optionUnitBits & FROM_BIT) !== 0 ) {
             compileFromDomainOpt(
-                this.fromDomainOptList,
+                this.optionValues.get('fromList'),
                 units.length !== 0 && patternClass.isSlow === true,
                 units
             );
         }
 
         // Destination
-        if ( this.toDomainOpt !== '' ) {
+        if ( (this.optionUnitBits & TO_BIT) !== 0 ) {
             compileToDomainOpt(
-                this.toDomainOptList,
+                this.optionValues.get('toList'),
                 units.length !== 0 && patternClass.isSlow === true,
                 units
             );
         }
 
         // Deny-allow
-        if ( this.denyallowOpt !== '' ) {
+        if ( (this.optionUnitBits & DENYALLOW_BIT) !== 0 ) {
             units.push(FilterDenyAllow.compile(this));
         }
 
+        // IP address
+        if ( (this.optionUnitBits & IPADDRESS_BIT) !== 0 ) {
+            units.push(FilterIPAddress.compile(this));
+        }
+
         // Header
-        if ( this.headerOpt !== undefined ) {
+        if ( (this.optionUnitBits & HEADER_BIT) !== 0 ) {
             units.push(FilterOnHeaders.compile(this));
-            this.action |= HEADERS;
+            this.action |= HEADERS_REALM;
         }
 
         // Important
         //
         // IMPORTANT: must always appear at the end of the sequence, so as to
         // ensure $isBlockImportant is set only for matching filters.
-        if ( (this.optionUnitBits & this.IMPORTANT_BIT) !== 0 ) {
+        if ( (this.optionUnitBits & IMPORTANT_BIT) !== 0 ) {
             units.push(FilterImportant.compile());
         }
 
@@ -3935,15 +4077,21 @@ class FilterCompiler {
         // IMPORTANT: the modifier unit MUST always appear first in a sequence
         if ( this.modifyType !== undefined ) {
             units.unshift(FilterModifier.compile(this));
-            this.action = (this.action & ~ActionBitsMask) | ModifyAction;
+            this.action = (this.action & ~BLOCKALLOW_REALM) |
+                modifierBitsFromType.get(this.modifyType);
         }
 
-        this.compileToAtomicFilter(
-            units.length === 1
-                ? units[0]
-                : FilterCompositeAll.compile(units),
-            writer
-        );
+        const fdata = units.length === 1
+            ? units[0]
+            : FilterCompositeAll.compile(units);
+
+        this.compileToAtomicFilter(fdata, writer);
+
+        if ( (this.optionUnitBits & IPADDRESS_BIT) !== 0 ) {
+            if ( (this.action & HEADERS_REALM) !== 0 ) { return; }
+            this.action |= HEADERS_REALM;
+            this.compileToAtomicFilter(fdata, writer);
+        }
     }
 
     compilePattern(units) {
@@ -3959,12 +4107,13 @@ class FilterCompiler {
             units.push(FilterPatternGeneric.compile(this));
             return FilterPatternGeneric;
         }
-        if ( this.wildcardPos === -1 ) {
-            if ( this.caretPos === -1 ) {
+        if ( this.pattern.includes('*') === false ) {
+            const caretPos = this.pattern.indexOf('^');
+            if ( caretPos === -1 ) {
                 units.push(FilterPatternPlain.compile(this));
                 return FilterPatternPlain;
             }
-            if ( this.caretPos === (this.pattern.length - 1) ) {
+            if ( caretPos === (this.pattern.length - 1) ) {
                 this.pattern = this.pattern.slice(0, -1);
                 units.push(FilterPatternPlain.compile(this));
                 units.push(FilterTrailingSeparator.compile());
@@ -3997,7 +4146,7 @@ class FilterCompiler {
         do {
             if ( typeBits & 1 ) {
                 writer.push([
-                    catBits | (bitOffset << TypeBitsOffset),
+                    catBits | (bitOffset << TYPE_REALM_OFFSET),
                     this.tokenHash,
                     fdata
                 ]);
@@ -4008,17 +4157,17 @@ class FilterCompiler {
     }
 }
 
-FilterCompiler.prototype.FROM_BIT         = 0b00000000001;
-FilterCompiler.prototype.TO_BIT           = 0b00000000010;
-FilterCompiler.prototype.DENYALLOW_BIT    = 0b00000000100;
-FilterCompiler.prototype.HEADER_BIT       = 0b00000001000;
-FilterCompiler.prototype.STRICT_PARTY_BIT = 0b00000010000;
-FilterCompiler.prototype.CSP_BIT          = 0b00000100000;
-FilterCompiler.prototype.REMOVEPARAM_BIT  = 0b00001000000;
-FilterCompiler.prototype.REDIRECT_BIT     = 0b00010000000;
-FilterCompiler.prototype.NOT_TYPE_BIT     = 0b00100000000;
-FilterCompiler.prototype.IMPORTANT_BIT    = 0b01000000000;
-FilterCompiler.prototype.METHOD_BIT       = 0b10000000000;
+// These are to quickly test whether a filter is composite
+const FROM_BIT         = 0b0000000001;
+const TO_BIT           = 0b0000000010;
+const DENYALLOW_BIT    = 0b0000000100;
+const HEADER_BIT       = 0b0000001000;
+const STRICT_PARTY_BIT = 0b0000010000;
+const MODIFY_BIT       = 0b0000100000;
+const NOT_TYPE_BIT     = 0b0001000000;
+const IMPORTANT_BIT    = 0b0010000000;
+const METHOD_BIT       = 0b0100000000;
+const IPADDRESS_BIT    = 0b1000000000;
 
 FilterCompiler.prototype.FILTER_OK          = 0;
 FilterCompiler.prototype.FILTER_INVALID     = 1;
@@ -4027,17 +4176,16 @@ FilterCompiler.prototype.FILTER_UNSUPPORTED = 2;
 /******************************************************************************/
 /******************************************************************************/
 
-const FilterContainer = function() {
-    this.compilerVersion = '8';
-    this.selfieVersion = '9';
+const StaticNetFilteringEngine = function() {
+    this.compilerVersion = '10';
+    this.selfieVersion = '10';
 
     this.MAX_TOKEN_LENGTH = MAX_TOKEN_LENGTH;
     this.optimizeTaskId = undefined;
     // As long as CategoryCount is reasonably low, we will use an array to
     // store buckets using category bits as index. If ever CategoryCount
     // becomes too large, we can just go back to using a Map.
-    this.bitsToBucketIndices = JSON.parse(`[${'0,'.repeat(CategoryCount-1)}0]`);
-    this.buckets = [ new Map() ];
+    this.bitsToBucket = new Map();
     this.goodFilters = new Set();
     this.badFilters = new Set();
     this.unitsToOptimize = [];
@@ -4046,7 +4194,7 @@ const FilterContainer = function() {
 
 /******************************************************************************/
 
-FilterContainer.prototype.prime = function() {
+StaticNetFilteringEngine.prototype.prime = function() {
     origHNTrieContainer.reset(
         keyvalStore.getItem('SNFE.origHNTrieContainer.trieDetails')
     );
@@ -4058,15 +4206,14 @@ FilterContainer.prototype.prime = function() {
 
 /******************************************************************************/
 
-FilterContainer.prototype.reset = function() {
+StaticNetFilteringEngine.prototype.reset = function() {
     this.processedFilterCount = 0;
     this.acceptedCount = 0;
     this.discardedCount = 0;
     this.goodFilters.clear();
     this.badFilters.clear();
     this.unitsToOptimize.length = 0;
-    this.bitsToBucketIndices.fill(0);
-    this.buckets.length = 1;
+    this.bitsToBucket.clear();
 
     urlTokenizer.resetKnownTokens();
 
@@ -4083,6 +4230,8 @@ FilterContainer.prototype.reset = function() {
         this.optimizeTaskId = undefined;
     }
 
+    this.notReady = false;
+
     // Runtime registers
     this.$catBits = 0;
     this.$tokenHash = 0;
@@ -4091,7 +4240,7 @@ FilterContainer.prototype.reset = function() {
 
 /******************************************************************************/
 
-FilterContainer.prototype.freeze = function() {
+StaticNetFilteringEngine.prototype.freeze = function() {
     const unserialize = CompiledListReader.unserialize;
 
     for ( const line of this.goodFilters ) {
@@ -4103,16 +4252,14 @@ FilterContainer.prototype.freeze = function() {
         const args = unserialize(line);
 
         const bits = args[0];
-        let ibucket = this.bitsToBucketIndices[bits];
-        if ( ibucket === 0 ) {
-            ibucket = this.bitsToBucketIndices[bits] = this.buckets.length;
-            this.buckets.push(new Map());
+        const bucket = this.bitsToBucket.get(bits) || (new Map());
+        if ( bucket.size === 0 ) {
+            this.bitsToBucket.set(bits, bucket);
         }
 
         const tokenHash = args[1];
         const fdata = args[2];
 
-        const bucket = this.buckets[ibucket];
         let iunit = bucket.get(tokenHash) || 0;
 
         if ( tokenHash === DOT_TOKEN_HASH ) {
@@ -4162,9 +4309,9 @@ FilterContainer.prototype.freeze = function() {
         // the block-important realm should be checked when and only when
         // there is a matched exception filter, which important filters are
         // meant to override.
-        if ( (bits & ActionBitsMask) === BlockImportant ) {
+        if ( (bits & BLOCKALLOW_REALM) === BLOCKIMPORTANT_REALM ) {
             this.addFilterUnit(
-                bits & ~Important,
+                bits & ~IMPORTANT_REALM,
                 tokenHash,
                 filterFromCompiled(fdata)
             );
@@ -4174,6 +4321,8 @@ FilterContainer.prototype.freeze = function() {
     this.badFilters.clear();
     this.goodFilters.clear();
     filterArgsToUnit.clear();
+
+    this.notReady = false;
 
     // Optimizing is not critical for the static network filtering engine to
     // work properly, so defer this until later to allow for reduced delay to
@@ -4188,7 +4337,7 @@ FilterContainer.prototype.freeze = function() {
 
 /******************************************************************************/
 
-FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
+StaticNetFilteringEngine.prototype.dnrFromCompiled = function(op, context, ...args) {
     if ( op === 'begin' ) {
         Object.assign(context, {
             good: new Set(),
@@ -4303,15 +4452,30 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
         }
     }
 
+    // Priority:
+    //   Removeparam: 1-4
+    //   Block: 10 (default priority)
+    //   Redirect: 11-19
+    //   Excepted redirect: 21-29
+    //   Allow: 30
+    //   Block important: 40
+    //   Redirect important: 41-49
+
     const realms = new Map([
-        [ BlockAction, 'block' ],
-        [ AllowAction, 'allow' ],
-        [ ModifyAction, 'modify' ],
+        [ BLOCK_REALM, { type: 'block', priority: 10 } ],
+        [ ALLOW_REALM, { type: 'allow', priority: 30 } ],
+        [ REDIRECT_REALM, { type: 'redirect', priority: 11 } ],
+        [ REMOVEPARAM_REALM, { type: 'removeparam', priority: 0 } ],
+        [ CSP_REALM, { type: 'csp', priority: 0 } ],
+        [ PERMISSIONS_REALM, { type: 'permissions', priority: 0 } ],
+        [ URLTRANSFORM_REALM, { type: 'uritransform', priority: 0 } ],
+        [ HEADERS_REALM, { type: 'block', priority: 10 } ],
+        [ URLSKIP_REALM, { type: 'urlskip', priority: 0 } ],
     ]);
     const partyness = new Map([
-        [ AnyParty, '' ],
-        [ FirstParty, 'firstParty' ],
-        [ ThirdParty, 'thirdParty' ],
+        [ ANYPARTY_REALM, '' ],
+        [ FIRSTPARTY_REALM, 'firstParty' ],
+        [ THIRDPARTY_REALM, 'thirdParty' ],
     ]);
     const types = new Set([
         'no_type',
@@ -4328,8 +4492,8 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
         'ping',
         'other',
     ]);
-    let ruleset = [];
-    for ( const [ realmBits, realmName ] of realms ) {
+    const ruleset = [];
+    for ( const [ realmBits, realmDetails ] of realms ) {
         for ( const [ partyBits, partyName ] of partyness ) {
             for ( const typeName in typeNameToTypeValue ) {
                 if ( types.has(typeName) === false ) { continue; }
@@ -4340,7 +4504,10 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
                 for ( const rules of bucket.values() ) {
                     for ( const rule of rules ) {
                         rule.action = rule.action || {};
-                        rule.action.type = realmName;
+                        rule.action.type = realmDetails.type;
+                        if ( realmDetails.priority !== 0 ) {
+                            rule.priority = (rule.priority || 0) + realmDetails.priority;
+                        }
                         if ( partyName !== '' ) {
                             rule.condition = rule.condition || {};
                             rule.condition.domainType = partyName;
@@ -4359,7 +4526,7 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
     // Collect generichide filters
     const generichideExclusions = [];
     {
-        const bucket = buckets.get(AllowAction | typeNameToTypeValue['generichide']);
+        const bucket = buckets.get(ALLOW_REALM | typeNameToTypeValue['generichide']);
         if ( bucket ) {
             for ( const rules of bucket.values() ) {
                 for ( const rule of rules ) {
@@ -4374,33 +4541,38 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
         }
     }
 
-    // Detect and attempt salvage of rules with entity-based hostnames.
+    // Detect and attempt salvage of rules with entity-based hostnames and/or
+    // regex-based domains.
+    const isUnsupportedDomain = hn => hn.endsWith('.*') || hn.startsWith('/');
     for ( const rule of ruleset ) {
         if ( rule.condition === undefined ) { continue; }
-        if (
-            Array.isArray(rule.condition.initiatorDomains) &&
-            rule.condition.initiatorDomains.some(hn => hn.endsWith('.*'))
-        ) {
-            const domains = rule.condition.initiatorDomains.filter(
-                hn => hn.endsWith('.*') === false
-            );
-            if ( domains.length === 0 ) {
-                dnrAddRuleError(rule, `Could not salvage rule with only entity-based domain= option: ${rule.condition.initiatorDomains.join('|')}`);
-            } else {
-                rule.condition.initiatorDomains = domains;
+        for ( const prop of [ 'Initiator', 'Request' ] ) {
+            const hitProp = `${prop.toLowerCase()}Domains`;
+            if ( Array.isArray(rule.condition[hitProp]) ) {
+                if ( rule.condition[hitProp].some(hn => isUnsupportedDomain(hn)) ) {
+                    const domains = rule.condition[hitProp].filter(
+                        hn => isUnsupportedDomain(hn) === false 
+                    );
+                    if ( domains.length === 0 ) {
+                        dnrAddRuleError(rule, `Can't salvage rule with unsupported domain= option: ${rule.condition[hitProp].join('|')}`);
+                    } else {
+                        dnrAddRuleWarning(rule, `Salvaged rule by ignoring ${rule.condition[hitProp].length - domains.length} unsupported domain= option: ${rule.condition[hitProp].join('|')}`);
+                        rule.condition[hitProp] = domains;
+                    }
+                }
             }
-        }
-        if (
-            Array.isArray(rule.condition.excludedInitiatorDomains) &&
-            rule.condition.excludedInitiatorDomains.some(hn => hn.endsWith('.*'))
-        ) {
-            const domains = rule.condition.excludedInitiatorDomains.filter(
-                hn => hn.endsWith('.*') === false
-            );
-            rule.condition.excludedInitiatorDomains =
-                domains.length !== 0
-                    ? domains
-                    : undefined;
+            const missProp = `excluded${prop}Domains`;
+            if ( Array.isArray(rule.condition[missProp]) ) {
+                if ( rule.condition[missProp].some(hn => isUnsupportedDomain(hn)) ) {
+                    const domains = rule.condition[missProp].filter(
+                        hn => isUnsupportedDomain(hn) === false
+                    );
+                    rule.condition[missProp] =
+                        domains.length !== 0
+                            ? domains
+                            : undefined;
+                }
+            }
         }
     }
 
@@ -4415,17 +4587,27 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
                 operation: 'append',
                 value: rule.__modifierValue,
             }];
-            if ( rule.__modifierAction === AllowAction ) {
-                dnrAddRuleError(rule, 'Unsupported modifier exception');
+            if ( rule.__modifierAction === ALLOW_REALM ) {
+                dnrAddRuleError(rule, `Unsupported csp exception: ${rule.__modifierValue}`);
+            }
+            break;
+        case 'permissions':
+            rule.action.type = 'modifyHeaders';
+            rule.action.responseHeaders = [{
+                header: 'permissions-policy',
+                operation: 'append',
+                value: rule.__modifierValue.split('|').join(', '),
+            }];
+            if ( rule.__modifierAction === ALLOW_REALM ) {
+                dnrAddRuleError(rule, `Unsupported permissions exception: ${rule.__modifierValue}`);
             }
             break;
         case 'redirect-rule': {
-            let priority = rule.priority || 1;
             let token = rule.__modifierValue;
             if ( token !== '' ) {
                 const match = /:(\d+)$/.exec(token);
                 if ( match !== null ) {
-                    priority += parseInt(match[1], 10);
+                    rule.priority += Math.min(rule.priority + parseInt(match[1], 10), 9);
                     token = token.slice(0, match.index);
                 }
             }
@@ -4433,18 +4615,17 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
             if ( rule.__modifierValue !== '' && resource === undefined ) {
                 dnrAddRuleError(rule, `Unpatchable redirect filter: ${rule.__modifierValue}`);
             }
-            if ( rule.__modifierAction !== AllowAction ) {
+            if ( rule.__modifierAction !== ALLOW_REALM ) {
                 const extensionPath = resource || token;
                 rule.action.type = 'redirect';
                 rule.action.redirect = { extensionPath };
-                rule.priority = priority + 1;
             } else {
                 rule.action.type = 'block';
-                rule.priority = priority + 2;
+                rule.priority += 10;
             }
             break;
         }
-        case 'removeparam':
+        case 'removeparam': {
             rule.action.type = 'redirect';
             if ( rule.__modifierValue === '|' ) {
                 rule.__modifierValue = '';
@@ -4472,155 +4653,60 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
                 };
             }
             if ( rule.condition.resourceTypes === undefined ) {
-                rule.condition.resourceTypes = [
-                    'main_frame',
-                    'sub_frame',
-                    'xmlhttprequest',
-                ];
+                if ( rule.condition.excludedResourceTypes === undefined ) {
+                    rule.condition.resourceTypes = [
+                        'main_frame',
+                        'sub_frame',
+                        'xmlhttprequest',
+                    ];
+                }
             }
-            if ( rule.__modifierAction === AllowAction ) {
-                dnrAddRuleError(rule, 'Unsupported modifier exception');
+            // https://github.com/uBlockOrigin/uBOL-home/issues/140
+            //   Mitigate until DNR API flaw is addressed by browser vendors
+            let priority = rule.priority || 1;
+            if ( rule.condition.urlFilter !== undefined ) { priority += 1; }
+            if ( rule.condition.regexFilter !== undefined ) { priority += 1; }
+            if ( rule.condition.initiatorDomains !== undefined ) { priority += 1; }
+            if ( rule.condition.requestDomains !== undefined ) { priority += 1; }
+            if ( priority !== 1 ) {
+                rule.priority = priority;
+            }
+            if ( rule.__modifierAction === ALLOW_REALM ) {
+                dnrAddRuleError(rule, `Unsupported removeparam exception: ${rule.__modifierValue}`);
             }
             break;
+        }
+        case 'uritransform': {
+            dnrAddRuleError(rule, `Incompatible with DNR: uritransform=${rule.__modifierValue}`);
+            break;
+        }
+        case 'urlskip': {
+            let urlFilter = rule.condition?.urlFilter;
+            if ( urlFilter === undefined ) { break; }
+            let anchor = 0b000;
+            if ( urlFilter.startsWith('||') ) {
+                anchor |= 0b100;
+                urlFilter = urlFilter.slice(2);
+            } else if ( urlFilter.startsWith('|') ) {
+                anchor |= 0b10;
+                urlFilter = urlFilter.slice(1);
+            }
+            if ( urlFilter.endsWith('|') ) {
+                anchor |= 0b001;
+                urlFilter = urlFilter.slice(0, -1);
+            }
+            rule.condition.urlFilter = undefined;
+            rule.condition.regexFilter = restrFromGenericPattern(urlFilter, anchor);
+            break;
+        }
         default:
+            dnrAddRuleError(rule, `Unsupported modifier ${rule.__modifierType}`);
             break;
-        }
-    }
-
-    // Assign rule ids
-    const rulesetMap = new Map();
-    {
-        let ruleId = 1;
-        for ( const rule of ruleset ) {
-            rulesetMap.set(ruleId++, rule);
-        }
-    }
-
-    // Merge rules where possible by merging arrays of a specific property.
-    //
-    // https://github.com/uBlockOrigin/uBOL-issues/issues/10#issuecomment-1304822579
-    //   Do not merge rules which have errors.
-    const mergeRules = (rulesetMap, mergeTarget) => {
-        const mergeMap = new Map();
-        const sorter = (_, v) => {
-            if ( Array.isArray(v) ) {
-                return typeof v[0] === 'string' ? v.sort() : v;
-            }
-            if ( v instanceof Object ) {
-                const sorted = {};
-                for ( const kk of Object.keys(v).sort() ) {
-                    sorted[kk] = v[kk];
-                }
-                return sorted;
-            }
-            return v;
-        };
-        const ruleHasher = (rule, target) => {
-            return JSON.stringify(rule, (k, v) => {
-                if ( k.startsWith('_') ) { return; }
-                if ( k === target ) { return; }
-                return sorter(k, v);
-            });
-        };
-        const extractTargetValue = (obj, target) => {
-            for ( const [ k, v ] of Object.entries(obj) ) {
-                if ( Array.isArray(v) && k === target ) { return v; }
-                if ( v instanceof Object ) {
-                    const r = extractTargetValue(v, target);
-                    if ( r !== undefined ) { return r; }
-                }
-            }
-        };
-        const extractTargetOwner = (obj, target) => {
-            for ( const [ k, v ] of Object.entries(obj) ) {
-                if ( Array.isArray(v) && k === target ) { return obj; }
-                if ( v instanceof Object ) {
-                    const r = extractTargetOwner(v, target);
-                    if ( r !== undefined ) { return r; }
-                }
-            }
-        };
-        for ( const [ id, rule ] of rulesetMap ) {
-            if ( rule._error !== undefined ) { continue; }
-            const hash = ruleHasher(rule, mergeTarget);
-            if ( mergeMap.has(hash) === false ) {
-                mergeMap.set(hash, []);
-            }
-            mergeMap.get(hash).push(id);
-        }
-        for ( const ids of mergeMap.values() ) {
-            if ( ids.length === 1 ) { continue; }
-            const leftHand = rulesetMap.get(ids[0]);
-            const leftHandSet = new Set(
-                extractTargetValue(leftHand, mergeTarget) || []
-            );
-            for ( let i = 1; i < ids.length; i++ ) {
-                const rightHandId = ids[i];
-                const rightHand = rulesetMap.get(rightHandId);
-                const rightHandArray =  extractTargetValue(rightHand, mergeTarget);
-                if ( rightHandArray !== undefined ) {
-                    if ( leftHandSet.size !== 0 ) {
-                        for ( const item of rightHandArray ) {
-                            leftHandSet.add(item);
-                        }
-                    }
-                } else {
-                    leftHandSet.clear();
-                }
-                rulesetMap.delete(rightHandId);
-            }
-            const leftHandOwner = extractTargetOwner(leftHand, mergeTarget);
-            if ( leftHandSet.size > 1 ) {
-                //if ( leftHandOwner === undefined ) { debugger; }
-                leftHandOwner[mergeTarget] = Array.from(leftHandSet).sort();
-            } else if ( leftHandSet.size === 0 ) {
-                if ( leftHandOwner !== undefined ) {
-                    leftHandOwner[mergeTarget] = undefined;
-                }
-            }
-        }
-    };
-    mergeRules(rulesetMap, 'resourceTypes');
-    mergeRules(rulesetMap, 'initiatorDomains');
-    mergeRules(rulesetMap, 'requestDomains');
-    mergeRules(rulesetMap, 'removeParams');
-
-    // Patch case-sensitiveness
-    for ( const rule of rulesetMap.values() ) {
-        const { condition } = rule;
-        if (
-            condition === undefined ||
-            condition.urlFilter === undefined &&
-            condition.regexFilter === undefined
-        ) {
-            continue;
-        }
-        if ( condition.isUrlFilterCaseSensitive === undefined ) {
-            condition.isUrlFilterCaseSensitive = false;
-        } else if ( condition.isUrlFilterCaseSensitive === true ) {
-            condition.isUrlFilterCaseSensitive = undefined;
-        }
-    }
-
-    // Patch id
-    const rulesetFinal = [];
-    {
-        let ruleId = 1;
-        for ( const rule of rulesetMap.values() ) {
-            if ( rule._error === undefined ) {
-                rule.id = ruleId++;
-            } else {
-                rule.id = 0;
-            }
-            rulesetFinal.push(rule);
-        }
-        for ( const invalid of context.invalid ) {
-            rulesetFinal.push({ _error: [ invalid ] });
         }
     }
 
     return {
-        ruleset: rulesetFinal,
+        ruleset,
         filterCount: context.filterCount,
         acceptedFilterCount: context.acceptedFilterCount,
         rejectedFilterCount: context.rejectedFilterCount,
@@ -4630,17 +4716,15 @@ FilterContainer.prototype.dnrFromCompiled = function(op, context, ...args) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.addFilterUnit = function(
+StaticNetFilteringEngine.prototype.addFilterUnit = function(
     bits,
     tokenHash,
     inewunit
 ) {
-    let ibucket = this.bitsToBucketIndices[bits];
-    if ( ibucket === 0 ) {
-        ibucket = this.bitsToBucketIndices[bits] = this.buckets.length;
-        this.buckets.push(new Map());
+    const bucket = this.bitsToBucket.get(bits) || (new Map());
+    if ( bucket.size === 0 ) {
+        this.bitsToBucket.set(bits, bucket);
     }
-    const bucket = this.buckets[ibucket];
     const istoredunit = bucket.get(tokenHash) || 0;
     if ( istoredunit === 0 ) {
         bucket.set(tokenHash, inewunit);
@@ -4659,7 +4743,7 @@ FilterContainer.prototype.addFilterUnit = function(
 
 /******************************************************************************/
 
-FilterContainer.prototype.optimize = function(throttle = 0) {
+StaticNetFilteringEngine.prototype.optimize = function(throttle = 0) {
     if ( this.optimizeTaskId !== undefined ) {
         dropTask(this.optimizeTaskId);
         this.optimizeTaskId = undefined;
@@ -4675,7 +4759,7 @@ FilterContainer.prototype.optimize = function(throttle = 0) {
     const t0 = Date.now();
     while ( this.unitsToOptimize.length !== 0 ) {
         const { bits, tokenHash } = this.unitsToOptimize.pop();
-        const bucket = this.buckets[this.bitsToBucketIndices[bits]];
+        const bucket = this.bitsToBucket.get(bits);
         const iunit = bucket.get(tokenHash);
         const fc = filterGetClass(iunit);
         switch ( fc ) {
@@ -4684,7 +4768,7 @@ FilterContainer.prototype.optimize = function(throttle = 0) {
             break;
         case FilterBucket: {
             const optimizeBits =
-                (tokenHash === NO_TOKEN_HASH) || (bits & ModifyAction) !== 0
+                (tokenHash === NO_TOKEN_HASH) || (bits & MODIFY_REALMS) !== 0
                     ? 0b10
                     : 0b01;
             const inewunit = FilterBucket.optimize(iunit, optimizeBits);
@@ -4715,145 +4799,79 @@ FilterContainer.prototype.optimize = function(throttle = 0) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.toSelfie = async function(storage, path) {
-    if ( typeof storage !== 'object' || storage === null ) { return; }
-    if ( typeof storage.put !== 'function' ) { return; }
-
-    const bucketsToSelfie = ( ) => {
-        const selfie = [];
-        for ( const bucket of this.buckets ) {
-            selfie.push(Array.from(bucket));
-        }
-        return selfie;
-    };
-
+StaticNetFilteringEngine.prototype.toSelfie = function() {
+    this.optimize(0);
     bidiTrieOptimize(true);
-    keyvalStore.setItem(
-        'SNFE.origHNTrieContainer.trieDetails',
+    keyvalStore.setItem('SNFE.origHNTrieContainer.trieDetails',
         origHNTrieContainer.optimize()
     );
-
-    return Promise.all([
-        storage.put(
-            `${path}/destHNTrieContainer`,
-            destHNTrieContainer.serialize(sparseBase64)
-        ),
-        storage.put(
-            `${path}/origHNTrieContainer`,
-            origHNTrieContainer.serialize(sparseBase64)
-        ),
-        storage.put(
-            `${path}/bidiTrie`,
-            bidiTrie.serialize(sparseBase64)
-        ),
-        storage.put(
-            `${path}/filterData`,
-            filterDataToSelfie()
-        ),
-        storage.put(
-            `${path}/filterRefs`,
-            filterRefsToSelfie()
-        ),
-        storage.put(
-            `${path}/main`,
-            JSON.stringify({
-                version: this.selfieVersion,
-                processedFilterCount: this.processedFilterCount,
-                acceptedCount: this.acceptedCount,
-                discardedCount: this.discardedCount,
-                bitsToBucketIndices: this.bitsToBucketIndices,
-                buckets: bucketsToSelfie(),
-                urlTokenizer: urlTokenizer.toSelfie(),
-            })
-        )
-    ]);
+    return {
+        version: this.selfieVersion,
+        processedFilterCount: this.processedFilterCount,
+        acceptedCount: this.acceptedCount,
+        discardedCount: this.discardedCount,
+        bitsToBucket: this.bitsToBucket,
+        urlTokenizer: urlTokenizer.toSelfie(),
+        destHNTrieContainer: destHNTrieContainer.toSelfie(),
+        origHNTrieContainer: origHNTrieContainer.toSelfie(),
+        bidiTrie: bidiTrie.toSelfie(),
+        filterData: filterDataToSelfie(),
+        filterRefs: filterRefsToSelfie(),
+    };
 };
 
-FilterContainer.prototype.serialize = async function() {
-    const selfie = [];
-    const storage = {
-        put(name, data) {
-            selfie.push([ name, data ]);
-        }
-    };
-    await this.toSelfie(storage, '');
-    return JSON.stringify(selfie);
+StaticNetFilteringEngine.prototype.serialize = function() {
+    return this.toSelfie();
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.fromSelfie = async function(storage, path) {
-    if ( typeof storage !== 'object' || storage === null ) { return; }
-    if ( typeof storage.get !== 'function' ) { return; }
+StaticNetFilteringEngine.prototype.fromSelfie = function(selfie) {
+    if ( typeof selfie !== 'object' || selfie === null ) { return; }
 
     this.reset();
 
-    const results = await Promise.all([
-        storage.get(`${path}/main`),
-        storage.get(`${path}/destHNTrieContainer`).then(details =>
-            destHNTrieContainer.unserialize(details.content, sparseBase64)
-        ),
-        storage.get(`${path}/origHNTrieContainer`).then(details =>
-            origHNTrieContainer.unserialize(details.content, sparseBase64)
-        ),
-        storage.get(`${path}/bidiTrie`).then(details =>
-            bidiTrie.unserialize(details.content, sparseBase64)
-        ),
-        storage.get(`${path}/filterData`).then(details =>
-            filterDataFromSelfie(details.content)
-        ),
-        storage.get(`${path}/filterRefs`).then(details =>
-            filterRefsFromSelfie(details.content)
-        ),
-    ]);
+    this.notReady = true;
 
+    const results = [
+        destHNTrieContainer.fromSelfie(selfie.destHNTrieContainer),
+        origHNTrieContainer.fromSelfie(selfie.origHNTrieContainer),
+        bidiTrie.fromSelfie(selfie.bidiTrie),
+        filterDataFromSelfie(selfie.filterData),
+        filterRefsFromSelfie(selfie.filterRefs),
+    ];
     if ( results.slice(1).every(v => v === true) === false ) { return false; }
 
-    const bucketsFromSelfie = selfie => {
-        for ( let i = 0; i < selfie.length; i++ ) {
-            this.buckets[i] = new Map(selfie[i]);
-        }
-    };
-
-    const details = results[0];
-    if ( typeof details !== 'object' || details === null ) { return false; }
-    if ( typeof details.content !== 'string' ) { return false; }
-    if ( details.content === '' ) { return false; }
-    let selfie;
-    try {
-        selfie = JSON.parse(details.content);
-    } catch (ex) {
-    }
-    if ( typeof selfie !== 'object' || selfie === null ) { return false; }
     if ( selfie.version !== this.selfieVersion ) { return false; }
     this.processedFilterCount = selfie.processedFilterCount;
     this.acceptedCount = selfie.acceptedCount;
     this.discardedCount = selfie.discardedCount;
-    this.bitsToBucketIndices = selfie.bitsToBucketIndices;
-    bucketsFromSelfie(selfie.buckets);
+    this.bitsToBucket = selfie.bitsToBucket;
     urlTokenizer.fromSelfie(selfie.urlTokenizer);
+
+    // If this point is never reached, it means the internal state is
+    // unreliable, and the caller is then responsible for resetting the
+    // engine and populate properly, in which case the `notReady` barrier
+    // will be properly reset.
+
+    this.notReady = false;
+
     return true;
 };
 
-FilterContainer.prototype.unserialize = async function(s) {
-    const selfie = new Map(JSON.parse(s));
-    const storage = {
-        async get(name) {
-            return { content: selfie.get(name) };
-        }
-    };
-    return this.fromSelfie(storage, '');
+StaticNetFilteringEngine.prototype.unserialize = function(selfie) {
+    return this.fromSelfie(selfie);
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.createCompiler = function() {
+StaticNetFilteringEngine.prototype.createCompiler = function() {
     return new FilterCompiler();
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.fromCompiled = function(reader) {
+StaticNetFilteringEngine.prototype.fromCompiled = function(reader) {
     reader.select('NETWORK_FILTERS:GOOD');
     while ( reader.next() ) {
         this.acceptedCount += 1;
@@ -4872,10 +4890,12 @@ FilterContainer.prototype.fromCompiled = function(reader) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.matchAndFetchModifiers = function(
+StaticNetFilteringEngine.prototype.matchAndFetchModifiers = function(
     fctxt,
     modifierName
 ) {
+    if ( this.notReady ) { return; }
+
     const typeBits = typeNameToTypeValue[fctxt.type] || otherTypeBitValue;
 
     $requestURL = urlTokenizer.setURL(fctxt.url);
@@ -4884,40 +4904,40 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
     $docDomain = fctxt.getDocDomain();
     $requestHostname = fctxt.getHostname();
     $requestMethodBit = fctxt.method || 0;
-    $requestTypeValue = (typeBits & TypeBitsMask) >>> TypeBitsOffset;
+    $requestTypeValue = (typeBits & TYPE_REALM) >>> TYPE_REALM_OFFSET;
+    $requestAddress = fctxt.getIPAddress();
 
-    const partyBits = fctxt.is3rdPartyToDoc() ? ThirdParty : FirstParty;
+    const modifierType = modifierTypeFromName.get(modifierName);
+    const modifierBits = modifierBitsFromType.get(modifierType);
 
-    const catBits00 = ModifyAction;
-    const catBits01 = ModifyAction | typeBits;
-    const catBits10 = ModifyAction | partyBits;
-    const catBits11 = ModifyAction | typeBits | partyBits;
+    const partyBits = fctxt.is3rdPartyToDoc() ? THIRDPARTY_REALM : FIRSTPARTY_REALM;
 
-    const ibucket00 = this.bitsToBucketIndices[catBits00];
-    const ibucket01 = typeBits !== 0 ? this.bitsToBucketIndices[catBits01]
-        : 0;
-    const ibucket10 = partyBits !== 0
-        ? this.bitsToBucketIndices[catBits10]
-        : 0;
-    const ibucket11 = typeBits !== 0 && partyBits !== 0
-        ? this.bitsToBucketIndices[catBits11]
-        : 0;
+    const catBits00 = modifierBits;
+    const catBits01 = modifierBits | typeBits;
+    const catBits10 = modifierBits | partyBits;
+    const catBits11 = modifierBits | typeBits | partyBits;
+
+    const bucket00 = this.bitsToBucket.get(catBits00);
+    const bucket01 = typeBits !== 0
+        ? this.bitsToBucket.get(catBits01)
+        : undefined;
+    const bucket10 = partyBits !== 0
+        ? this.bitsToBucket.get(catBits10)
+        : undefined;
+    const bucket11 = typeBits !== 0 && partyBits !== 0
+        ? this.bitsToBucket.get(catBits11)
+        : undefined;
 
     if (
-        ibucket00 === 0 && ibucket01 === 0 &&
-        ibucket10 === 0 && ibucket11 === 0
+        bucket00 === undefined && bucket01 === undefined &&
+        bucket10 === undefined && bucket11 === undefined
     ) {
         return;
     }
 
-    const bucket00 = this.buckets[ibucket00];
-    const bucket01 = this.buckets[ibucket01];
-    const bucket10 = this.buckets[ibucket10];
-    const bucket11 = this.buckets[ibucket11];
-
     const results = [];
     const env = {
-        type: modifierTypeFromName.get(modifierName) || 0,
+        type: modifierType || 0,
         bits: 0,
         th: 0,
         iunit: 0,
@@ -4933,28 +4953,28 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
         env.th = th;
         $tokenBeg = tokenHashes[i+1];
         if (
-            (ibucket00 !== 0) &&
+            (bucket00 !== undefined) &&
             (iunit = bucket00.get(th) || 0) !== 0
         ) {
             env.bits = catBits00; env.iunit = iunit;
             filterMatchAndFetchModifiers(iunit, env);
         }
         if (
-            (ibucket01 !== 0) &&
+            (bucket01 !== undefined) &&
             (iunit = bucket01.get(th) || 0) !== 0
         ) {
             env.bits = catBits01; env.iunit = iunit;
             filterMatchAndFetchModifiers(iunit, env);
         }
         if (
-            (ibucket10 !== 0) &&
+            (bucket10 !== undefined) &&
             (iunit = bucket10.get(th) || 0) !== 0
         ) {
             env.bits = catBits10; env.iunit = iunit;
             filterMatchAndFetchModifiers(iunit, env);
         }
         if (
-            (ibucket11 !== 0) &&
+            (bucket11 !== undefined) &&
             (iunit = bucket11.get(th) || 0) !== 0
         ) {
             env.bits = catBits11; env.iunit = iunit;
@@ -4970,7 +4990,7 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
     // occurrences.
     if ( results.length === 1 ) {
         const result = results[0];
-        if ( (result.bits & AllowAction) !== 0 ) { return; }
+        if ( (result.bits & ALLOW_REALM) !== 0 ) { return; }
         return [ result ];
     }
 
@@ -4979,11 +4999,11 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
     const toRemove = new Map();
 
     for ( const result of results ) {
-        const actionBits = result.bits & ActionBitsMask;
+        const actionBits = result.bits & BLOCKALLOW_REALM;
         const modifyValue = result.value;
-        if ( actionBits === BlockImportant ) {
+        if ( actionBits === BLOCKIMPORTANT_REALM ) {
             toAddImportant.set(modifyValue, result);
-        } else if ( actionBits === BlockAction ) {
+        } else if ( actionBits === BLOCK_REALM ) {
             toAdd.set(modifyValue, result);
         } else {
             toRemove.set(modifyValue, result);
@@ -4991,7 +5011,7 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
     }
     if ( toAddImportant.size === 0 && toAdd.size === 0 ) { return; }
 
-    // Remove entries overriden by important block filters.
+    // Remove entries overridden by important block filters.
     if ( toAddImportant.size !== 0 ) {
         for ( const key of toAddImportant.keys() ) {
             toAdd.delete(key);
@@ -5048,11 +5068,13 @@ FilterContainer.prototype.matchAndFetchModifiers = function(
 
 /******************************************************************************/
 
-FilterContainer.prototype.realmMatchString = function(
+StaticNetFilteringEngine.prototype.realmMatchString = function(
     realmBits,
     typeBits,
     partyBits
 ) {
+    if ( this.notReady ) { return false; }
+
     const exactType = typeBits & 0x80000000;
     typeBits &= 0x7FFFFFFF;
 
@@ -5061,56 +5083,51 @@ FilterContainer.prototype.realmMatchString = function(
     const catBits10 = realmBits | partyBits;
     const catBits11 = realmBits | typeBits | partyBits;
 
-    const ibucket00 = exactType === 0
-        ? this.bitsToBucketIndices[catBits00]
-        : 0;
-    const ibucket01 = exactType !== 0 || typeBits !== 0
-        ? this.bitsToBucketIndices[catBits01]
-        : 0;
-    const ibucket10 = exactType === 0 && partyBits !== 0
-        ? this.bitsToBucketIndices[catBits10]
-        : 0;
-    const ibucket11 = (exactType !== 0 || typeBits !== 0) && partyBits !== 0
-        ? this.bitsToBucketIndices[catBits11]
-        : 0;
+    const bucket00 = exactType === 0
+        ? this.bitsToBucket.get(catBits00)
+        : undefined;
+    const bucket01 = exactType !== 0 || typeBits !== 0
+        ? this.bitsToBucket.get(catBits01)
+        : undefined;
+    const bucket10 = exactType === 0 && partyBits !== 0
+        ? this.bitsToBucket.get(catBits10)
+        : undefined;
+    const bucket11 = (exactType !== 0 || typeBits !== 0) && partyBits !== 0
+        ? this.bitsToBucket.get(catBits11)
+        : undefined;
 
     if (
-        ibucket00 === 0 && ibucket01 === 0 &&
-        ibucket10 === 0 && ibucket11 === 0
+        bucket00 === undefined && bucket01 === undefined &&
+        bucket10 === undefined && bucket11 === undefined
     ) {
         return false;
     }
-
-    const bucket00 = this.buckets[ibucket00];
-    const bucket01 = this.buckets[ibucket01];
-    const bucket10 = this.buckets[ibucket10];
-    const bucket11 = this.buckets[ibucket11];
 
     let catBits = 0, iunit = 0;
 
     // Pure hostname-based filters
     let tokenHash = DOT_TOKEN_HASH;
     if (
-        (ibucket00 !== 0) &&
-        (iunit = bucket00.get(tokenHash) || 0) !== 0 &&
+        (bucket00 !== undefined) &&
+        (iunit = bucket00.get(DOT_TOKEN_HASH) || 0) !== 0 &&
         (filterMatch(iunit) === true)
     ) {
         catBits = catBits00;
     } else if (
-        (ibucket01 !== 0) &&
-        (iunit = bucket01.get(tokenHash) || 0) !== 0 &&
+        (bucket01 !== undefined) &&
+        (iunit = bucket01.get(DOT_TOKEN_HASH) || 0) !== 0 &&
         (filterMatch(iunit) === true)
     ) {
         catBits = catBits01;
     } else if (
-        (ibucket10 !== 0) &&
-        (iunit = bucket10.get(tokenHash) || 0) !== 0 &&
+        (bucket10 !== undefined) &&
+        (iunit = bucket10.get(DOT_TOKEN_HASH) || 0) !== 0 &&
         (filterMatch(iunit) === true)
     ) {
         catBits = catBits10;
     } else if (
-        (ibucket11 !== 0) &&
-        (iunit = bucket11.get(tokenHash) || 0) !== 0 &&
+        (bucket11 !== undefined) &&
+        (iunit = bucket11.get(DOT_TOKEN_HASH) || 0) !== 0 &&
         (filterMatch(iunit) === true)
     ) {
         catBits = catBits11;
@@ -5124,7 +5141,7 @@ FilterContainer.prototype.realmMatchString = function(
             if ( tokenHash === INVALID_TOKEN_HASH ) { return false; }
             $tokenBeg = tokenHashes[i+1];
             if (
-                (ibucket00 !== 0) &&
+                (bucket00 !== undefined) &&
                 (iunit = bucket00.get(tokenHash) || 0) !== 0 &&
                 (filterMatch(iunit) === true)
             ) {
@@ -5132,7 +5149,7 @@ FilterContainer.prototype.realmMatchString = function(
                 break;
             }
             if (
-                (ibucket01 !== 0) &&
+                (bucket01 !== undefined) &&
                 (iunit = bucket01.get(tokenHash) || 0) !== 0 &&
                 (filterMatch(iunit) === true)
             ) {
@@ -5140,7 +5157,7 @@ FilterContainer.prototype.realmMatchString = function(
                 break;
             }
             if (
-                (ibucket10 !== 0) &&
+                (bucket10 !== undefined) &&
                 (iunit = bucket10.get(tokenHash) || 0) !== 0 &&
                 (filterMatch(iunit) === true)
             ) {
@@ -5148,7 +5165,7 @@ FilterContainer.prototype.realmMatchString = function(
                 break;
             }
             if (
-                (ibucket11 !== 0) &&
+                (bucket11 !== undefined) &&
                 (iunit = bucket11.get(tokenHash) || 0) !== 0 &&
                 (filterMatch(iunit) === true)
             ) {
@@ -5178,14 +5195,15 @@ FilterContainer.prototype.realmMatchString = function(
 // https://www.reddit.com/r/uBlockOrigin/comments/d6vxzj/
 //   Add support for `specifichide`.
 
-FilterContainer.prototype.matchRequestReverse = function(type, url) {
+StaticNetFilteringEngine.prototype.matchRequestReverse = function(type, url) {
     const typeBits = typeNameToTypeValue[type] | 0x80000000;
 
     // Prime tokenizer: we get a normalized URL in return.
     $requestURL = urlTokenizer.setURL(url);
     $requestURLRaw = url;
     $requestMethodBit = 0;
-    $requestTypeValue = (typeBits & TypeBitsMask) >>> TypeBitsOffset;
+    $requestTypeValue = (typeBits & TYPE_REALM) >>> TYPE_REALM_OFFSET;
+    $requestAddress = '';
     $isBlockImportant = false;
     this.$filterUnit = 0;
 
@@ -5194,9 +5212,9 @@ FilterContainer.prototype.matchRequestReverse = function(type, url) {
     $docDomain = domainFromHostname($docHostname);
 
     // Exception filters
-    if ( this.realmMatchString(AllowAction, typeBits, FirstParty) ) {
+    if ( this.realmMatchString(ALLOW_REALM, typeBits, FIRSTPARTY_REALM) ) {
         // Important block filters.
-        if ( this.realmMatchString(BlockImportant, typeBits, FirstParty) ) {
+        if ( this.realmMatchString(BLOCKIMPORTANT_REALM, typeBits, FIRSTPARTY_REALM) ) {
             return 1;
         }
         return 2;
@@ -5225,9 +5243,9 @@ FilterContainer.prototype.matchRequestReverse = function(type, url) {
  *   Bit 1: lookup allow realm regardless of whether there was a match in
  *          block realm.
  *
- * @returns {integer} 0=no match, 1=block, 2=allow (exeption)
+ * @returns {integer} 0=no match, 1=block, 2=allow (exception)
  */
-FilterContainer.prototype.matchRequest = function(fctxt, modifiers = 0) {
+StaticNetFilteringEngine.prototype.matchRequest = function(fctxt, modifiers = 0) {
     let typeBits = typeNameToTypeValue[fctxt.type];
     if ( modifiers === 0 ) {
         if ( typeBits === undefined ) {
@@ -5241,7 +5259,7 @@ FilterContainer.prototype.matchRequest = function(fctxt, modifiers = 0) {
         typeBits |= 0x80000000;
     }
 
-    const partyBits = fctxt.is3rdPartyToDoc() ? ThirdParty : FirstParty;
+    const partyBits = fctxt.is3rdPartyToDoc() ? THIRDPARTY_REALM : FIRSTPARTY_REALM;
 
     // Prime tokenizer: we get a normalized URL in return.
     $requestURL = urlTokenizer.setURL(fctxt.url);
@@ -5253,16 +5271,17 @@ FilterContainer.prototype.matchRequest = function(fctxt, modifiers = 0) {
     $docDomain = fctxt.getDocDomain();
     $requestHostname = fctxt.getHostname();
     $requestMethodBit = fctxt.method || 0;
-    $requestTypeValue = (typeBits & TypeBitsMask) >>> TypeBitsOffset;
+    $requestTypeValue = (typeBits & TYPE_REALM) >>> TYPE_REALM_OFFSET;
+    $requestAddress = fctxt.getIPAddress();
     $isBlockImportant = false;
 
     // Evaluate block realm before allow realm, and allow realm before
     // block-important realm, i.e. by order of likelihood of a match.
-    const r = this.realmMatchString(BlockAction, typeBits, partyBits);
+    const r = this.realmMatchString(BLOCK_REALM, typeBits, partyBits);
     if ( r || (modifiers & 0b0010) !== 0 ) {
         if ( $isBlockImportant ) { return 1; }
-        if ( this.realmMatchString(AllowAction, typeBits, partyBits) ) {
-            if ( this.realmMatchString(BlockImportant, typeBits, partyBits) ) {
+        if ( this.realmMatchString(ALLOW_REALM, typeBits, partyBits) ) {
+            if ( this.realmMatchString(BLOCKIMPORTANT_REALM, typeBits, partyBits) ) {
                 return 1;
             }
             return 2;
@@ -5274,9 +5293,9 @@ FilterContainer.prototype.matchRequest = function(fctxt, modifiers = 0) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.matchHeaders = function(fctxt, headers) {
+StaticNetFilteringEngine.prototype.matchHeaders = function(fctxt, headers) {
     const typeBits = typeNameToTypeValue[fctxt.type] || otherTypeBitValue;
-    const partyBits = fctxt.is3rdPartyToDoc() ? ThirdParty : FirstParty;
+    const partyBits = fctxt.is3rdPartyToDoc() ? THIRDPARTY_REALM : FIRSTPARTY_REALM;
 
     // Prime tokenizer: we get a normalized URL in return.
     $requestURL = urlTokenizer.setURL(fctxt.url);
@@ -5288,16 +5307,25 @@ FilterContainer.prototype.matchHeaders = function(fctxt, headers) {
     $docDomain = fctxt.getDocDomain();
     $requestHostname = fctxt.getHostname();
     $requestMethodBit = fctxt.method || 0;
-    $requestTypeValue = (typeBits & TypeBitsMask) >>> TypeBitsOffset;
+    $requestTypeValue = (typeBits & TYPE_REALM) >>> TYPE_REALM_OFFSET;
+    $requestAddress = fctxt.getIPAddress();
     $httpHeaders.init(headers);
 
     let r = 0;
-    if ( this.realmMatchString(HEADERS | BlockImportant, typeBits, partyBits) ) {
+    if ( this.realmMatchString(HEADERS_REALM | BLOCK_REALM, typeBits, partyBits) ) {
         r = 1;
-    } else if ( this.realmMatchString(HEADERS | BlockAction, typeBits, partyBits) ) {
-        r = this.realmMatchString(HEADERS | AllowAction, typeBits, partyBits)
-            ? 2
-            : 1;
+    }
+    if ( r !== 0 && $isBlockImportant !== true ) {
+        if ( this.realmMatchString(HEADERS_REALM | ALLOW_REALM, typeBits, partyBits) ) {
+            r = 2;
+        } else if ( this.realmMatchString(ALLOW_REALM, typeBits, partyBits) ) {
+            r = 2;
+        }
+        if ( r === 2 ) {
+            if ( this.realmMatchString(HEADERS_REALM | BLOCKIMPORTANT_REALM, typeBits, partyBits) ) {
+                r = 1;
+            }
+        }
     }
 
     $httpHeaders.reset();
@@ -5307,7 +5335,7 @@ FilterContainer.prototype.matchHeaders = function(fctxt, headers) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.redirectRequest = function(redirectEngine, fctxt) {
+StaticNetFilteringEngine.prototype.redirectRequest = function(redirectEngine, fctxt) {
     const directives = this.matchAndFetchModifiers(fctxt, 'redirect-rule');
     // No directive is the most common occurrence.
     if ( directives === undefined ) { return; }
@@ -5318,18 +5346,16 @@ FilterContainer.prototype.redirectRequest = function(redirectEngine, fctxt) {
     }
     // Redirect to highest-ranked directive
     const directive = directives[highest];
-    if ( (directive.bits & AllowAction) === 0 ) {
-        const { token } = parseRedirectRequestValue(directive);
-        fctxt.redirectURL = redirectEngine.tokenToURL(fctxt, token);
-        if ( fctxt.redirectURL === undefined ) { return; }
-    }
+    if ( (directive.bits & ALLOW_REALM) !== 0 ) { return directives; }
+    const { token } = parseRedirectRequestValue(directive);
+    fctxt.redirectURL = redirectEngine.tokenToURL(fctxt, token);
+    if ( fctxt.redirectURL === undefined ) { return; }
     return directives;
 };
 
 function parseRedirectRequestValue(directive) {
     if ( directive.cache === null ) {
-        directive.cache =
-            sfp.parseRedirectValue(directive.value);
+        directive.cache = sfp.parseRedirectValue(directive.value);
     }
     return directive.cache;
 }
@@ -5342,20 +5368,83 @@ function compareRedirectRequests(redirectEngine, a, b) {
         parseRedirectRequestValue(b);
     if ( redirectEngine.hasToken(btok) === false ) { return 1; }
     if ( abits !== bbits ) {
-        if ( (abits & Important) !== 0 ) { return 1; }
-        if ( (bbits & Important) !== 0 ) { return -1; }
-        if ( (abits & AllowAction) !== 0 ) { return -1; }
-        if ( (bbits & AllowAction) !== 0 ) { return 1; }
+        if ( (abits & IMPORTANT_REALM) !== 0 ) { return 1; }
+        if ( (bbits & IMPORTANT_REALM) !== 0 ) { return -1; }
+        if ( (abits & ALLOW_REALM) !== 0 ) { return -1; }
+        if ( (bbits & ALLOW_REALM) !== 0 ) { return 1; }
     }
     return aint - bint;
 }
 
 /******************************************************************************/
 
+StaticNetFilteringEngine.prototype.transformRequest = function(fctxt, out = []) {
+    const directives = this.matchAndFetchModifiers(fctxt, 'uritransform');
+    if ( directives === undefined ) { return; }
+    const redirectURL = new URL(fctxt.url);
+    for ( const directive of directives ) {
+        if ( (directive.bits & ALLOW_REALM) !== 0 ) {
+            out.push(directive);
+            continue;
+        }
+        if ( directive.cache === null ) {
+            directive.cache = sfp.parseReplaceValue(directive.value);
+        }
+        const cache = directive.cache;
+        if ( cache === undefined ) { continue; }
+        const before = `${redirectURL.pathname}${redirectURL.search}${redirectURL.hash}`;
+        if ( cache.re.test(before) !== true ) { continue; }
+        const after = before.replace(cache.re, cache.replacement);
+        if ( after === before ) { continue; }
+        const hashPos = after.indexOf('#');
+        redirectURL.hash = hashPos !== -1 ? after.slice(hashPos) : '';
+        const afterMinusHash = hashPos !== -1 ? after.slice(0, hashPos) : after;
+        const searchPos = afterMinusHash.indexOf('?');
+        redirectURL.search = searchPos !== -1 ? afterMinusHash.slice(searchPos) : '';
+        redirectURL.pathname = searchPos !== -1 ? after.slice(0, searchPos) : after;
+        out.push(directive);
+    }
+    if ( out.length === 0 ) { return; }
+    if ( redirectURL.href !== fctxt.url ) {
+        fctxt.redirectURL = redirectURL.href;
+    }
+    return out;
+};
+
+StaticNetFilteringEngine.prototype.urlSkip = function(
+    fctxt,
+    blocked,
+    out = []
+) {
+    if ( fctxt.redirectURL !== undefined ) { return; }
+    const directives = this.matchAndFetchModifiers(fctxt, 'urlskip');
+    if ( directives === undefined ) { return; }
+    for ( const directive of directives ) {
+        if ( (directive.bits & ALLOW_REALM) !== 0 ) {
+            out.push(directive);
+            continue;
+        }
+        const urlin = fctxt.url;
+        const value = directive.value;
+        const steps = value.includes(' ') && value.split(/ +/) || [ value ];
+        const urlout = urlSkip(urlin, blocked, steps, directive);
+        if ( urlout === undefined ) { continue; }
+        if ( urlout === urlin ) { continue; }
+        fctxt.redirectURL = urlout;
+        out.push(directive);
+        break;
+    }
+    if ( out.length === 0 ) { return; }
+    return out;
+};
+
+/******************************************************************************/
+
 // https://github.com/uBlockOrigin/uBlock-issues/issues/1626
 //   Do not redirect when the number of query parameters does not change.
 
-FilterContainer.prototype.filterQuery = function(fctxt) {
+StaticNetFilteringEngine.prototype.filterQuery = function(fctxt, out = []) {
+    if ( fctxt.redirectURL !== undefined ) { return; }
     const directives = this.matchAndFetchModifiers(fctxt, 'removeparam');
     if ( directives === undefined ) { return; }
     const url = fctxt.url;
@@ -5378,10 +5467,9 @@ FilterContainer.prototype.filterQuery = function(fctxt) {
         }
     }
     const inParamCount = params.size;
-    const out = [];
     for ( const directive of directives ) {
         if ( params.size === 0 ) { break; }
-        const isException = (directive.bits & AllowAction) !== 0;
+        const isException = (directive.bits & ALLOW_REALM) !== 0;
         if ( isException && directive.value === '' ) {
             out.push(directive);
             break;
@@ -5429,7 +5517,7 @@ FilterContainer.prototype.filterQuery = function(fctxt) {
         fctxt.redirectURL = url.slice(0, qpos);
         if ( params.size !== 0 ) {
             fctxt.redirectURL += '?' + Array.from(params).map(a =>
-                a[1] === '' ? a[0] : `${a[0]}=${a[1]}`
+                a[1] === '' ? `${a[0]}=` : `${a[0]}=${a[1]}`
             ).join('&');
         }
         if ( hpos !== url.length ) {
@@ -5449,14 +5537,14 @@ function parseQueryPruneValue(directive) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.hasQuery = function(fctxt) {
+StaticNetFilteringEngine.prototype.hasQuery = function(fctxt) {
     urlTokenizer.setURL(fctxt.url);
     return urlTokenizer.hasQuery();
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.toLogData = function() {
+StaticNetFilteringEngine.prototype.toLogData = function() {
     if ( this.$filterUnit !== 0 ) {
         return new LogData(this.$catBits, this.$tokenHash, this.$filterUnit);
     }
@@ -5464,19 +5552,19 @@ FilterContainer.prototype.toLogData = function() {
 
 /******************************************************************************/
 
-FilterContainer.prototype.isBlockImportant = function() {
+StaticNetFilteringEngine.prototype.isBlockImportant = function() {
     return this.$filterUnit !== 0 && $isBlockImportant;
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.getFilterCount = function() {
+StaticNetFilteringEngine.prototype.getFilterCount = function() {
     return this.acceptedCount - this.discardedCount;
 };
 
 /******************************************************************************/
 
-FilterContainer.prototype.enableWASM = function(wasmModuleFetcher, path) {
+StaticNetFilteringEngine.prototype.enableWASM = function(wasmModuleFetcher, path) {
     return Promise.all([
         bidiTrie.enableWASM(wasmModuleFetcher, path),
         origHNTrieContainer.enableWASM(wasmModuleFetcher, path),
@@ -5488,26 +5576,83 @@ FilterContainer.prototype.enableWASM = function(wasmModuleFetcher, path) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.test = async function(docURL, type, url) {
+StaticNetFilteringEngine.prototype.test = function(details) {
+    const { url, type, from, redirectEngine } = details;
+    if ( url === undefined ) { return; }
     const fctxt = new FilteringContext();
-    fctxt.setDocOriginFromURL(docURL);
-    fctxt.setType(type);
     fctxt.setURL(url);
+    fctxt.setType(type || '');
+    fctxt.setDocOriginFromURL(from || '');
     const r = this.matchRequest(fctxt);
-    console.info(`${r}`);
-    if ( r !== 0 ) {
-        console.info(this.toLogData());
+    const out = [ `url: ${url}` ];
+    if ( type ) {
+        out.push(`type: ${type}`);
     }
-};
+    if ( from ) {
+        out.push(`context: ${from}`);
+    }
+    if ( r !== 0 ) {
+        const logdata = this.toLogData();
+        if ( r === 1 ) {
+            out.push(`blocked: ${logdata.raw}`);
+        } else if ( r === 2 ) {
+            out.push(`unblocked: ${logdata.raw}`);
+        }
+    } else {
+        out.push('not blocked');
+    }
+    if ( r !== 1 ) {
+        const entries = this.transformRequest(fctxt);
+        if ( entries ) {
+            for ( const entry of entries ) {
+                out.push(`modified: ${entry.logData().raw}`);
+            }
+        }
+        if ( fctxt.redirectURL !== undefined && this.hasQuery(fctxt) ) {
+            const entries = this.filterQuery(fctxt, 'removeparam');
+            if ( entries ) {
+                for ( const entry of entries ) {
+                    out.push(`modified: ${entry.logData().raw}`);
+                }
+            }
+        }
+        if ( fctxt.type === 'main_frame' || fctxt.type === 'sub_frame' ) {
+            const csps = this.matchAndFetchModifiers(fctxt, 'csp');
+            if ( csps ) {
+                for ( const csp of csps ) {
+                    out.push(`modified: ${csp.logData().raw}`);
+                }
+            }
+            const pps = this.matchAndFetchModifiers(fctxt, 'permissions');
+            if ( pps ) {
+                for ( const pp of pps ) {
+                    out.push(`modified: ${pp.logData().raw}`);
+                }
+            }
+        }
+    } else if ( redirectEngine ) {
+        const redirects = this.redirectRequest(redirectEngine, fctxt);
+        if ( redirects ) {
+            for ( const redirect of redirects ) {
+                out.push(`modified: ${redirect.logData().raw}`);
+            }
+        }
+    }
+    const urlskips = this.matchAndFetchModifiers(fctxt, 'urlskip');
+    if ( urlskips ) {
+        for ( const urlskip of urlskips ) {
+            out.push(`modified: ${urlskip.logData().raw}`);
+        }
+    }
+    return out.join('\n');
+}
 
 /******************************************************************************/
 
-FilterContainer.prototype.bucketHistogram = function() {
+StaticNetFilteringEngine.prototype.bucketHistogram = function() {
     const results = [];
-    for ( let bits = 0; bits < this.bitsToBucketIndices.length; bits++ ) {
-        const ibucket = this.bitsToBucketIndices[bits];
-        if ( ibucket === 0 ) { continue; }
-        for ( const [ th, iunit ] of this.buckets[ibucket] ) {
+    for ( const [ bits, bucket ] of this.bitsToBucket ) {
+        for ( const [ th, iunit ] of bucket ) {
             const token = urlTokenizer.stringFromTokenHash(th);
             const fc = filterGetClass(iunit);
             const count = fc.getCount !== undefined ? fc.getCount(iunit) : 1;
@@ -5525,7 +5670,7 @@ FilterContainer.prototype.bucketHistogram = function() {
 // Dump the internal state of the filtering engine to the console.
 // Useful to make development decisions and investigate issues.
 
-FilterContainer.prototype.dump = function() {
+StaticNetFilteringEngine.prototype.dump = function() {
     const thConstants = new Map([
         [ NO_TOKEN_HASH, 'NO_TOKEN_HASH' ],
         [ DOT_TOKEN_HASH, 'DOT_TOKEN_HASH' ],
@@ -5586,15 +5731,21 @@ FilterContainer.prototype.dump = function() {
     const thCounts = new Set();
 
     const realms = new Map([
-        [ BlockAction, 'block' ],
-        [ BlockImportant, 'block-important' ],
-        [ AllowAction, 'unblock' ],
-        [ ModifyAction, 'modify' ],
+        [ BLOCK_REALM, 'block' ],
+        [ BLOCKIMPORTANT_REALM, 'block-important' ],
+        [ ALLOW_REALM, 'unblock' ],
+        [ REDIRECT_REALM, 'redirect' ],
+        [ REMOVEPARAM_REALM, 'removeparam' ],
+        [ CSP_REALM, 'csp' ],
+        [ PERMISSIONS_REALM, 'permissions' ],
+        [ URLTRANSFORM_REALM, 'uritransform' ],
+        [ REPLACE_REALM, 'replace' ],
+        [ URLSKIP_REALM, 'urlskip' ],
     ]);
     const partyness = new Map([
-        [ AnyParty, 'any-party' ],
-        [ FirstParty, '1st-party' ],
-        [ ThirdParty, '3rd-party' ],
+        [ ANYPARTY_REALM, 'any-party' ],
+        [ FIRSTPARTY_REALM, '1st-party' ],
+        [ THIRDPARTY_REALM, '3rd-party' ],
     ]);
     for ( const [ realmBits, realmName ] of realms ) {
         toOutput(1, `+ realm: ${realmName}`);
@@ -5606,11 +5757,11 @@ FilterContainer.prototype.dump = function() {
                 if ( processedTypeBits.has(typeBits) ) { continue; }
                 processedTypeBits.add(typeBits);
                 const bits = realmBits | partyBits | typeBits;
-                const ibucket = this.bitsToBucketIndices[bits];
-                if ( ibucket === 0 ) { continue; }
-                const thCount = this.buckets[ibucket].size;
+                const bucket = this.bitsToBucket.get(bits);
+                if ( bucket === undefined ) { continue; }
+                const thCount = bucket.size;
                 toOutput(3, `+ type: ${typeName} (${thCount})`);
-                for ( const [ th, iunit ] of this.buckets[ibucket] ) {
+                for ( const [ th, iunit ] of bucket) {
                     thCounts.add(th);
                     const ths = thConstants.has(th)
                         ? thConstants.get(th)
@@ -5650,6 +5801,6 @@ FilterContainer.prototype.dump = function() {
 
 /******************************************************************************/
 
-const staticNetFilteringEngine = new FilterContainer();
+const staticNetFilteringEngine = new StaticNetFilteringEngine();
 
 export default staticNetFilteringEngine;

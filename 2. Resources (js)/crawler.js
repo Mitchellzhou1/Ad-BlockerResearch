@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 
 
 const TIMEOUT = 5 * 60 * 1000; // 15 minutes
-const SIZE = 1;                 // Number of driver processes to create
+const SIZE = 5;                 // Number of driver processes to create
 
 const catapult = false;          // testing mode
 
@@ -37,22 +37,23 @@ function divideChunks(arr, chunkSize) {
   );
 };
 
-function subset(jsonArray){
-  const jsonObjects = jsonArray.map(jsonString => JSON.parse(jsonString));
+function subset(jsonArray) {
+  const jsonObjects = jsonArray
+    .map(jsonString => JSON.parse(jsonString))
+    .filter(obj => Object.keys(obj).length > 0); // Keep only non-empty objects
+
+  if (jsonObjects.length === 0) return {}; // Return empty object if all were empty
 
   const commonPairs = {};
 
   for (const [key, value] of Object.entries(jsonObjects[0])) {
-      if (jsonObjects.every(obj => obj.hasOwnProperty(key))) {
-          commonPairs[key] = value;
-      }
-      // else{
-      //   console.log(key);
-      // }
+    if (jsonObjects.every(obj => obj.hasOwnProperty(key))) {
+      commonPairs[key] = value;
+    }
   }
 
   return commonPairs;
-};
+}
 
 function write_results(website, data) {
   let finalData = {[website]: data};
@@ -86,7 +87,7 @@ async function runBatch(chunk, extn, extn_lst, control_resources) {
     
     var processCount;
     if (control_resources==='false'){
-      processCount = (extn === 'control') ? 2 : 1;
+      processCount = (extn === 'control') ? 3 : 1;
     }
     else{
       processCount = 1;
@@ -145,7 +146,10 @@ async function runInBatches(chunksList, extn_lst) {
 
       console.log('Running controls', website);
       const control_resources = await runBatch(chunk, 'control', extn_lst, 'false'); //starts 3 control browsers
-      
+      if (control_resources.length == 0){
+        continue;
+      }
+
       //need to store this value
       const control_final_subset = subset(control_resources);
       // write_results(websiteKey(website), control_final_subset);
@@ -181,32 +185,43 @@ const websites = [
   // "https://www.bbc.com",
   // "https://www.nytimes.com",
   // "https://www.theguardian.com",
-  // "https://www.washingtonpost.com",
-  // "https://www.nbcnews.com",
-  // "https://www.reuters.com",
-  // "https://www.forbes.com",
-  // "https://www.wsj.com",
+  "https://www.washingtonpost.com",         // doesn't work in headless
+  "https://www.nbcnews.com",
+  "https://www.reuters.com",
+  "https://www.forbes.com",
+  "https://www.wsj.com",
   "https://www.nbcnews.com/",
-  // 'https://www.washingtonpost.com/',
-  // 'https://www.uxmatters.com/',
-  // 'https://www.reddit.com/'
+  'https://www.washingtonpost.com/',
+  'https://www.uxmatters.com/',
+  'https://www.reddit.com/',
+  "https://www.baidu.com",  
+  "https://www.tmall.com",  
+  "https://www.weibo.com",  
+  "https://www.jd.com",     
+  "https://www.douyin.com", 
+  "https://www.mi.com",     // Electronics and smartphones
+  "https://www.cctv.com",   // National TV broadcaster
+  "https://www.taobao.com", // E-commerce platform
+  "https://www.163.com",    // News and entertainment
+  "https://www.qq.com",     // Instant messaging and social media
+  "https://www.bilibili.com", // Video-sharing platform
+  "https://www.meituan.com", // Local services and food delivery
+  "https://www.alipay.com",  // Online payment platform
+  "https://www.zol.com.cn",  // Technology news and reviews
+  "https://www.dianping.com", // Business reviews
+  "https://www.tudou.com",   // Video streaming platform
+  "https://www.wechat.com",  // Messaging app
 
 ]
 
 let extn_lst = [
-  'control', // launching control is required
   'adblock', 
   // 'ublock', 
   // 'privacy-badger',
-  // 'adguard'
+  // 'adguard',
+  'control', // launching control is required
 ];
 
-// let resource = [
-//   'images',
-//   'videos'
-// ]
-
-// let resource = 'videos';
 
 
 (async () => {

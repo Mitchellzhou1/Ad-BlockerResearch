@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    uBlock Origin - a browser extension to block requests.
+    uBlock Origin - a comprehensive, efficient content blocker
     Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
@@ -23,31 +23,30 @@
 
 'use strict';
 
+import { onBroadcast } from './broadcast.js';
 import { dom, qs$ } from './dom.js';
 
 /******************************************************************************/
 
-let supportData;
-
 const uselessKeys = [
-    'modifiedHiddenSettings.benchmarkDatasetURL',
-    'modifiedHiddenSettings.blockingProfiles',
-    'modifiedHiddenSettings.consoleLogLevel',
-    'modifiedHiddenSettings.uiPopupConfig',
-    'modifiedUserSettings.alwaysDetachLogger',
-    'modifiedUserSettings.firewallPaneMinimized',
-    'modifiedUserSettings.externalLists',
-    'modifiedUserSettings.importedLists',
-    'modifiedUserSettings.popupPanelSections',
-    'modifiedUserSettings.uiAccentCustom',
-    'modifiedUserSettings.uiAccentCustom0',
-    'modifiedUserSettings.uiTheme',
+    'hiddenSettings.benchmarkDatasetURL',
+    'hiddenSettings.blockingProfiles',
+    'hiddenSettings.consoleLogLevel',
+    'hiddenSettings.uiPopupConfig',
+    'userSettings.alwaysDetachLogger',
+    'userSettings.firewallPaneMinimized',
+    'userSettings.externalLists',
+    'userSettings.importedLists',
+    'userSettings.popupPanelSections',
+    'userSettings.uiAccentCustom',
+    'userSettings.uiAccentCustom0',
+    'userSettings.uiTheme',
 ];
 
 const sensitiveValues = [
     'filterset (user)',
-    'modifiedUserSettings.popupPanelSections',
-    'modifiedHiddenSettings.userResourcesLocation',
+    'userSettings.popupPanelSections',
+    'hiddenSettings.userResourcesLocation',
     'trustedset.added',
     'hostRuleset.added',
     'switchRuleset.added',
@@ -138,7 +137,34 @@ function addDetailsToReportURL(id, collapse = false) {
     dom.attr(elem, 'data-url', url);
 }
 
-function showData() {
+function renderData(data, depth = 0) {
+    const indent = ' '.repeat(depth);
+    if ( Array.isArray(data) ) {
+        const out = [];
+        for ( const value of data ) {
+            out.push(renderData(value, depth));
+        }
+        return out.join('\n');
+    }
+    if ( typeof data !== 'object' || data === null ) {
+        return `${indent}${data}`;
+    }
+    const out = [];
+    for ( const [ name, value ] of Object.entries(data) ) {
+        if ( typeof value === 'object' && value !== null ) {
+            out.push(`${indent}${name}:`);
+            out.push(renderData(value, depth + 1));
+            continue;
+        }
+        out.push(`${indent}${name}: ${value}`);
+    }
+    return out.join('\n');
+}
+
+async function showSupportData() {
+    const supportData = await vAPI.messaging.send('dashboard', {
+        what: 'getSupportData',
+    });
     const shownData = JSON.parse(JSON.stringify(supportData));
     uselessKeys.forEach(prop => { removeKey(shownData, prop); });
     const redacted = true;
@@ -152,18 +178,7 @@ function showData() {
     if ( reportedPage !== null ) {
         shownData.popupPanel = reportedPage.popupPanel;
     }
-    const text = JSON.stringify(shownData, null, 1)
-        .split('\n')
-        .slice(1, -1)
-        .map(v => {
-            return v
-                .replace(/^( *?) "/, '$1')
-                .replace(/^( *.*[^\\])(?:": "|": \{$|": \[$|": )/, '$1: ')
-                .replace(/(?:",?|\},?|\],?|,)$/, '');
-        })
-        .filter(v => v.trim() !== '')
-        .join('\n') + '\n';
-
+    const text = renderData(shownData);
     cmEditor.setValue(text);
     cmEditor.clearHistory();
 
@@ -196,6 +211,10 @@ const reportedPage = (( ) => {
             dom.text(option, parsedURL.href);
             select.append(option);
         }
+        const shouldUpdateLists = url.searchParams.get('shouldUpdateLists');
+        if ( shouldUpdateLists !== null ) {
+            dom.body.dataset.shouldUpdateLists = shouldUpdateLists;
+        }
         dom.cl.add(dom.body, 'filterIssue');
         return {
             hostname: parsedURL.hostname.replace(/^(m|mobile|www)\./, ''),
@@ -210,8 +229,10 @@ function reportSpecificFilterType() {
     return qs$('select[name="type"]').value;
 }
 
-function reportSpecificFilterIssue(ev) {
-    const githubURL = new URL('https://github.com/uBlockOrigin/uAssets/issues/new?template=specific_report_from_ubo.yml');
+function reportSpecificFilterIssue() {
+    const githubURL = new URL(
+        'https://github.com/uBlockOrigin/uAssets/issues/new?template=specific_report_from_ubo.yml'
+    );
     const issueType = reportSpecificFilterType();
     let title = `${reportedPage.hostname}: ${issueType}`;
     if ( qs$('#isNSFW').checked ) {
@@ -228,7 +249,14 @@ function reportSpecificFilterIssue(ev) {
         what: 'gotoURL',
         details: { url: githubURL.href, select: true, index: -1 },
     });
-    ev.preventDefault();
+}
+
+async function updateFilterLists() {
+    if ( dom.body.dataset.shouldUpdateLists === undefined ) { return false; }
+    dom.cl.add(dom.body, 'updating');
+    const assetKeys = JSON.parse(dom.body.dataset.shouldUpdateLists);
+    vAPI.messaging.send('dashboard', { what: 'supportUpdateNow', assetKeys });
+    return true;
 }
 
 /******************************************************************************/
@@ -244,11 +272,7 @@ uBlockDashboard.patchCodeMirrorEditor(cmEditor);
 /******************************************************************************/
 
 (async ( ) => {
-    supportData = await vAPI.messaging.send('dashboard', {
-        what: 'getSupportData',
-    });
-
-    showData();
+    await showSupportData();
 
     dom.on('[data-url]', 'click', ev => {
         const elem = ev.target.closest('[data-url]');
@@ -262,8 +286,16 @@ uBlockDashboard.patchCodeMirrorEditor(cmEditor);
     });
 
     if ( reportedPage !== null ) {
+        if ( dom.body.dataset.shouldUpdateLists ) {
+            dom.on('.supportEntry.shouldUpdate button', 'click', ev => {
+                if ( updateFilterLists() === false ) { return; }
+                ev.preventDefault();
+            });
+        }
+
         dom.on('[data-i18n="supportReportSpecificButton"]', 'click', ev => {
-            reportSpecificFilterIssue(ev);
+            reportSpecificFilterIssue();
+            ev.preventDefault();
         });
 
         dom.on('[data-i18n="supportFindSpecificButton"]', 'click', ev => {
@@ -277,12 +309,24 @@ uBlockDashboard.patchCodeMirrorEditor(cmEditor);
         });
 
         dom.on('#showSupportInfo', 'click', ev => {
-            const button = ev.target;
+            const button = ev.target.closest('#showSupportInfo');
             dom.cl.add(button, 'hidden');
             dom.cl.add('.a.b.c.d', 'e');
             cmEditor.refresh();
         });
     }
+
+    onBroadcast(msg => {
+        if ( msg.what === 'assetsUpdated' ) {
+            dom.cl.remove(dom.body, 'updating');
+            dom.cl.add(dom.body, 'updated');
+            return;
+        }
+        if ( msg.what === 'staticFilteringDataChanged' ) {
+            showSupportData();
+            return;
+        }
+    });
 
     dom.on('#selectAllButton', 'click', ( ) => {
         cmEditor.focus();

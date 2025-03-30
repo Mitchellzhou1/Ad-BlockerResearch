@@ -85,7 +85,7 @@ Driver.prototype.initialize = async function() {
     }
 
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: args,
       ignoreHTTPSErrors: true // Ignore HTTPS errors
     });
@@ -135,7 +135,6 @@ Driver.prototype.initialize = async function() {
       const referer = this.requestsMap.get(requestUrl)   // Find the associated referer from the request map
       const contentType = response.headers()['content-type'] || 'N/A';  // Get the content type
 
-
       if ((contentType.includes('image') || contentType.includes('video'))) {
         const responseData = {
           responseCode: response.status(),
@@ -164,26 +163,45 @@ Driver.prototype.initialize = async function() {
   return this.page;
 };
 
-Driver.prototype.navigateToWebsite = async function() {
-  await this.page.goto(this.site);
+Driver.prototype.navigateToWebsite = async function(key) {
+  try{
+    await this.page.goto(this.site);
+  } catch{
+    // await this.page.screenshot({ path: `sfailed_sites/${key}.png`, fullPage: true });
+    process.exit(0);
+  }
+  
+
   await this.page.evaluate(async () => {
-    const scrollToBottomSlowly = async () => {
-      const distance = 200;  // Scroll by 100 pixels each time
-      while (document.documentElement.scrollTop + window.innerHeight < document.body.scrollHeight) {
-        window.scrollBy(0, distance);  // Scroll down by 'distance'
-        await new Promise(resolve => setTimeout(resolve, 500));  // Wait 500ms between each scroll
+    const scrollToBottomSlowly = async (timeout = 10000) => {
+      const distance = 200;
+      const startTime = Date.now();
+  
+      while (Date.now() - startTime < timeout) {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        
+        if (scrollTop + clientHeight >= scrollHeight) {
+          break;
+        }
+  
+        window.scrollBy(0, distance);
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     };
-
-    await scrollToBottomSlowly();  // Start slow scrolling
-
-    // Optional: Wait for a bit before considering the scroll complete
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  
+    await scrollToBottomSlowly(10000); 
   });
-  await sleep(5);
+
+  let allPages = await this.browser.pages();
+  if (allPages.length > 1) {
+    for (let i = 1; i < allPages.length; i++) {
+      await allPages[i].close();
+    }
+  }
+
+  await sleep(1.5);
   this.source = await this.page.content();
 };
-
 
 Driver.prototype.store_blacklist = async function(website) {
   let finalData = Object.fromEntries(this.blacklistedItems);
@@ -233,24 +251,36 @@ Driver.prototype.find_missing_resources = async function(control_rr, extn_rr){
 };
 
 Driver.prototype.click_on_videos = async function(){
-  const videoElements = await this.page.$$('video');
-  for (const videoElement of videoElements) {
-      try{
-        await videoElement.click();
-        await sleep(5);
-        const pages = await browser.pages();
-        for (let i = 1; i < pages.length; i++) {
-          const title = await pages[i].title();
-          console.log(`Closing page: ${title}`);
-          await pages[i].close();
-        }
-        await this.page.keyboard.press('Escape');
+  const browser = this.browser;
+  const page = this.page
+  
+  // Listen for new pages (tabs) being created
+  browser.on('targetcreated', async (target) => {
+    const newPage = await target.page();
+    if (newPage) {
+      await newPage.close();
+    }
+  });
+  
+  // Get all video elements
+  const videoElements = await page.$$('video');
 
-      }
 
-      catch{
-        1;
-      }
+  for (const video of videoElements) {
+    try {
+      await page.evaluate(video => {
+          const anchor = video.closest("a"); 
+          if (anchor) {
+              anchor.setAttribute("target", "_blank");
+          }
+      }, video);
+      await video.click();
+      await sleep(4); // Small delay between clicks
+    }
+      catch (error) {
+
+        console.error(`Error interacting with video: ${error.message}`);
+    }
   }
 };
 
@@ -278,7 +308,7 @@ Driver.prototype.control_ss = async function(path){
 
 function write_results(data, adblocker, key) {
   let finalData = {[adblocker]: data};
-  const filePath = join(`./screenshots/${key}/missing.json`);
+  const filePath = join(`./screenshots/${key}/ad_resources.json`);
 
   if (fs.existsSync(filePath)) {
       const existingData = fs.readFileSync(filePath, 'utf8');
@@ -310,7 +340,7 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
    * @param {string[]} extn_lst - A list of keys that must be present in the JSON file.
    * @param {number} check_interval - The time interval (in milliseconds) between checks. Default is 1000ms (1 second).
    */
-  const filepath = `./screenshots/${key}/missing.json`;
+  const filepath = `./screenshots/${key}/ad_resources.json`;
   const sleep_interval = 5;
 
   if (typeof extn_lst === 'string') {
@@ -318,18 +348,21 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
   }
   extn_lst = extn_lst.filter(item => item !== 'control');
 
-  while (true) {
+  const max_wait_time = 5 * 60 * 1000;
+  const start_time = Date.now();
+  
+  while (Date.now() - start_time < max_wait_time) {
       try {
           // Check if the file exists
           if (!fs.existsSync(filepath)) {
-              console.log(`File ${filepath} does not exist yet. Waiting...`);
+              // console.log(`File ${filepath} does not exist yet. Waiting...`);
               await sleep(sleep_interval);
               continue;
           }
-
+  
           // Read the file
           var data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
-
+  
           // Check if all keys in extn_lst are present in the JSON data
           if (extn_lst.every(key => data.hasOwnProperty(key))) {
               console.log("All required keys are present. Proceeding...");
@@ -375,7 +408,7 @@ function findSubset(obj1, obj2) {
   const path  = 'screenshots' + '/' + key;
 
   await driver.initialize();
-  await driver.navigateToWebsite()
+  await driver.navigateToWebsite(key)
 
   await driver.click_on_videos();
 
@@ -390,13 +423,19 @@ function findSubset(obj1, obj2) {
     else{
       const file_path = path + '/' + adblocker
       if (!fs.existsSync(file_path)){
-          fs.mkdirSync(file_path, { recursive: true });  
+          fs.mkdirSync(file_path, { recursive: true });
       }
       write_results(responsesObject, adblocker, key)
-      await driver.page.screenshot({
-        path: `${file_path}/entire_page.png`, 
-        fullPage: true,
-    });
+      console.log(`Done writting results\n${file_path}\n`);
+      try{
+        await driver.page.screenshot({
+          path: `${file_path}/entire_page.png`, 
+          fullPage: true,
+        });
+        console.log(`Done Screenshots ${file_path} results\n\n`);
+      } catch{
+        // console.log("Delete Director call was made")
+      }
     }
   }
   else{

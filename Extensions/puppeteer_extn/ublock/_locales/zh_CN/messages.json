@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "内置",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "广告",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "隐私",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
-    "message": "恶意网站",
-    "description": "English: Malware domains"
+    "message": "恶意软件防护、安全",
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "社交网络小部件",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Cookie提醒",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "骚扰",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "多用途",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "区域、语言",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "自定义",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "导入…",
@@ -527,17 +535,25 @@
     "message": "资源更新因网络错误受阻。",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "一行一条过滤规则。每条规则可以是一个普通的主机名或者是一条与 EasyList 兼容的过滤规则。以 <code>!</code> 开头的行将被忽略。",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "请勿添加未信任来源的过滤规则。",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "启用自定义过滤规则",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "允许需信任的自定义过滤规则",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
-    "message": "导入并添加",
-    "description": "English: Import and append"
+    "message": "导入并添加…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
-    "message": "导出",
-    "description": "English: Export"
+    "message": "导出…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "my-ublock-static-filters_{{datetime}}.txt",
@@ -580,8 +596,8 @@
     "description": ""
   },
   "rulesExport": {
-    "message": "导出到文件",
-    "description": ""
+    "message": "导出到文件...",
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "my-ublock-dynamic-rules_{{datetime}}.txt",
@@ -616,12 +632,12 @@
     "description": "A concise description of the 'Trusted sites' pane."
   },
   "whitelistImport": {
-    "message": "导入并添加",
-    "description": "English: Import and append"
+    "message": "导入并添加…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
-    "message": "导出",
-    "description": "English: Export"
+    "message": "导出…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "my-ublock-trusted-sites_{{datetime}}.txt",
@@ -896,7 +912,7 @@
     "description": "Header of 'Documentation' section in Support pane"
   },
   "supportS1P1": {
-    "message": "请至 <code>uBlock/wiki</code> 参阅 uBlock Origin 的所有功用以及使用说明。",
+    "message": "请至 <code>uBlock/wiki</code> 参阅 uBlock Origin 的所有功能以及使用说明。",
     "description": "First paragraph of 'Documentation' section in Support pane"
   },
   "supportS2H": {
@@ -908,7 +924,7 @@
     "description": "First paragraph of 'Questions and support' section in Support pane"
   },
   "supportS3H": {
-    "message": "过滤规则或者网页的问题",
+    "message": "过滤规则问题/网页被损坏",
     "description": "Header of 'Filter issues' section in Support pane"
   },
   "supportS3P1": {
@@ -951,6 +967,14 @@
     "message": "请确认该问题未有其他人上报过，避免重复提交报告给维护者带来额外负担。",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "过滤规则列表每天都会更新。请确认您的问题无法用最新的过滤规则列表解决。",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "请验证重新加载问题页面后问题依然存在。",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "网址：",
     "description": "Label for the URL of the page"
@@ -985,6 +1009,10 @@
   },
   "supportS6Select1Option6": {
     "message": "打开不需要的标签页或窗口",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "指向恶意软件、钓鱼网站",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1036,7 +1064,7 @@
     "description": "Shown in the About pane"
   },
   "aboutCDNsInfo": {
-    "message": "需要更新过滤规则列表时会随机选用一个 CDN",
+    "message": "需要更新过滤规则列表时会随机选用一个 CDN。",
     "description": "Shown in the About pane"
   },
   "aboutBackupDataButton": {
@@ -1163,6 +1191,10 @@
     "message": "继续加载",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "被屏蔽的网页想重定向到另一个网站。如果您选择继续，将直接导航到：{{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "导出到云端储存",
     "description": "tooltip"
@@ -1239,6 +1271,10 @@
     "message": "是否应用元素过滤规则",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
+  "toggleJavascript": {
+    "message": "JavaScript 开关",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
+  },
   "relaxBlockingMode": {
     "message": "放宽拦截限制",
     "description": "Label for keyboard shortcut used to relax blocking mode"
@@ -1268,8 +1304,8 @@
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "无法在浏览器启动时正常过滤。\n重新加载此页面以确保正常过滤。",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "无法在浏览器启动时正常过滤。请重新加载此页面以确保正常过滤。",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "此条目必须是最后一个",

@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "Built-in",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "Mga ad",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "Pagkapribado",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
     "message": "Mga domain na may malware",
-    "description": "English: Malware domains"
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "Social widgets",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Cookie notices",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "Mga nakakaabalang bagay",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "Maraming-mapaggagamitan",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "Mga rehiyon o wika",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "Ipinasadya",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "Mag-import…",
@@ -527,17 +535,25 @@
     "message": "Hindi na-update ang resource dahil sa isang network error.",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "Isang filter kada linya. Pwedeng simpleng hostname o EasyList-compatible ang filter. Hindi papansinin ang mga linyang nagsisimula sa <code>!</code>.",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "Huwag magdagdag ng pangsala mula sa mga hindi katiwa-tiwalang pinagmulan.",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "Enable my custom filters",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "Allow custom filters requiring trust",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
     "message": "I-import at idagdag",
-    "description": "English: Import and append"
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
     "message": "I-export",
-    "description": "English: Export"
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "mga-static-filter-ko-sa-ublock_{{datetime}}.txt",
@@ -581,7 +597,7 @@
   },
   "rulesExport": {
     "message": "I-export sa file",
-    "description": ""
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "mga-dynamikong-patakaran-ko-sa-ublock_{{datetime}}.txt",
@@ -617,11 +633,11 @@
   },
   "whitelistImport": {
     "message": "I-import at idagdag",
-    "description": "English: Import and append"
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
     "message": "I-export",
-    "description": "English: Export"
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "mga-pinagkakatiwalaan-kong-site-sa-ublock_{{datetime}}.txt",
@@ -951,6 +967,14 @@
     "message": "Siguraduhing wala pang ibang nakakapag-ulat ng problema mo upang hindi bahain ng trabaho ang mga volunteer.",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "Ang listahan ng pangsala ng kontent ay araw-araw binabago at dinadag-dagan. Siguruhin na ang iyong isyu ay hindi pa napauukulan sa mga pinakabagong update sa listahan ng pangsala.  ",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "Kumpirmahin na nanatili ang isyu pagkatapos i-reload ang nagkaproblema na pahina ng web.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "Address ng web page:",
     "description": "Label for the URL of the page"
@@ -985,6 +1009,10 @@
   },
   "supportS6Select1Option6": {
     "message": "Kung anu-anong mga tab o window ang binubuksan",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "Leads to badware, phishing",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1163,6 +1191,10 @@
     "message": "Tumuloy",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "The blocked page wants to redirect to another site. If you choose to proceed, you will navigate directly to: {{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "I-export sa imbakan sa cloud",
     "description": "tooltip"
@@ -1239,6 +1271,10 @@
     "message": "Paandarin/patayin ang kosmetikong pagfi-filter",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
+  "toggleJavascript": {
+    "message": "Toggle JavaScript",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
+  },
   "relaxBlockingMode": {
     "message": "Babaan ang lebel ng pagharang",
     "description": "Label for keyboard shortcut used to relax blocking mode"
@@ -1268,8 +1304,8 @@
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "Could not filter properly at browser launch.\nReload the page to ensure proper filtering.",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "Hindi nakapagsala ng maayos nung binuksan ang browser. I-reload ang pahina upang masiguro ang tamang proseso ng pagsasala.",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "Dapat mahuli ang entry na ito",

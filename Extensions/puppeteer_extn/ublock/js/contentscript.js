@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    uBlock Origin - a browser extension to block requests.
+    uBlock Origin - a comprehensive, efficient content blocker
     Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,6 @@
 
     Home: https://github.com/gorhill/uBlock
 */
-
-'use strict';
 
 /*******************************************************************************
 
@@ -103,7 +101,7 @@
 //   https://github.com/chrisaljoudi/uBlock/issues/456
 //   https://github.com/gorhill/uBlock/issues/2029
 
- // >>>>>>>> start of HUGE-IF-BLOCK
+// >>>>>>>> start of HUGE-IF-BLOCK
 if ( typeof vAPI === 'object' && !vAPI.contentScript ) {
 
 /******************************************************************************/
@@ -462,28 +460,6 @@ vAPI.SafeAnimationFrame = class {
 
 /******************************************************************************/
 /******************************************************************************/
-/******************************************************************************/
-
-vAPI.injectScriptlet = function(doc, text) {
-    if ( !doc ) { return; }
-    let script, url;
-    try {
-        const blob = new self.Blob([ text ], { type: 'text/javascript; charset=utf-8' });
-        url = self.URL.createObjectURL(blob);
-        script = doc.createElement('script');
-        script.async = false;
-        script.src = url;
-        (doc.head || doc.documentElement || doc).appendChild(script);
-    } catch (ex) {
-    }
-    if ( url ) {
-        if ( script ) { script.remove(); }
-        self.URL.revokeObjectURL(url);
-    }
-};
-
-/******************************************************************************/
-/******************************************************************************/
 /*******************************************************************************
 
   The DOM filterer is the heart of uBO's cosmetic filtering.
@@ -663,9 +639,9 @@ vAPI.DOMFilterer = class {
             const proceduralFilterer = this.proceduralFiltererInstance();
             if ( proceduralFilterer !== null ) {
                 for ( const json of this.convertedProceduralFilters ) {
-                    out.procedural.push(
-                        proceduralFilterer.createProceduralFilter(json)
-                    );
+                    const pfilter = proceduralFilterer.createProceduralFilter(json);
+                    pfilter.converted = true;
+                    out.procedural.push(pfilter);
                 }
             }
         }
@@ -707,7 +683,7 @@ vAPI.DOMFilterer = class {
         object: 'object',
         video: 'media',
     };
-    let resquestIdGenerator = 1,
+    let requestIdGenerator = 1,
         processTimer,
         cachedBlockedSet,
         cachedBlockedSetHash,
@@ -801,10 +777,10 @@ vAPI.DOMFilterer = class {
 
     const send = function() {
         processTimer = undefined;
-        toCollapse.set(resquestIdGenerator, toProcess);
+        toCollapse.set(requestIdGenerator, toProcess);
         messaging.send('contentscript', {
             what: 'getCollapsibleBlockedRequests',
-            id: resquestIdGenerator,
+            id: requestIdGenerator,
             frameURL: window.location.href,
             resources: toFilter,
             hash: cachedBlockedSetHash,
@@ -813,7 +789,7 @@ vAPI.DOMFilterer = class {
         });
         toProcess = [];
         toFilter = [];
-        resquestIdGenerator += 1;
+        requestIdGenerator += 1;
     };
 
     const process = function(delay) {
@@ -1040,8 +1016,10 @@ vAPI.DOMFilterer = class {
             end = s.indexOf(' ', beg);
             if ( end === beg ) { continue; }
             if ( end === -1 ) { end = len; }
-            const hash = hashFromStr(0x2E /* '.' */, s.slice(beg, end));
+            const token = s.slice(beg, end).trimEnd();
             beg = end;
+            if ( token.length === 0 ) { continue; }
+            const hash = hashFromStr(0x2E /* '.' */, token);
             if ( queriedHashes.has(hash) ) { continue; }
             queriedHashes.add(hash);
             out.push(hash);
@@ -1072,7 +1050,6 @@ vAPI.DOMFilterer = class {
         const hashes = [];
         const nodes = pendingNodes;
         const deadline = t0 + 4;
-        let processed = 0;
         let scanned = 0;
         for (;;) {
             const n = nextPendingNodes();
@@ -1087,10 +1064,8 @@ vAPI.DOMFilterer = class {
                 classesFromNode(node, hashes);
                 scanned += 1;
             }
-            processed += n;
             if ( performance.now() >= deadline ) { break; }
         }
-        //console.info(`[domSurveyor][${hostname}] Surveyed ${scanned}/${processed} nodes in ${(performance.now()-t0).toFixed(2)} ms: ${hashes.length} hashes`);
         scannedCount += scanned;
         if ( scannedCount >= maxSurveyNodes ) {
             stop();
@@ -1298,7 +1273,6 @@ vAPI.DOMFilterer = class {
         const {
             noSpecificCosmeticFiltering,
             noGenericCosmeticFiltering,
-            scriptlets,
         } = response;
 
         vAPI.noSpecificCosmeticFiltering = noSpecificCosmeticFiltering;
@@ -1320,14 +1294,6 @@ vAPI.DOMFilterer = class {
             vAPI.userStylesheet.apply();
         }
 
-        // Library of resources is located at:
-        // https://github.com/gorhill/uBlock/blob/master/assets/ublock/resources.txt
-        if ( scriptlets && typeof self.uBO_scriptletsInjected !== 'boolean' ) {
-            self.uBO_scriptletsInjected = true;
-            vAPI.injectScriptlet(document, scriptlets);
-            vAPI.injectedScripts = scriptlets;
-        }
-
         if ( vAPI.domSurveyor ) {
             if ( Array.isArray(cfeDetails.genericCosmeticHashes) ) {
                 vAPI.domSurveyor.addHashes(cfeDetails.genericCosmeticHashes);
@@ -1346,7 +1312,7 @@ vAPI.DOMFilterer = class {
         vAPI.messaging.send('contentscript', {
             what: 'retrieveContentScriptParameters',
             url: vAPI.effectiveSelf.location.href,
-            needScriptlets: typeof self.uBO_scriptletsInjected !== 'boolean',
+            needScriptlets: typeof self.uBO_scriptletsInjected !== 'string',
         }).then(response => {
             onResponseReady(response);
         });

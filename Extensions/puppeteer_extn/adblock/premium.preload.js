@@ -1,225 +1,177 @@
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-var __webpack_exports__ = {};
+/*
+ * This file is part of AdBlock  <https://getadblock.com/>,
+ * Copyright (C) 2013-present  Adblock, Inc.
+ *
+ * AdBlock is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * AdBlock is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdBlock.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-;// CONCATENATED MODULE: ../src/core/api/front/api.port.ts
-var __rest = (undefined && undefined.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-let port;
-const connectListeners = new Set();
-const disconnectListeners = new Set();
-const messageListeners = new Set();
-function addConnectListener(listener) {
-    connectListeners.add(listener);
-    listener();
+/* For ESLint: List any global identifiers used in this file below */
+/* global browser, cloneInto */
+
+/**
+ * List of events that are waiting to be processed
+ */
+const eventQueue = [];
+/**
+ * Maximum number of failed requests after which events stop being handled
+ */
+const maxErrorThreshold = 30;
+/**
+ * Maximum number of events that can be queued up
+ */
+const maxQueuedEvents = 20;
+/**
+ * Interval period in milliseconds at which events are processed
+ */
+const processingDelay = 100;
+
+/**
+ * Number of failed requests
+ */
+let errorCount = 0;
+/**
+ * Interval identifier for processing events
+ */
+let processingIntervalId = null;
+
+/**
+ * Checks whether event contains authentication data
+ *
+ * @param {Event} event - Event
+ *
+ * @returns {boolean} whether event contains authentication data
+ */
+function isAuthRequestEvent(event) {
+  return (
+    event.detail &&
+    typeof event.detail.signature === "string" &&
+    typeof event.detail.timestamp === "number"
+  );
 }
-function addDisconnectListener(listener) {
-    disconnectListeners.add(listener);
+
+/**
+ * Check whether incoming event hasn't been tampered with
+ *
+ * @param {Event} event - DOM event
+ *
+ * @returns {boolean} whether the event can be trusted
+ */
+function isTrustedEvent(event) {
+  return (
+    Object.getPrototypeOf(event) === CustomEvent.prototype &&
+    !Object.hasOwnProperty.call(event, "detail")
+  );
 }
-function addMessageListener(listener) {
-    messageListeners.add(listener);
+
+/**
+ * Retrieves requested payload and additional info from background page
+ *
+ * @param {Event} event - "flattr-request-payload" DOM event
+ *
+ * @returns {Promise<Object>} Object containing payload and extras
+ */
+async function getPayloadAndExtras(event) {
+  return browser.runtime.sendMessage({
+    command: "users.isPaying",
+    timestamp: event.detail.timestamp,
+    signature: event.detail.signature,
+  });
 }
-const connect = () => {
-    if (port) {
-        return port;
-    }
+
+/**
+ * Queues up incoming requests
+ *
+ * @param {Event} event - "flattr-request-payload" DOM event
+ */
+function handleFlattrRequestPayloadEvent(event) {
+  if (eventQueue.length >= maxQueuedEvents) {
+    return;
+  }
+
+  eventQueue.push(event);
+  startProcessingInterval();
+}
+
+/**
+ * Processes incoming requests
+ *
+ * @returns {Promise<void>}
+ */
+async function processNextEvent() {
+  const event = eventQueue.shift();
+  if (event && isTrustedEvent(event) && isAuthRequestEvent(event)) {
     try {
-        port = browser.runtime.connect({ name: "ui" });
+      const { payload, extensionInfo } = await getPayloadAndExtras(event);
+
+      if (payload === null && extensionInfo === null) {
+        throw new Error("Premium request rejected");
+      }
+
+      let detail = { detail: { payload, extensionInfo } };
+      if (typeof cloneInto === "function") {
+        // Firefox requires content scripts to clone objects
+        // that are passed to the document
+        detail = cloneInto(detail, document.defaultView);
+      }
+      document.dispatchEvent(new CustomEvent("flattr-payload", detail));
+      stop();
+    } catch {
+      errorCount += 1;
+      if (errorCount >= maxErrorThreshold) {
+        stop();
+      }
     }
-    catch (ex) {
-        port = null;
-        disconnectListeners.forEach((listener) => listener());
-        return port;
-    }
-    port.onMessage.addListener((message) => {
-        onMessage(message);
-    });
-    port.onDisconnect.addListener(onDisconnect);
-    connectListeners.forEach((listener) => listener());
-    return port;
-};
-function listen(_a) {
-    var { type, filter } = _a, options = __rest(_a, ["type", "filter"]);
-    addConnectListener(() => {
-        if (port) {
-            port.postMessage(Object.assign({ type: `${type}.listen`, filter }, options));
-        }
-    });
-}
-function onDisconnect() {
-    port = null;
-    setTimeout(() => connect(), 100);
-}
-function onMessage(message) {
-    if (!message.type.endsWith(".respond")) {
-        return;
-    }
-    messageListeners.forEach((listener) => listener(message));
-}
-function removeDisconnectListener(listener) {
-    disconnectListeners.delete(listener);
+  }
+
+  if (!eventQueue.length) {
+    stopProcessingInterval();
+  }
 }
 
-;// CONCATENATED MODULE: ../src/core/api/front/api.ts
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+/**
+ * Starts interval for processing incoming requests
+ */
+function startProcessingInterval() {
+  if (processingIntervalId) {
+    return;
+  }
 
-const platformToStore = {
-    chromium: "chrome",
-    edgehtml: "edge",
-    gecko: "firefox"
-};
-const app = {
-    get: (what) => send("app.get", { what }),
-    getInfo: () => __awaiter(void 0, void 0, void 0, function* () {
-        return Promise.all([app.get("application"), app.get("platform")]).then(([application, rawPlatform]) => {
-            const platform = rawPlatform;
-            let store;
-            if (application !== "edge" && application !== "opera") {
-                store = platformToStore[platform] || "chrome";
-            }
-            else {
-                store = application;
-            }
-            return {
-                application,
-                platform,
-                store
-            };
-        });
-    }),
-    listen: (filter) => listen({ type: "app", filter }),
-    open: (what, options = {}) => send("app.open", Object.assign({ what }, options))
-};
-const ctalinks = {
-    get: (link, queryParams = {}) => send("app.get", { what: "ctalink", link, queryParams })
-};
-const doclinks = {
-    get: (link) => send("app.get", { what: "doclink", link })
-};
-const filters = {
-    get: () => send("filters.get"),
-    listen: (filter) => listen({ type: "filters", filter })
-};
-const notifications = {
-    get: (displayMethod) => send("notifications.get", { displayMethod }),
-    seen: () => send("notifications.seen")
-};
-const prefs = {
-    get: (key) => send("prefs.get", { key }),
-    listen: (filter) => listen({ type: "prefs", filter })
-};
-const premium = {
-    activate: (userId) => send("premium.activate", { userId }),
-    get: () => send("premium.get"),
-    listen: (filter) => listen({ type: "premium", filter })
-};
-const requests = {
-    listen: (filter, tabId) => listen({ type: "requests", filter, tabId })
-};
-function send(sendType, rawArgs = {}) {
-    const args = Object.assign(Object.assign({}, rawArgs), { type: sendType });
-    return browser.runtime.sendMessage(args);
+  processNextEvent();
+  processingIntervalId = setInterval(processNextEvent, processingDelay);
 }
-const stats = {
-    getBlockedPerPage: (tab) => send("stats.getBlockedPerPage", { tab }),
-    getBlockedTotal: () => send("stats.getBlockedTotal"),
-    listen: (filter) => listen({ type: "stats", filter })
-};
-const subscriptions = {
-    add: (url) => send("subscriptions.add", { url }),
-    get: (options) => send("subscriptions.get", options),
-    getInitIssues: () => send("subscriptions.getInitIssues"),
-    getRecommendations: () => send("subscriptions.getRecommendations"),
-    listen: (filter) => listen({ type: "subscriptions", filter }),
-    remove: (url) => send("subscriptions.remove", { url })
-};
-const api = {
-    addDisconnectListener: addDisconnectListener,
-    addListener: addMessageListener,
-    app,
-    ctalinks,
-    doclinks,
-    filters,
-    notifications,
-    prefs,
-    premium,
-    requests,
-    removeDisconnectListener: removeDisconnectListener,
-    subscriptions,
-    stats
-};
-connect();
-/* harmony default export */ const front_api = (api);
 
-;// CONCATENATED MODULE: ../src/core/api/front/index.ts
-
-
-
-
-/* harmony default export */ const front = (front_api);
-
-;// CONCATENATED MODULE: ../src/premium/content/activation.ts
-var activation_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-const trustedOrigin = "https://accounts.adblockplus.org";
-function activation_onMessage(event) {
-    return activation_awaiter(this, void 0, void 0, function* () {
-        if (event.origin !== trustedOrigin) {
-            return;
-        }
-        const { data } = event;
-        if (data.version !== 1 ||
-            data.command !== "payment_success" ||
-            !data.userId) {
-            console.error("Received invalid message");
-            return;
-        }
-        window.removeEventListener("message", activation_onMessage);
-        try {
-            const isSuccess = yield front.premium.activate(data.userId);
-            if (!isSuccess) {
-                throw new Error("Error in background page");
-            }
-            window.postMessage({ ack: true }, event.origin);
-        }
-        catch (ex) {
-            console.error("Failed to activate Premium license", ex);
-        }
-    });
+/**
+ * Stops interval for processing incoming requests
+ */
+function stopProcessingInterval() {
+  clearInterval(processingIntervalId);
+  processingIntervalId = null;
 }
+
+/**
+ * Initializes module
+ */
 function start() {
-    window.addEventListener("message", activation_onMessage);
+  document.addEventListener("flattr-request-payload", handleFlattrRequestPayloadEvent, true);
 }
+
+/**
+ * Uninitializes module
+ */
+function stop() {
+  document.removeEventListener("flattr-request-payload", handleFlattrRequestPayloadEvent, true);
+  eventQueue.length = 0;
+  stopProcessingInterval();
+}
+
 start();
-
-;// CONCATENATED MODULE: ../src/premium/content/index.ts
-
-
-
-/******/ })()
-;

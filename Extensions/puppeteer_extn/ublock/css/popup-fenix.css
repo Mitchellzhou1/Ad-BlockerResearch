@@ -64,6 +64,7 @@ hr {
     align-items: stretch;
     display: flex;
     justify-content: space-between;
+    margin: var(--popup-gap-extra-thin) 0;
     }
 #switch {
     color: var(--popup-power-ink);
@@ -73,7 +74,7 @@ hr {
     flex-grow: 1;
     font-size: 96px;
     justify-content: center;
-    margin: var(--popup-gap-thin) var(--popup-gap-thin) 0;
+    margin: var(--popup-gap) 0;
     padding: 0;
     stroke: none;
     stroke-width: 64;
@@ -88,7 +89,7 @@ body.off #switch {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     width: 25%;
     }
 .rulesetTools [id] {
@@ -113,8 +114,12 @@ body.needSave #revertRules {
     visibility: visible;
     }
 #hostname {
-    margin: var(--popup-gap) var(--popup-gap-extra-thin);
+    background-color: var(--popup-toolbar-surface);
+    margin: 0;
+    padding: var(--popup-gap-thin) 0;
     text-align: center;
+    white-space: normal;
+
     }
 #hostname > span {
     word-break: break-all;
@@ -206,7 +211,7 @@ body.needSave #revertRules {
     font-size: 1.6em;
     }
 
-#basicTools:not(.canPick) .needPick {
+#basicTools .needPick:not(.canPick) {
     visibility: hidden;
     }
 
@@ -295,6 +300,7 @@ body.needSave #revertRules {
     }
 :root.desktop body.vMin #firewall {
     max-height: 100vh;
+        max-height: 100svh;
     }
 #firewall > * {
     direction: ltr;
@@ -304,7 +310,7 @@ body.needSave #revertRules {
     display: flex;
     left: 0;
     position: absolute;
-    z-index: 100;
+    z-index: 50;
     }
 #firewall > section .fa-icon {
     color: var(--ink-4);
@@ -425,7 +431,23 @@ body.needSave #revertRules {
 #firewall.hideBlocked > div:not([data-des="*"]).is3p.blocked,
 #firewall.hideAllowed > div:not([data-des="*"]).is3p.totalAllowed,
 #firewall.hideAllowed > div:not([data-des="*"]).is3p.allowed {
-    display: none;
+    max-height: 4px;
+    overflow-y: hidden;
+    pointer-events: none;
+    user-select: none;
+    }
+#firewall.show3pScript:not(.show3pFrame) > div:not([data-des="*"]).is3p:not(.hasScript) *,
+#firewall.show3pFrame:not(.show3pScript) > div:not([data-des="*"]).is3p:not(.hasFrame) *,
+#firewall.show3pScript.show3pFrame > div:not([data-des="*"]).is3p:not(.hasScript):not(.hasFrame) *,
+#firewall.hide3pScript > div:not([data-des="*"]).is3p.hasScript *,
+#firewall.hide3pFrame > div:not([data-des="*"]).is3p.hasFrame *,
+#firewall.showBlocked > div:not([data-des="*"]).is3p:not(.totalBlocked):not(.blocked) *,
+#firewall.showAllowed > div:not([data-des="*"]).is3p:not(.totalAllowed):not(.allowed) *,
+#firewall.hideBlocked > div:not([data-des="*"]).is3p.totalBlocked *,
+#firewall.hideBlocked > div:not([data-des="*"]).is3p.blocked *,
+#firewall.hideAllowed > div:not([data-des="*"]).is3p.totalAllowed *,
+#firewall.hideAllowed > div:not([data-des="*"]).is3p.allowed * {
+    color: transparent !important;
     }
 #firewall > div.isCname > span:first-of-type {
     color: var(--popup-cell-cname-ink);
@@ -462,8 +484,8 @@ body.needSave #revertRules {
     pointer-events: auto;
     }
 #firewall > div.isDomain.hasSubdomains > span:first-of-type > span::before {
-    color: var(--ink-3);
     content: '\2026\A0';
+    opacity: 0.6;
     }
 #firewall > div[data-des="*"] > span:nth-of-type(3),
 #firewall > div.isSubdomain > span:nth-of-type(3),
@@ -699,7 +721,7 @@ body:not([data-more*="e"]) [data-more="e"] {
     }
 
 /* horizontally-constrained viewport */
-:root.portrait body {
+:root.portrait:not(.desktop) body {
     overflow-y: auto;
     width: 100%;
     }
@@ -715,7 +737,7 @@ body:not([data-more*="e"]) [data-more="e"] {
     min-width: unset;
     overflow-y: hidden;
     }
-:root.portrait #firewall-vspacer {
+:root.portrait body[data-more*="e"] #firewall-vspacer {
     display: block;
     }
 

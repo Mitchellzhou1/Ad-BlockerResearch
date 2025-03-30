@@ -128,7 +128,7 @@
     "description": "Tooltip used for the logger icon in the panel"
   },
   "popupTipReport": {
-    "message": "Laporkan masalah situs web ini",
+    "message": "Laporkan masalah di situs web ini",
     "description": "Tooltip used for the 'chat' icon in the panel"
   },
   "popupTipNoPopups": {
@@ -280,7 +280,7 @@
     "description": "Appears as an option to filter out firewall rows"
   },
   "popup3pFrameFilter": {
-    "message": "Frame",
+    "message": "frame",
     "description": "Appears as an option to filter out firewall rows"
   },
   "pickerCreate": {
@@ -469,35 +469,43 @@
   },
   "3pGroupDefault": {
     "message": "Bawaan",
-    "description": "Header for the uBlock filters section in 'Filter lists pane'"
+    "description": "Filter lists section name"
   },
   "3pGroupAds": {
     "message": "Iklan",
-    "description": "English: Ads"
+    "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
     "message": "Privasi",
-    "description": "English: Privacy"
+    "description": "Filter lists section name"
   },
   "3pGroupMalware": {
-    "message": "Domain malware",
-    "description": "English: Malware domains"
+    "message": "Perlindungan malware, keamanan",
+    "description": "Filter lists section name"
+  },
+  "3pGroupSocial": {
+    "message": "Widget sosial",
+    "description": "Filter lists section name"
+  },
+  "3pGroupCookies": {
+    "message": "Pemberitahuan cookie",
+    "description": "Filter lists section name"
   },
   "3pGroupAnnoyances": {
     "message": "Gangguan",
-    "description": "The header identifying the filter lists in the category 'annoyances'"
+    "description": "Filter lists section name"
   },
   "3pGroupMultipurpose": {
     "message": "Serbaguna",
-    "description": "English: Multipurpose"
+    "description": "Filter lists section name"
   },
   "3pGroupRegions": {
     "message": "Wilayah, bahasa",
-    "description": "English: Regions, languages"
+    "description": "Filter lists section name"
   },
   "3pGroupCustom": {
     "message": "Khusus",
-    "description": "English: Custom"
+    "description": "Filter lists section name"
   },
   "3pImport": {
     "message": "Impor...",
@@ -527,17 +535,25 @@
     "message": "Galat jaringan mencegah sumber daya diperbarui.",
     "description": "used as a tooltip for error icon beside a list"
   },
-  "1pFormatHint": {
-    "message": "Satu filter per baris. Filter dapat berupa nama hos, atau filter yang kompatibel dengan EasyList. Baris yang diawali dengan <code>!</code> akan diabaikan.",
-    "description": "Short information about how to create custom filters"
+  "1pTrustWarning": {
+    "message": "Jangan tambah filter dari sumber yang tidak terpercaya.",
+    "description": "Warning against copy-pasting filters from random sources"
+  },
+  "1pEnableMyFiltersLabel": {
+    "message": "Aktifkan filter kustom saya",
+    "description": "Label for the checkbox use to enable/disable 'My filters' list"
+  },
+  "1pTrustMyFiltersLabel": {
+    "message": "Izinkan filter kustom yang memerlukan kepercayaan",
+    "description": "Label for the checkbox use to trust the content of 'My filters' list"
   },
   "1pImport": {
-    "message": "Impor dan tambahkan",
-    "description": "English: Import and append"
+    "message": "Impor dan tambahkan…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExport": {
-    "message": "Ekspor",
-    "description": "English: Export"
+    "message": "Ekspor…",
+    "description": "Button in the 'My filters' pane"
   },
   "1pExportFilename": {
     "message": "my-ublock-static-filters_{{datetime}}.txt",
@@ -580,8 +596,8 @@
     "description": ""
   },
   "rulesExport": {
-    "message": "Ekspor ke berkas",
-    "description": ""
+    "message": "Ekspor ke berkas…",
+    "description": "Button in the 'My rules' pane"
   },
   "rulesDefaultFileName": {
     "message": "my-ublock-dynamic-rules_{{datetime}}.txt",
@@ -612,16 +628,16 @@
     "description": "English: a sort option for list of rules."
   },
   "whitelistPrompt": {
-    "message": "Arahan situs terpercaya menentukan pada halaman web mana uBlock Origin harus dinonaktifkan. Satu entri per baris.",
+    "message": "Arahan situs tepercaya menentukan halaman web mana yang uBlock Origin harus dinonaktifkan. Satu entri per baris.",
     "description": "A concise description of the 'Trusted sites' pane."
   },
   "whitelistImport": {
-    "message": "Impor dan tambahkan",
-    "description": "English: Import and append"
+    "message": "Impor dan tambahkan…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExport": {
-    "message": "Ekspor",
-    "description": "English: Export"
+    "message": "Ekspor…",
+    "description": "Button in the 'Trusted sites' pane"
   },
   "whitelistExportFilename": {
     "message": "my-ublock-trusted-sites_{{datetime}}.txt",
@@ -700,7 +716,7 @@
     "description": "Tooltip for the button to bring up logger output filtering options"
   },
   "loggerRowFiltererBuiltinNot": {
-    "message": "Bukan",
+    "message": "Tidak",
     "description": "A keyword in the built-in row filtering expression"
   },
   "loggerRowFiltererBuiltinEventful": {
@@ -951,12 +967,20 @@
     "message": "Untuk menghindari membebani sukarelawan dengan laporan duplikat, harap verifikasi bahwa masalah tersebut belum dilaporkan.",
     "description": "A paragraph in the filter issue reporter section"
   },
+  "supportS6P2S1": {
+    "message": "Daftar filter diperbarui setiap hari. Pastikan masalah Anda belum teratasi dalam daftar filter terbaru.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
+  "supportS6P2S2": {
+    "message": "Verifikasi bahwa masalah masih ada setelah memuat ulang halaman web yang bermasalah.",
+    "description": "A paragraph in the filter issue reporter section"
+  },
   "supportS6URL": {
     "message": "Alamat laman web:",
     "description": "Label for the URL of the page"
   },
   "supportS6Select1": {
-    "message": "Laman web...",
+    "message": "Laman web…",
     "description": "Label for widget to select type of issue"
   },
   "supportS6Select1Option0": {
@@ -985,6 +1009,10 @@
   },
   "supportS6Select1Option6": {
     "message": "Membuka tab atau jendela yang tidak diinginkan",
+    "description": "An entry in the widget used to select the type of issue"
+  },
+  "supportS6Select1Option7": {
+    "message": "Mengarah ke perangkat lunak jahat, phishing",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -1040,7 +1068,7 @@
     "description": "Shown in the About pane"
   },
   "aboutBackupDataButton": {
-    "message": "Cadangkan ke berkas",
+    "message": "Cadangkan ke berkas…",
     "description": "Text for button to create a backup of all settings"
   },
   "aboutBackupFilename": {
@@ -1163,6 +1191,10 @@
     "message": "Lanjutkan",
     "description": "Button text to navigate to the blocked page"
   },
+  "docblockedRedirectPrompt": {
+    "message": "Halaman yang terblokir ingin dialihkan ke situs lain. Jika Anda memilih untuk melanjutkan, Anda akan langsung menuju ke: {{url}}",
+    "description": "Text warning about an incoming redirect"
+  },
   "cloudPush": {
     "message": "Ekspor ke penyimpanan awan",
     "description": "tooltip"
@@ -1176,7 +1208,7 @@
     "description": "tooltip"
   },
   "cloudNoData": {
-    "message": "...\n...",
+    "message": "…\n…",
     "description": ""
   },
   "cloudDeviceNamePrompt": {
@@ -1216,7 +1248,7 @@
     "description": "A context menu entry, present when large media elements have been blocked on the current site"
   },
   "contextMenuViewSource": {
-    "message": "View source code…",
+    "message": "Lihat kode sumber…",
     "description": "A context menu entry, to view the source code of the target resource"
   },
   "shortcutCapturePlaceholder": {
@@ -1238,6 +1270,10 @@
   "toggleCosmeticFiltering": {
     "message": "Aktif/Nonaktifkan filter tampilan",
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
+  },
+  "toggleJavascript": {
+    "message": "Aktif/Nonaktifkan JavaScript",
+    "description": "Label for keyboard shortcut used to toggle no-scripting switch"
   },
   "relaxBlockingMode": {
     "message": "Perlonggar mode pemblokiran",
@@ -1264,12 +1300,12 @@
     "description": "Message used in frame placeholders"
   },
   "linterMainReport": {
-    "message": "Errors: {{count}}",
+    "message": "Galat: {{count}}",
     "description": "Summary of number of errors as reported by the linter "
   },
   "unprocessedRequestTooltip": {
-    "message": "Could not filter properly at browser launch.\nReload the page to ensure proper filtering.",
-    "description": "Tooltip for the toolbar icon. Use newline character(s) where appropriate to prevent tooltip from being too long horizontally"
+    "message": "Filter tidak dapat bekerja dengan baik saat peramban dimulai.\nMuat ulang halaman agar filter dapat bekerja dengan baik.",
+    "description": "A warning which will appear in the popup panel if needed"
   },
   "dummy": {
     "message": "Entri ini harus menjadi yang terakhir",

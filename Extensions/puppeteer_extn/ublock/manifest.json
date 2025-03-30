@@ -32,6 +32,9 @@
     },
     "toggle-cosmetic-filtering": {
       "description": "__MSG_toggleCosmeticFiltering__"
+    },
+    "toggle-javascript": {
+      "description": "__MSG_toggleJavascript__"
     }
   },
   "content_scripts": [
@@ -60,8 +63,19 @@
         "https://filterlists.com/*",
         "https://forums.lanik.us/*",
         "https://github.com/*",
-        "https://*.github.io/*",
-        "https://*.letsblock.it/*"
+        "https://*.github.io/*"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "all_frames": false,
+      "js": [
+        "/js/scriptlets/updater.js"
+      ],
+      "matches": [
+        "https://github.com/uBlockOrigin/*",
+        "https://ublockorigin.github.io/*",
+        "https://*.reddit.com/r/uBlockOrigin/*"
       ],
       "run_at": "document_idle"
     }
@@ -77,13 +91,14 @@
   },
   "incognito": "split",
   "manifest_version": 2,
-  "minimum_chrome_version": "73.0",
+  "minimum_chrome_version": "80.0",
   "name": "uBlock Origin",
   "options_ui": {
     "open_in_tab": true,
     "page": "dashboard.html"
   },
   "permissions": [
+    "alarms",
     "contextMenus",
     "privacy",
     "storage",
@@ -98,7 +113,7 @@
   "storage": {
     "managed_schema": "managed_storage.json"
   },
-  "version": "1.49.2",
+  "version": "1.62.0",
   "web_accessible_resources": [
     "/web_accessible_resources/*"
   ]

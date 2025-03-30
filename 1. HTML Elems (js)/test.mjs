@@ -1,182 +1,70 @@
 import puppeteer from 'puppeteer';
-import { Url } from './url.mjs';
-import fs from 'fs';
 
-async function findImage(imageUrl, page) {
+const requestsMap = new Map();
 
-    const results = [];
-
-    // 1. Check <img> tags
-    const imgElements = await page.$$('img');
-    for (const img of imgElements) {
-        const src = await img.evaluate(el => el.src);
-        if (src === imageUrl) {
-            results.push(img);
-        }
-    }
-
-    // 2. Check CSS background-image
-    const allElements = await page.$$('*');
-    for (const el of allElements) {
-        const bgImage = await el.evaluate(el => window.getComputedStyle(el).backgroundImage);
-        if (bgImage.includes(imageUrl)) {
-            results.push(el);
-        }
-    }
-
-    // 3. Check <picture> elements
-    const pictureSources = await page.$$('picture source');
-    for (const source of pictureSources) {
-        const srcset = await source.evaluate(el => el.srcset);
-        if (srcset.includes(imageUrl)) {
-            results.push(source);
-        }
-    }
-
-    // 4. Check <object> tags
-    const objectElements = await page.$$('object');
-    for (const object of objectElements) {
-        const data = await object.evaluate(el => el.data);
-        if (data === imageUrl) {
-            results.push(object);
-        }
-    }
-
-    // 5. Check <embed> tags
-    const embedElements = await page.$$('embed');
-    for (const embed of embedElements) {
-        const src = await embed.evaluate(el => el.src);
-        if (src === imageUrl) {
-            results.push(embed);
-        }
-    }
-
-    // 6. Check inline SVG
-    const svgImages = await page.$$('svg image');
-    for (const svgImage of svgImages) {
-        const href = await svgImage.evaluate(el => el.getAttribute('xlink:href') || el.getAttribute('href'));
-        if (href === imageUrl) {
-            results.push(svgImage);
-        }
-    }
-
-    // 7. Check <figure> elements
-    const figureImages = await page.$$('figure img');
-    for (const img of figureImages) {
-        const src = await img.evaluate(el => el.src);
-        if (src === imageUrl) {
-            results.push(img);
-        }
-    }
-
-
-    return results;
+async function sleep(ms) {
+    const seconds = ms * 1000;
+    return new Promise(resolve => setTimeout(resolve, seconds));
 }
 
+async function captureVideoTraffic() {
+    let args = ['--start-maximized'];
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: args,
+        ignoreHTTPSErrors: true 
+      }); 
 
-async function getParent(element, traversalAmt = 3, page) {
-    let ancestor = element;
-  
-    for (let i = 0; i < traversalAmt; i++) {
-      try {
-        const parentHandle = await page.evaluateHandle(el => el.parentElement, ancestor);
-          if (i > 0) await ancestor.dispose();
-          ancestor = parentHandle;
-          const parentElement = await page.evaluate(el => el, parentHandle);
-        if (!parentElement) {
-          await parentHandle.dispose();
-          return null;
-        }
-      } catch (error) {
-        console.error('Error during traversal:', error);
-        if (ancestor) await ancestor.dispose();
-        return null;
+      const pages = await browser.pages();
+      for (let i = 1; i < pages.length; i++) {
+        const title = await pages[i].title();
+        console.log(`Closing page: ${title}`);
+        await pages[i].close();
       }
-    }
-    return ancestor;
-  }
-
-
-
-// Example usage
-(async () => {
-    const imageUrl = 'https://www.uxmatters.com/images/sponsors/UXmattersPatreonBanner.png';
-    const pageUrl = 'https://www.uxmatters.com/'; // Replace with the target webpage URL
-    const url_base = new Url()
-    var delete_flag = true;
-    const adResources = [];
-    url_base.initialize(pageUrl);
-
-    const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
-    const page = await browser.newPage(); // Open a new page
-    await page.goto(pageUrl); // Navigate to the specified URL
-
-
-
-    if (!fs.existsSync(url_base.key)){
-        fs.mkdirSync(url_base.key);
-        console.log(`Folder created successfully!: ${url_base.key}`);    
-    }
+      const page = pages[0];
     
-    // For each element in the missing resources list:
-    const resources = await findImage(imageUrl, page);       // returns list of CdpElementHandles
-
-    if (resources){
-    /*
+      const { width, height } = await page.evaluate(() => {
+        return {
+          width: window.outerWidth,
+          height: window.outerHeight
+        };
+      });
     
-     {
-        id: 'img1',
-        outerHTML: '<img src="img1.jpg" alt="Image 1">',
-        parentHTML: '<div class="container"></div>'
-    },
-    {
-        id: 'img2',
-        outerHTML: '<img src="img2.jpg" alt="Image 2">',
-        parentHTML: '<div class="container"></div>'
+      await page.setViewport({ width, height });  
+  
+    // Map requests to their referrers
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+        requestsMap.set(request.url(), request.headers().referer || 'N/A');
+        request.continue();
+    });
+
+    // Capture responses
+    page.on('response', async response => {
+        const requestUrl = response.url();
+        const referer = requestsMap.get(requestUrl) || 'N/A';
+        const contentType = response.headers()['content-type'] || 'N/A';
+
+        if (contentType.includes('video') && contentType=='video/MP2T') {
+            console.log(`Video URL: ${requestUrl}`);
+            // console.log(`Referer: ${referer}`);
+            // console.log(`Content-Type: ${contentType}`);
+            console.log('---');
+        }
+    });
+
+    // Navigate to NBC News
+    await page.goto('https://www.nbcnews.com/');
+
+    // Click on all video elements
+    const videoElements = await page.$$('video');
+    for (const videoElement of videoElements) {
+        await videoElement.click();
     }
 
-    */
-
-        // Take screenshots of the found elements
-        delete_flag = false;
-        for (const [index, elementHandle] of resources.entries()) {
-
-            // Ensure the element is visible in the viewport
-            await elementHandle.scrollIntoViewIfNeeded();
-
-            // Take a screenshot of the element
-            await elementHandle.screenshot({ path: `${url_base.key}/img_${index}.png` });
-            console.log(`Screenshot saved: ${imageUrl}`);
-
-            const parent = await getParent(elementHandle, 3, page);
-            await parent.screenshot({ path: `${url_base.key}/img_${index}_context.png` });
-
-            adResources.push({
-                id: `img_${index}.png`,
-                outerHTML: await elementHandle.evaluate(element => element.outerHTML),
-                parentHTML: await parent.evaluate(element => element.outerHTML),
-            });
-
-        }       
-    }
-
-    if (!delete_flag){
-        const data = JSON.stringify(adResources, null, 2);
-
-        // Write the string to a file
-        fs.writeFile(`${url_base.key}/mappings.json`, data, (err) => {
-            if (err) {
-                console.error('Error writing to file', err);
-            } else {
-                console.log('File has been written successfully');
-            }
-        });
-
-        await page.screenshot({
-            path: `${url_base.key}/entire_page.png`, 
-            fullPage: true,
-        });
-    }
-    await page.close();
+    // Wait for a few seconds to capture all video traffic
     await browser.close();
-})();
+    console.log()
+}
+
+captureVideoTraffic();
