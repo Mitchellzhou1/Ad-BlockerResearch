@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 
 
 const TIMEOUT = 5 * 60 * 1000; // 15 minutes
-const SIZE = 5;                 // Number of driver processes to create
+const SIZE = 1;                 // Number of driver processes to create
 
 const catapult = false;          // testing mode
 
@@ -87,7 +87,7 @@ async function runBatch(chunk, extn, extn_lst, control_resources) {
     
     var processCount;
     if (control_resources==='false'){
-      processCount = (extn === 'control') ? 3 : 1;
+      processCount = (extn === 'control') ? 1 : 1;
     }
     else{
       processCount = 1;
@@ -185,32 +185,32 @@ const websites = [
   // "https://www.bbc.com",
   // "https://www.nytimes.com",
   // "https://www.theguardian.com",
-  "https://www.washingtonpost.com",         // doesn't work in headless
-  "https://www.nbcnews.com",
-  "https://www.reuters.com",
-  "https://www.forbes.com",
-  "https://www.wsj.com",
-  "https://www.nbcnews.com/",
-  'https://www.washingtonpost.com/',
+  // "https://www.washingtonpost.com",         // doesn't work in headless
+  // "https://www.nbcnews.com",
+  // "https://www.reuters.com",
+  // "https://www.forbes.com",
+  // "https://www.wsj.com",
+  // "https://www.nbcnews.com/",
+  // 'https://www.washingtonpost.com/',
   'https://www.uxmatters.com/',
-  'https://www.reddit.com/',
-  "https://www.baidu.com",  
-  "https://www.tmall.com",  
-  "https://www.weibo.com",  
-  "https://www.jd.com",     
-  "https://www.douyin.com", 
-  "https://www.mi.com",     // Electronics and smartphones
-  "https://www.cctv.com",   // National TV broadcaster
-  "https://www.taobao.com", // E-commerce platform
+  // 'https://www.reddit.com/',
+  // "https://www.baidu.com",  
+  // "https://www.tmall.com",  
+  // "https://www.weibo.com",  
+  // "https://www.jd.com",     
+  // "https://www.douyin.com", 
+  // "https://www.mi.com",     // Electronics and smartphones
+  // "https://www.cctv.com",   // National TV broadcaster
+  // "https://www.taobao.com", // E-commerce platform
   "https://www.163.com",    // News and entertainment
-  "https://www.qq.com",     // Instant messaging and social media
-  "https://www.bilibili.com", // Video-sharing platform
+  // "https://www.qq.com",     // Instant messaging and social media
+  // "https://www.bilibili.com", // Video-sharing platform
   "https://www.meituan.com", // Local services and food delivery
   "https://www.alipay.com",  // Online payment platform
-  "https://www.zol.com.cn",  // Technology news and reviews
-  "https://www.dianping.com", // Business reviews
-  "https://www.tudou.com",   // Video streaming platform
-  "https://www.wechat.com",  // Messaging app
+  // "https://www.zol.com.cn",  // Technology news and reviews
+  // "https://www.dianping.com", // Business reviews
+  // "https://www.tudou.com",   // Video streaming platform
+  // "https://www.wechat.com",  // Messaging app
 
 ]
 

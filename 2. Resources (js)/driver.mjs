@@ -85,7 +85,7 @@ Driver.prototype.initialize = async function() {
     }
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: args,
       ignoreHTTPSErrors: true // Ignore HTTPS errors
     });
@@ -145,6 +145,8 @@ Driver.prototype.initialize = async function() {
         };
         this.fctxt.setURL(requestUrl);
 
+        // this.responsesMap.set(requestUrl, responseData);
+
         if (snfe && (snfe.matchRequest(this.fctxt) !== 0)) {
           responseData.blacklistRule = snfe.toLogData()['raw'];
           this.blacklistedItems.set(requestUrl, responseData); // Checks if the url is blacklisted
@@ -155,6 +157,7 @@ Driver.prototype.initialize = async function() {
         
       }
     });
+    
 
   } catch (error) {
     console.error('Error in script:', error.message);
@@ -377,10 +380,10 @@ Driver.prototype.control_filter = async function(key, extn_lst, control_resource
   }
 
   const ret = [];
-  const final_subset = findSubset(JSON.parse(control_resources), Object.fromEntries(this.responsesMap));
+  const final_control_subset = findSubset(JSON.parse(control_resources), Object.fromEntries(this.responsesMap));
   for(const extn of extn_lst){
     var extn_resources = data[extn];
-    var extn_missing = await this.find_missing_resources(final_subset, extn_resources);
+    var extn_missing = await this.find_missing_resources(final_control_subset, extn_resources);
     await take_ss(extn_missing, extn, this.page, key);
 
   }  
