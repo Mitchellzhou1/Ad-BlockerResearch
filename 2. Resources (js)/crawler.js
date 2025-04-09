@@ -192,25 +192,25 @@ const websites = [
   // "https://www.wsj.com",
   // "https://www.nbcnews.com/",
   // 'https://www.washingtonpost.com/',
-  'https://www.uxmatters.com/',
+  // 'https://www.uxmatters.com/',
   // 'https://www.reddit.com/',
   // "https://www.baidu.com",  
   // "https://www.tmall.com",  
   // "https://www.weibo.com",  
   // "https://www.jd.com",     
   // "https://www.douyin.com", 
-  // "https://www.mi.com",     // Electronics and smartphones
-  // "https://www.cctv.com",   // National TV broadcaster
-  // "https://www.taobao.com", // E-commerce platform
-  "https://www.163.com",    // News and entertainment
-  // "https://www.qq.com",     // Instant messaging and social media
-  // "https://www.bilibili.com", // Video-sharing platform
-  "https://www.meituan.com", // Local services and food delivery
-  "https://www.alipay.com",  // Online payment platform
-  // "https://www.zol.com.cn",  // Technology news and reviews
-  // "https://www.dianping.com", // Business reviews
-  // "https://www.tudou.com",   // Video streaming platform
-  // "https://www.wechat.com",  // Messaging app
+  // "https://www.mi.com",     
+  // "https://www.cctv.com",   
+  // "https://www.taobao.com",
+  "https://www.163.com",    // had a double ad
+  // "https://www.qq.com",    
+  // "https://www.bilibili.com", 
+  "https://www.meituan.com", 
+  "https://www.alipay.com",  
+  // "https://www.zol.com.cn", 
+  // "https://www.dianping.com", 
+  // "https://www.tudou.com",   
+  // "https://www.wechat.com", 
 
 ]
 
