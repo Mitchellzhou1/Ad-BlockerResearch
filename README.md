@@ -21,10 +21,9 @@ Recent years have seen a sharp rise in adblocker use, driven by increased web tr
 
 ### Files:
 
-**crawler.js**: 
 1) **divideChunks(websites, SIZE):** divides the website pool into `SIZE` lengthed batches.
 
-  **Replay 0: Finding Elements. This mode must be set initially to find elements to interact with**
+   **Replay 0: Finding Elements. This mode must be set initially to find elements to interact with**
   
 2) **processAllBatches(chunks, html_option, extn, replay):** Opens a control browser and scan the website for a list of interactable elements.
 
@@ -48,7 +47,7 @@ The scapper will store the outerHTML of the found element. e.g.,
   ]
 }
 ```
-  **Replay 1: Interacting With Elements. This mode will only work if there are results from Replay 0**
+   **Replay 1: Interacting With Elements. This mode will only work if there are results from Replay 0**
 
 2) **processAllBatches(chunks, html_option, extn, replay):** Opens a control browser and the browsers with the extensions.
    - **replay_initialize():** Will open the list of interactable elements from Replay 0 and find the elements based on the xpath.
