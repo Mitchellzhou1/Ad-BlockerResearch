@@ -7,7 +7,7 @@ Recent years have seen a sharp rise in adblocker use, driven by increased web tr
 
 ![image](https://github.com/user-attachments/assets/d4b78c0d-a6d6-47bc-b86d-e38ef92319f8)
 
-### Files:
+### Break down:
 
 **crawler.js**: 
 1) 
