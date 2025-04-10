@@ -7,7 +7,7 @@ Recent years have seen a sharp rise in adblocker use, driven by increased web tr
 
 ![image](https://github.com/user-attachments/assets/d4b78c0d-a6d6-47bc-b86d-e38ef92319f8)
 
-### Break down:
+### Missing Resources:
 
 **crawler.js**: 
 1) 
@@ -19,7 +19,7 @@ Recent years have seen a sharp rise in adblocker use, driven by increased web tr
 
 ![image](https://github.com/user-attachments/assets/05a2b176-c9ee-4f84-bff0-ba0e552830e7)
 
-### Files:
+### Breakdown:
 
 1) **divideChunks(websites, SIZE):** divides the website pool into `SIZE` lengthed batches.
 
