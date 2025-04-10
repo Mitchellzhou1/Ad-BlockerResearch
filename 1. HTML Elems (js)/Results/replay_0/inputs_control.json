@@ -1,0 +1,7 @@
+{
+  "https://mitchellzhou1.github.io/site/test.html": [
+    "<input type=\"text\" id=\"username\" name=\"username\" placeholder=\"Enter your username\">",
+    "<input type=\"text\" id=\"login-email\" name=\"email\" placeholder=\"Enter your email\">",
+    "<input type=\"password\" id=\"login-password\" name=\"password\" placeholder=\"Enter your password\">"
+  ]
+}

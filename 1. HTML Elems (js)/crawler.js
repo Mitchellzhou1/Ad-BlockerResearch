@@ -6,7 +6,7 @@ const path = require('path');
 const TIMEOUT = 15 * 60 * 1000; // 15 minutes
 const SIZE = 2;                 // Number of driver processes to create
 
-const catapult = true;          // testing mode
+const catapult = false;          // testing mode
 
 function divideChunks(arr, chunkSize) {
   if (chunkSize <= 0) {
@@ -117,15 +117,16 @@ async function processAllBatches(chunksList, html_option, extn, replay) {
 
 
 const html_options = [
-  // 'drop_downs', 
-  // 'buttons', 
+  'drop_downs', 
+  'buttons', 
   'links', 
-  // 'logins', 
-  // 'inputs'
+  'logins', 
+  'inputs'
 ];
 
 websites = [
-   "https://easinote.seewo.com/linkShare?id=87ea6781e8384b00913325132a973565",
+  "https://mitchellzhou1.github.io/site/test.html"
+  //  "https://easinote.seewo.com/linkShare?id=87ea6781e8384b00913325132a973565",
   // "https://dragontea.ink/",
   // "https://xhamster.com/search/knockin+nurses",
   // "https://www.cib.com.cn/cn/index.html",
@@ -148,7 +149,7 @@ let extn_lst = [
 (async () => {
 
   const args = process.argv.slice(2);
-  let replay = 1; // Default value
+  let replay = 0; // Default value
 
   // Extract the --replay argument
   args.forEach((arg, index) => {

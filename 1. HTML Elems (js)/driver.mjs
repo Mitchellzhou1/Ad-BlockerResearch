@@ -694,7 +694,7 @@ Driver.prototype.specificElementFinder = async function(elems) {
           'values': ['role', 'type']
       },
       'drop_downs': {
-          'attributes': ['false', 'true', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
+          'attributes': ['false', 'true', 'dropdown', 'main menu', 'open menu', 'all microsoft menu', 'menu', 'navigation',
                       'primary navigation', 'hamburger', 'settings and quick links', 'dropdown', 'dialog',
                       'js-menu-toggle', 'searchDropdownDescription', 'ctabutton', 'toggle',
                       'legacy-homepage_legacyButton__oUMB9 legacy-homepage_hamburgerButton__VsG7q',
@@ -1267,6 +1267,6 @@ Driver.prototype.isOpenApplication = function(html) {
   console.log(ret);
   console.log(`Finished -- ${html_option} ${extn} -- ${site}`);
 
-  await run_cmd(['pkill', 'wpr'])
+  // await run_cmd(['pkill', 'wpr'])
 
 })();

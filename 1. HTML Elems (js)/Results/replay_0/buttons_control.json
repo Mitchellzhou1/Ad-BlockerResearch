@@ -1,0 +1,7 @@
+{
+  "https://mitchellzhou1.github.io/site/test.html": [
+    "<button type=\"button\">Primary Button</button>",
+    "<button type=\"button\" style=\"background-color: #28a745;\">Success Button</button>",
+    "<button type=\"submit\">Login</button>"
+  ]
+}
