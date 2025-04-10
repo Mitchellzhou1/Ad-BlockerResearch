@@ -103,7 +103,7 @@ async function runBatch(chunk, html_option, extn, replay, catapult) {
   combineResults(results, html_option, extn, replay);
 };
 
-async function runInBatches(chunksList, html_option, extn, replay) {
+async function processAllBatches(chunksList, html_option, extn, replay) {
   for (const chunk of chunksList) {
 
       console.log('Processing batch:', chunk);
@@ -170,7 +170,7 @@ let extn_lst = [
   for (let html_option of html_options) {
     for (let extn of extn_lst) {
       try {
-        await runInBatches(chunks, html_option, extn, replay);
+        await processAllBatches(chunks, html_option, extn, replay);
         console.log('All batches processed.');
       } catch (err) {
         console.error('Error processing batches:', err);

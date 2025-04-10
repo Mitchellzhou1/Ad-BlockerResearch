@@ -131,7 +131,7 @@ async function runBatch(chunk, extn, extn_lst, control_resources) {
 };
 
 
-async function runInBatches(chunksList, extn_lst) {
+async function processAllBatches(chunksList, extn_lst) {
   
   for (const chunk of chunksList) {
 
@@ -231,7 +231,7 @@ let extn_lst = [
   const chunks = divideChunks(websites, SIZE);
 
   try {
-    await runInBatches(chunks, extn_lst);
+    await processAllBatches(chunks, extn_lst);
     console.log('All batches processed.');
   } catch (err) {
     console.error('Error processing batches:', err);

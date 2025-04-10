@@ -1043,7 +1043,7 @@ Driver.prototype.find_and_submit_forms = async function(formElem) {
 
   // Define values to type into inputs
   const textValue = 'textvalue123';
-  const emailValue = 'test@gmail.com';
+  const emailValue = 'john101@gmail.com';
   const numberValue = '1234567890';
   const flag = { value: false };
 
